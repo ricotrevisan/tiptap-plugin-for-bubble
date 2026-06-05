@@ -464,6 +464,10 @@
       "caption": "file is uploaded",
       "name": "fileUploaded"
     },
+    "collab_doc_changed": {
+      "caption": "Collaboration document changed",
+      "name": "collab_doc_changed"
+    },
     "collab_status_changed": {
       "caption": "Collaboration status changed",
       "name": "collab_status_changed"
@@ -471,10 +475,6 @@
     "collab_synced": {
       "caption": "Collaboration synced",
       "name": "collab_synced"
-    },
-    "collab_doc_changed": {
-      "caption": "Collaboration document changed",
-      "name": "collab_doc_changed"
     }
   },
   "fields": {
@@ -814,7 +814,7 @@
       "editor": "DynamicValue",
       "name": "collab_user_name",
       "optional": true,
-      "rank": 208,
+      "rank": 209,
       "value": "text"
     },
     "ext_history": {
@@ -868,7 +868,7 @@
       "doc": "Enable real-time collaborative editing via a Y.js-based provider (Tiptap Cloud, Custom Hocuspocus, or Liveblocks). When collaboration is active, the shared Y.js document is the single source of truth. Note: auto-binding is automatically ignored while collaboration is active — the collaborative document takes priority to prevent conflicts.",
       "editor": "Checkbox",
       "name": "collab_active",
-      "rank": 201
+      "rank": 202
     },
     "link_target": {
       "caption": "Open link in",
@@ -912,7 +912,7 @@
       "long_text": false,
       "name": "collab_cursor_css",
       "optional": true,
-      "rank": 210,
+      "rank": 211,
       "value": "text"
     },
     "ext_link_label": {
@@ -925,7 +925,7 @@
       "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced",
       "editor": "Label",
       "name": "collab_status_docs",
-      "rank": 211
+      "rank": 201
     },
     "h6_color": {
       "caption": "H6 Color",
@@ -1365,7 +1365,7 @@
       "doc": "Paste the collab URL here to enable collaborative editing. Leave empty to disable.",
       "editor": "StaticText",
       "name": "collab_url",
-      "rank": 204
+      "rank": 205
     },
     "AFP": {
       "caption": "Visited link CSS override",
@@ -1452,7 +1452,7 @@
       "editor": "Color",
       "name": "collab_cursor_color",
       "optional": true,
-      "rank": 209,
+      "rank": 210,
       "value": "text"
     },
     "codeblock_tabSize": {
@@ -1680,7 +1680,7 @@
       "editor": "DynamicValue",
       "name": "collab_doc_id",
       "optional": true,
-      "rank": 202,
+      "rank": 203,
       "value": "text"
     },
     "ext_mention": {
@@ -1699,7 +1699,7 @@
       "editor": "StaticText",
       "name": "collab_app_id",
       "optional": true,
-      "rank": 205
+      "rank": 206
     },
     "ext_floatingmenu_label": {
       "caption": "----- Floating Menu -----",
@@ -1947,7 +1947,7 @@
       "editor": "StaticText",
       "name": "liveblocksPublicApiKey",
       "optional": true,
-      "rank": 207
+      "rank": 208
     },
     "ext_section_label": {
       "caption": "𝗘𝗫𝗧𝗘𝗡𝗦𝗜𝗢𝗡𝗦",
@@ -2069,7 +2069,7 @@
       "editor": "DynamicValue",
       "name": "collab_jwt",
       "optional": true,
-      "rank": 206,
+      "rank": 207,
       "value": "text"
     },
     "ext_uniqueid_label": {
@@ -2171,7 +2171,7 @@
       "name": "collabProvider",
       "optional": true,
       "options": "tiptap,liveblocks,custom",
-      "rank": 203
+      "rank": 204
     },
     "highlight_multicolor": {
       "caption": "Multicolor",

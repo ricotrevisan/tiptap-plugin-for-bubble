@@ -34,7 +34,7 @@
     },
     "expiration": {
       "caption": "Expiration (seconds)",
-      "default_val": "86400",
+      "default_val": 86400,
       "doc": "How long the auth token is valid, in seconds. Default is 86400 (1 day).",
       "editor": "DynamicValue",
       "name": "expiration",

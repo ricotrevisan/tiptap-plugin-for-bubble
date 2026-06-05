@@ -155,11 +155,12 @@ if (!!instance.data.editor_is_ready) {
 }
 
 if (!!instance.data.editor_is_ready && !!properties.collab_active) {
-    instance.data.debug("updating collab user:", properties.collab_user_name, "color:", properties.collab_cursor_color);
-    instance.data.editor.commands.updateUser({
-        name: properties.collab_user_name,
-        color: properties.collab_cursor_color,
-    });
+    const collabUser = {
+        name: properties.collab_user_name || "Anonymous",
+        color: properties.collab_cursor_color || "#958DF1",
+    };
+    instance.data.debug("updating collab user:", collabUser.name, "color:", collabUser.color);
+    instance.data.editor.commands.updateUser(collabUser);
 }
 
 instance.data.applyStylesheet(properties);

@@ -632,6 +632,13 @@ try {
         }, delay);
     };
 
+    function getCollabUser(properties) {
+        return {
+            name: properties.collab_user_name || "Anonymous",
+            color: properties.collab_cursor_color || "#958DF1",
+        };
+    }
+
     function maybeSetupCollaboration(instance, properties, options, extensions) {
         if (properties.collab_active === false) return;
         instance.data.debug("collaboration is active, provider:", properties.collabProvider);
@@ -726,6 +733,7 @@ try {
                 }),
                 CollaborationCaret.configure({
                     provider: instance.data.provider,
+                    user: getCollabUser(properties),
                 }),
             );
             instance.data.debug("custom Hocuspocus provider created successfully");
@@ -798,6 +806,7 @@ try {
             }),
             CollaborationCaret.configure({
                 provider: instance.data.provider,
+                user: getCollabUser(properties),
             }),
         );
 
@@ -832,6 +841,7 @@ try {
                 }),
                 CollaborationCaret.configure({
                     provider: Provider,
+                    user: getCollabUser(properties),
                 }),
             );
         } catch (error) {
