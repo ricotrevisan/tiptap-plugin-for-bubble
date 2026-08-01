@@ -748,7 +748,7 @@
     "ext_ai_toolkit": {
       "caption": "AI Toolkit compatibility",
       "default_val": false,
-      "doc": "Registers Tiptap's ServerAiToolkit extension so AI Toolkit block hashes survive editor round-trips. This only makes the editor schema compatible; using the AI Toolkit API still requires the paid Tiptap add-on and server-side authorization.",
+      "doc": "Registers Tiptap's ServerAiToolkit schema behavior so AI Toolkit block hashes survive editor round-trips. This only makes the editor schema compatible; using the AI Toolkit API still requires the paid Tiptap add-on and server-side authorization. When collaboration is active, every client editing the same document must enable this toggle so their schemas match.",
       "editor": "DynamicValue",
       "name": "ext_ai_toolkit",
       "rank": 191,
