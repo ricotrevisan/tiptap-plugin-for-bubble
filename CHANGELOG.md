@@ -4,6 +4,17 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## Unreleased
+
+### New Extension — Tiptap AI Toolkit compatibility
+
+- Added an optional **AI Toolkit compatibility** toggle using the schema behavior from `@tiptap/ai-toolkit`'s `ServerAiToolkit` extension.
+- The small MIT-licensed compatibility extension is vendored so enabling support does not add the AI Toolkit package's full schema-validation stack to every editor bundle.
+- When enabled, the editor schema preserves the `_hash` attributes used by Tiptap's server-side AI Toolkit across JSON/editor round-trips.
+- This is schema support only. Calling Tiptap's AI Toolkit API still requires the paid add-on and server-side JWT authorization.
+
+---
+
 ## v4.6.1
 
 ### Bug Fix — Image resize not persisting

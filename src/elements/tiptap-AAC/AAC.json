@@ -514,7 +514,7 @@
       "long_text": false,
       "name": "details_adv",
       "optional": true,
-      "rank": 197,
+      "rank": 199,
       "value": "text"
     },
     "ADe": {
@@ -736,7 +736,23 @@
       "caption": "----- Preserve Attributes -----",
       "editor": "Label",
       "name": "ext_preserve_label",
+      "rank": 192
+    },
+    "ext_ai_toolkit_label": {
+      "caption": "----- AI Toolkit -----",
+      "doc": "Adds schema compatibility for Tiptap's server-based AI Toolkit.",
+      "editor": "Label",
+      "name": "ext_ai_toolkit_label",
       "rank": 190
+    },
+    "ext_ai_toolkit": {
+      "caption": "AI Toolkit compatibility",
+      "default_val": false,
+      "doc": "Registers Tiptap's ServerAiToolkit extension so AI Toolkit block hashes survive editor round-trips. This only makes the editor schema compatible; using the AI Toolkit API still requires the paid Tiptap add-on and server-side authorization.",
+      "editor": "DynamicValue",
+      "name": "ext_ai_toolkit",
+      "rank": 191,
+      "value": "boolean"
     },
     "AFO": {
       "caption": "Unvisited link CSS override",
@@ -814,7 +830,7 @@
       "editor": "DynamicValue",
       "name": "collab_user_name",
       "optional": true,
-      "rank": 209,
+      "rank": 211,
       "value": "text"
     },
     "ext_history": {
@@ -868,7 +884,7 @@
       "doc": "Enable real-time collaborative editing via a Y.js-based provider (Tiptap Cloud, Custom Hocuspocus, or Liveblocks). When collaboration is active, the shared Y.js document is the single source of truth. Note: auto-binding is automatically ignored while collaboration is active — the collaborative document takes priority to prevent conflicts.",
       "editor": "Checkbox",
       "name": "collab_active",
-      "rank": 202
+      "rank": 204
     },
     "link_target": {
       "caption": "Open link in",
@@ -912,7 +928,7 @@
       "long_text": false,
       "name": "collab_cursor_css",
       "optional": true,
-      "rank": 211,
+      "rank": 213,
       "value": "text"
     },
     "ext_link_label": {
@@ -925,7 +941,7 @@
       "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced",
       "editor": "Label",
       "name": "collab_status_docs",
-      "rank": 201
+      "rank": 203
     },
     "h6_color": {
       "caption": "H6 Color",
@@ -950,14 +966,14 @@
       "doc": "When enabled, the editor preserves class, style, id, and data-* attributes on HTML elements when parsing and rendering content. This is useful when your content comes from an external source and you want to keep its original styling and structure intact. Applies to block nodes (paragraphs, headings, blockquotes, tables, etc.) and inline marks (bold, italic, strike, code, links).",
       "editor": "DynamicValue",
       "name": "preserve_attributes",
-      "rank": 191,
+      "rank": 193,
       "value": "boolean"
     },
     "AEB": {
       "caption": "𝗖𝗢𝗟𝗟𝗔𝗕𝗢𝗥𝗔𝗧𝗜𝗢𝗡",
       "editor": "Label",
       "name": "collab_info",
-      "rank": 199
+      "rank": 201
     },
     "ext_typography": {
       "caption": "Typography",
@@ -993,7 +1009,7 @@
       "long_text": false,
       "name": "details_summary_adv",
       "optional": true,
-      "rank": 198,
+      "rank": 200,
       "value": "text"
     },
     "ext_bubblemenu_label": {
@@ -1365,7 +1381,7 @@
       "doc": "Paste the collab URL here to enable collaborative editing. Leave empty to disable.",
       "editor": "StaticText",
       "name": "collab_url",
-      "rank": 205
+      "rank": 207
     },
     "AFP": {
       "caption": "Visited link CSS override",
@@ -1425,7 +1441,7 @@
       "doc": "When enabled, logs detailed information to the browser console. Useful for troubleshooting. Look for messages prefixed with [Tiptap].",
       "editor": "Checkbox",
       "name": "debug_mode",
-      "rank": 212
+      "rank": 214
     },
     "ext_bulletlist": {
       "caption": "Bullet List",
@@ -1452,7 +1468,7 @@
       "editor": "Color",
       "name": "collab_cursor_color",
       "optional": true,
-      "rank": 210,
+      "rank": 212,
       "value": "text"
     },
     "codeblock_tabSize": {
@@ -1680,7 +1696,7 @@
       "editor": "DynamicValue",
       "name": "collab_doc_id",
       "optional": true,
-      "rank": 203,
+      "rank": 205,
       "value": "text"
     },
     "ext_mention": {
@@ -1699,7 +1715,7 @@
       "editor": "StaticText",
       "name": "collab_app_id",
       "optional": true,
-      "rank": 206
+      "rank": 208
     },
     "ext_floatingmenu_label": {
       "caption": "----- Floating Menu -----",
@@ -1753,7 +1769,7 @@
       "caption": "to use the collaboration function you first need an account with one of the providers: 𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
       "editor": "Label",
       "name": "collab_info_sub",
-      "rank": 200
+      "rank": 202
     },
     "ext_table": {
       "caption": "Table",
@@ -1780,7 +1796,7 @@
       "doc": "Shows which HTML attributes are preserved when the setting above is enabled. Currently hardcoded to: class, style, id, and data-* attributes. This field is informational — the preserved attributes are defined in the extension code.",
       "editor": "DynamicValue",
       "name": "preserved_attributes",
-      "rank": 192,
+      "rank": 194,
       "value": "text"
     },
     "ADt": {
@@ -1817,7 +1833,7 @@
       "doc": "Keep <details> blocks open/closed state. When enabled, the open/closed state of each block is preserved in the document and will be restored when the editor is re-created.",
       "editor": "DynamicValue",
       "name": "details_persist",
-      "rank": 196,
+      "rank": 198,
       "value": "boolean"
     },
     "ext_floatingmenu": {
@@ -1947,7 +1963,7 @@
       "editor": "StaticText",
       "name": "liveblocksPublicApiKey",
       "optional": true,
-      "rank": 208
+      "rank": 210
     },
     "ext_section_label": {
       "caption": "𝗘𝗫𝗧𝗘𝗡𝗦𝗜𝗢𝗡𝗦",
@@ -2069,7 +2085,7 @@
       "editor": "DynamicValue",
       "name": "collab_jwt",
       "optional": true,
-      "rank": 207,
+      "rank": 209,
       "value": "text"
     },
     "ext_uniqueid_label": {
@@ -2095,7 +2111,7 @@
       "doc": "When enabled (and \"Preserve HTML attributes\" is also on), the editor will recognize <div> elements in your HTML content instead of stripping them. Useful when your content contains custom layouts or structures wrapped in divs. Without this, any <div> tags in the input HTML would be ignored.",
       "editor": "DynamicValue",
       "name": "preserve_unknown_tags",
-      "rank": 193,
+      "rank": 195,
       "value": "boolean"
     },
     "ext_invisiblecharacters": {
@@ -2171,7 +2187,7 @@
       "name": "collabProvider",
       "optional": true,
       "options": "tiptap,liveblocks,custom",
-      "rank": 204
+      "rank": 206
     },
     "highlight_multicolor": {
       "caption": "Multicolor",
@@ -2236,7 +2252,7 @@
       "caption": "----- Details / Accordion -----",
       "editor": "Label",
       "name": "ext_details_label",
-      "rank": 194
+      "rank": 196
     },
     "h5_margin": {
       "caption": "H5 margin",
@@ -2311,7 +2327,7 @@
       "doc": "Adds collapsible <details>/<summary> blocks. Useful for FAQs, toggleable sections, and accordion-style content. Users can type a summary line and expand/collapse the body.",
       "editor": "DynamicValue",
       "name": "ext_details",
-      "rank": 195,
+      "rank": 197,
       "value": "boolean"
     },
     "ADW": {

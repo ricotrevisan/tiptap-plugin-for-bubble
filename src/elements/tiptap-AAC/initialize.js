@@ -1313,6 +1313,7 @@ instance.data.setupEditor = function (properties, context) {
         DetailsSummary,
         InvisibleCharacters,
         DragHandle,
+        ServerAiToolkit,
     } = window.tiptap;
 
     // Store extension states for action files to reference
@@ -1352,6 +1353,7 @@ instance.data.setupEditor = function (properties, context) {
         details: properties.ext_details,
         invisiblecharacters: properties.ext_invisiblecharacters,
         draghandle: properties.ext_draghandle,
+        aiToolkit: properties.ext_ai_toolkit,
     };
 
     // parse heading levels
@@ -1556,6 +1558,9 @@ instance.data.setupEditor = function (properties, context) {
         }
 
         extensions.push(DragHandle.configure(dragHandleConfig));
+    }
+    if (properties.ext_ai_toolkit) {
+        extensions.push(ServerAiToolkit);
     }
 
     // ── PreserveAttributes extension ─────────────────────────
