@@ -10,7 +10,10 @@
     },
     "package_hash": "1e76bc4a16a53766f915",
     "package_status": "up_to_date",
-    "package_used": true
+    "package_used": true,
+    "server": {
+      "fn": "async function(properties, context)"
+    }
   },
   "display": "generate auth token",
   "fields": {

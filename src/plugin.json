@@ -95,6 +95,10 @@
     "AHI": {
       "name": "dist.js",
       "url": "//meta-q.cdn.bubble.io/f1773555659085x364144103293870600/dist.js"
+    },
+    "AHJ": {
+      "name": "dist.js",
+      "url": "//meta-q.cdn.bubble.io/f1785750063835x589437053661660400/dist.js"
     }
   },
   "dependencies": {
@@ -104,6 +108,7 @@
   },
   "editor_counter": 333,
   "human": "🤌 Rich text editor (Tiptap.dev)",
+  "last_published_bv": 33,
   "meta_data": {
     "categories": {
       "0": "blog",

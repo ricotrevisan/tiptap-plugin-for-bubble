@@ -10,7 +10,10 @@
     },
     "package_hash": "",
     "package_status": "to_install",
-    "package_used": true
+    "package_used": true,
+    "server": {
+      "fn": "async function(properties, context)"
+    }
   },
   "display": "convert webhook payload to HTML",
   "doc": "Converts a Hocuspocus / Tiptap Cloud webhook payload into clean HTML that you can store in your database.\n\nWhen collaboration is active, the document lives on the collab server as a Y.js document. Webhooks deliver document changes as ProseMirror JSON — not HTML. This action takes that JSON and produces the same HTML the editor would output.\n\nAccepts three input formats:\n• Full Hocuspocus webhook body (auto-extracts the document)\n• A document object with named fields (e.g. { \"default\": { \"type\": \"doc\", ... } })\n• Raw ProseMirror JSON (e.g. { \"type\": \"doc\", \"content\": [...] })",

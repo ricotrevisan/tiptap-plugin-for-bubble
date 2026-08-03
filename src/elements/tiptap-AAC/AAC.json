@@ -1,16 +1,7 @@
 {
   "actions": {
-    "ACp": {
-      "caption": "Table toggle header row"
-    },
-    "ACR": {
-      "caption": "Remove link"
-    },
-    "AAx": {
-      "caption": "H3"
-    },
-    "AAj": {
-      "caption": "Italic"
+    "AGC": {
+      "caption": "Set hard break"
     },
     "AFS": {
       "caption": "Set font family",
@@ -25,24 +16,25 @@
         }
       }
     },
-    "AFX": {
-      "caption": "Set color",
-      "fields": {
-        "AFY": {
-          "caption": "Color",
-          "default_val": "rgba(6,121,150,1)",
-          "editor": "Color",
-          "name": "color",
-          "rank": 0
-        }
-      }
+    "ACR": {
+      "caption": "Remove link"
+    },
+    "ABE": {
+      "caption": "Numbered list",
+      "doc": "An ordered list"
+    },
+    "ACy": {
+      "caption": "Table split cell"
+    },
+    "AHd": {
+      "caption": "Unset font size",
+      "doc": "Removes the font size from the current selection, reverting to the default."
     },
     "ACs": {
       "caption": "Table add column after"
     },
-    "AAh": {
-      "caption": "Bold",
-      "doc": "Applies bold to current selection. Ctrl + B / Opt + B"
+    "AAz": {
+      "caption": "H5"
     },
     "ACd": {
       "caption": "Align text",
@@ -57,38 +49,98 @@
         }
       }
     },
-    "ACy": {
-      "caption": "Table split cell"
+    "ABI": {
+      "caption": "Outdent item"
     },
-    "AHd": {
-      "caption": "Unset font size",
-      "doc": "Removes the font size from the current selection, reverting to the default."
+    "ABH": {
+      "caption": "Indent item",
+      "doc": "sink list item"
     },
-    "toggle_invisible_characters": {
-      "caption": "Toggle Invisible Characters",
-      "doc": "Toggles the visibility of invisible characters (paragraph marks, spaces, hard breaks)."
+    "AHa": {
+      "caption": "Subscript",
+      "doc": "Toggles subscript formatting on the current selection."
     },
-    "ACz": {
-      "caption": "Table merge cells"
+    "ACv": {
+      "caption": "Table add row before"
     },
-    "ACt": {
-      "caption": "Table add column before"
+    "AAx": {
+      "caption": "H3"
+    },
+    "ADB": {
+      "caption": "Underline"
+    },
+    "ACl": {
+      "caption": "Insert table",
+      "fields": {
+        "ACm": {
+          "caption": "Rows",
+          "default_val": 3,
+          "editor": "DynamicValue",
+          "name": "rows",
+          "rank": 0,
+          "value": "number"
+        },
+        "ACn": {
+          "caption": "Columns",
+          "default_val": 3,
+          "editor": "DynamicValue",
+          "name": "columns",
+          "rank": 1,
+          "value": "number"
+        },
+        "ACo": {
+          "caption": "With header row?",
+          "default_val": true,
+          "editor": "DynamicValue",
+          "name": "with_header_row",
+          "optional": false,
+          "rank": 2,
+          "value": "boolean"
+        }
+      }
+    },
+    "AAj": {
+      "caption": "Italic"
+    },
+    "ACw": {
+      "caption": "Table delete row"
+    },
+    "AAv": {
+      "caption": "H2",
+      "doc": ""
     },
     "toggle_details": {
       "caption": "Toggle Details",
       "doc": "Wraps the current selection in a <details>/<summary> block, or unwraps it if already inside one."
     },
-    "AAp": {
-      "caption": "H1"
+    "ACz": {
+      "caption": "Table merge cells"
     },
-    "ABS": {
-      "caption": "Task list"
+    "ABC": {
+      "caption": "Bullet list"
+    },
+    "ACN": {
+      "caption": "Set link",
+      "fields": {
+        "ACO": {
+          "caption": "url",
+          "editor": "DynamicValue",
+          "name": "url",
+          "optional": true,
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
+    "ABA": {
+      "caption": "H6"
     },
     "AGU": {
       "caption": "Unset all marks"
     },
-    "ABC": {
-      "caption": "Bullet list"
+    "AHb": {
+      "caption": "Superscript",
+      "doc": "Toggles superscript formatting on the current selection."
     },
     "ADI": {
       "caption": "Add YouTube",
@@ -122,19 +174,6 @@
         }
       }
     },
-    "ADB": {
-      "caption": "Underline"
-    },
-    "AFU": {
-      "caption": "Unset font family"
-    },
-    "ABK": {
-      "caption": "Blockquote",
-      "doc": ""
-    },
-    "AAy": {
-      "caption": "H4"
-    },
     "ACW": {
       "caption": "Set content",
       "fields": {
@@ -167,64 +206,15 @@
         }
       }
     },
-    "ABA": {
-      "caption": "H6"
-    },
-    "AHa": {
-      "caption": "Subscript",
-      "doc": "Toggles subscript formatting on the current selection."
-    },
-    "AFZ": {
-      "caption": "Unset color"
-    },
-    "ACD": {
-      "caption": "Insert image",
+    "AFX": {
+      "caption": "Set color",
       "fields": {
-        "ACE": {
-          "caption": "Image",
-          "doc": "Should be a valid URL. Accepts Base64.",
-          "editor": "DynamicValue",
-          "name": "insert_image",
-          "rank": 0,
-          "value": "image"
-        },
-        "ACF": {
-          "caption": "Alt text",
-          "editor": "DynamicValue",
-          "name": "alt_text",
-          "optional": true,
-          "rank": 2,
-          "value": "text"
-        },
-        "ACG": {
-          "caption": "Title",
-          "editor": "DynamicValue",
-          "name": "title",
-          "optional": true,
-          "rank": 1,
-          "value": "text"
-        }
-      }
-    },
-    "AAm": {
-      "caption": "Strikethrough"
-    },
-    "ACx": {
-      "caption": "Table delete column"
-    },
-    "AGC": {
-      "caption": "Set hard break"
-    },
-    "ACN": {
-      "caption": "Set link",
-      "fields": {
-        "ACO": {
-          "caption": "url",
-          "editor": "DynamicValue",
-          "name": "url",
-          "optional": true,
-          "rank": 0,
-          "value": "text"
+        "AFY": {
+          "caption": "Color",
+          "default_val": "rgba(6,121,150,1)",
+          "editor": "Color",
+          "name": "color",
+          "rank": 0
         }
       }
     },
@@ -274,35 +264,47 @@
         }
       }
     },
-    "ACl": {
-      "caption": "Insert table",
-      "fields": {
-        "ACm": {
-          "caption": "Rows",
-          "default_val": 3,
-          "editor": "DynamicValue",
-          "name": "rows",
-          "rank": 0,
-          "value": "number"
-        },
-        "ACn": {
-          "caption": "Columns",
-          "default_val": 3,
-          "editor": "DynamicValue",
-          "name": "columns",
-          "rank": 1,
-          "value": "number"
-        },
-        "ACo": {
-          "caption": "With header row?",
-          "default_val": true,
-          "editor": "DynamicValue",
-          "name": "with_header_row",
-          "optional": false,
-          "rank": 2,
-          "value": "boolean"
-        }
-      }
+    "AFZ": {
+      "caption": "Unset color"
+    },
+    "AAm": {
+      "caption": "Strikethrough"
+    },
+    "ACx": {
+      "caption": "Table delete column"
+    },
+    "AAh": {
+      "caption": "Bold",
+      "doc": "Applies bold to current selection. Ctrl + B / Opt + B"
+    },
+    "ABS": {
+      "caption": "Task list"
+    },
+    "ACq": {
+      "caption": "Table toggle header column"
+    },
+    "ACr": {
+      "caption": "Delete table"
+    },
+    "toggle_invisible_characters": {
+      "caption": "Toggle Invisible Characters",
+      "doc": "Toggles the visibility of invisible characters (paragraph marks, spaces, hard breaks)."
+    },
+    "AAy": {
+      "caption": "H4"
+    },
+    "ACt": {
+      "caption": "Table add column before"
+    },
+    "ABp": {
+      "caption": "Clear contents"
+    },
+    "AEf": {
+      "caption": "Clear Headings",
+      "doc": "Normalizes selection to a paragraph"
+    },
+    "ACp": {
+      "caption": "Table toggle header row"
     },
     "AHc": {
       "caption": "Set font size",
@@ -317,16 +319,6 @@
           "value": "text"
         }
       }
-    },
-    "AFi": {
-      "caption": "Select entire block"
-    },
-    "ABN": {
-      "caption": "Code block"
-    },
-    "AHb": {
-      "caption": "Superscript",
-      "doc": "Toggles superscript formatting on the current selection."
     },
     "ABr": {
       "caption": "Focus",
@@ -367,25 +359,55 @@
         }
       }
     },
+    "AAp": {
+      "caption": "H1"
+    },
+    "ACu": {
+      "caption": "Table add row after"
+    },
+    "ABN": {
+      "caption": "Code block"
+    },
+    "AFi": {
+      "caption": "Select entire block"
+    },
+    "AFU": {
+      "caption": "Unset font family"
+    },
+    "ADA": {
+      "caption": "Table merge or split"
+    },
+    "ACD": {
+      "caption": "Insert image",
+      "fields": {
+        "ACE": {
+          "caption": "Image",
+          "doc": "Should be a valid URL. Accepts Base64.",
+          "editor": "DynamicValue",
+          "name": "insert_image",
+          "rank": 0,
+          "value": "image"
+        },
+        "ACF": {
+          "caption": "Alt text",
+          "editor": "DynamicValue",
+          "name": "alt_text",
+          "optional": true,
+          "rank": 2,
+          "value": "text"
+        },
+        "ACG": {
+          "caption": "Title",
+          "editor": "DynamicValue",
+          "name": "title",
+          "optional": true,
+          "rank": 1,
+          "value": "text"
+        }
+      }
+    },
     "ABO": {
       "caption": "Horizontal rule"
-    },
-    "ABH": {
-      "caption": "Indent item",
-      "doc": "sink list item"
-    },
-    "AEf": {
-      "caption": "Clear Headings",
-      "doc": "Normalizes selection to a paragraph"
-    },
-    "ACv": {
-      "caption": "Table add row before"
-    },
-    "AAz": {
-      "caption": "H5"
-    },
-    "ABI": {
-      "caption": "Outdent item"
     },
     "ACi": {
       "caption": "Highlight",
@@ -400,31 +422,9 @@
         }
       }
     },
-    "ACw": {
-      "caption": "Table delete row"
-    },
-    "AAv": {
-      "caption": "H2",
+    "ABK": {
+      "caption": "Blockquote",
       "doc": ""
-    },
-    "ACq": {
-      "caption": "Table toggle header column"
-    },
-    "ACu": {
-      "caption": "Table add row after"
-    },
-    "ADA": {
-      "caption": "Table merge or split"
-    },
-    "ABE": {
-      "caption": "Numbered list",
-      "doc": "An ordered list"
-    },
-    "ACr": {
-      "caption": "Delete table"
-    },
-    "ABp": {
-      "caption": "Clear contents"
     }
   },
   "add_hover_pressed": true,
@@ -478,85 +478,6 @@
     }
   },
   "fields": {
-    "link_protocols": {
-      "caption": "Additional protocols",
-      "doc": "Comma-separated list of additional protocols to auto-detect as links (e.g. tel, spotify, custom-app). Both formats are recognized: tel:5551234 and tel://5551234. Standard protocols like http, https, ftp, and mailto are always recognized without needing to add them here.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "link_protocols",
-      "optional": true,
-      "rank": 114,
-      "value": "text"
-    },
-    "codeblock_tabIndentation": {
-      "caption": "Tab indentation",
-      "default_val": false,
-      "doc": "Allow the Tab key to indent inside code blocks instead of moving focus to the next element.",
-      "editor": "Checkbox",
-      "name": "codeblock_tabIndentation",
-      "rank": 80,
-      "value": "boolean"
-    },
-    "AFz": {
-      "caption": "Allowed MIME Types",
-      "doc": "Which types of files are the users allowed to paste or drop in the editor. Typical types are 'image/jpeg', 'image/png', 'image/gif'. Leaving this blank will allow any file to be uploaded.",
-      "editor": "DynamicValue",
-      "is_list": true,
-      "name": "allowedMimeTypes",
-      "optional": true,
-      "rank": 7,
-      "value": "text"
-    },
-    "details_adv": {
-      "caption": "Details CSS override",
-      "doc": "Inject custom CSS for <details> elements. Overrides the default border, padding, and margin. — Tip: use an \"arbitrary text\" value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "details_adv",
-      "optional": true,
-      "rank": 197,
-      "value": "text"
-    },
-    "ADe": {
-      "caption": "Header font color",
-      "default_val": "rgba(255,255,255,1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "table_header_font_color",
-      "rank": 129
-    },
-    "h2_info": {
-      "caption": "     ----- H2 styling -----",
-      "editor": "Label",
-      "name": "stylesheet_info_h2",
-      "rank": 40
-    },
-    "AEj": {
-      "caption": "Base div CSS override",
-      "default_val": "    flex-grow: 1;     word-wrap: break-word; \tword-break: break-word; \twhite-space: pre-wrap;",
-      "doc": "Inject custom CSS into the editor's root container. This is the last rule in the stylesheet, so it can override anything above it. Useful for layout tweaks (flex, overflow, whitespace, etc.). — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "baseDiv",
-      "optional": true,
-      "rank": 11,
-      "value": "text"
-    },
-    "ext_focus": {
-      "caption": "Focus",
-      "default_val": false,
-      "doc": "Adds a CSS class to the currently focused node in the editor. Use this to style the active block — e.g., add a background or left border to the paragraph/heading the cursor is in. The class name is `has-focus`. Style it via the Base div CSS override or your app's stylesheets. See the Focus Mode option below to control which node gets the class.",
-      "editor": "DynamicValue",
-      "name": "ext_focus",
-      "rank": 159,
-      "value": "boolean"
-    },
-    "ext_orderedlist_label": {
-      "caption": "----- Ordered List -----",
-      "editor": "Label",
-      "name": "ext_orderedlist_label",
-      "rank": 86
-    },
     "AGH": {
       "caption": "Element types",
       "default_val": "heading, paragraph",
@@ -566,6 +487,30 @@
       "optional": true,
       "rank": 188,
       "value": "text"
+    },
+    "dropcursor_width": {
+      "caption": "Dropcursor width",
+      "default_val": 2,
+      "doc": "Width in pixels of the dropcursor line.",
+      "editor": "StaticNumber",
+      "name": "dropcursor_width",
+      "optional": true,
+      "rank": 156
+    },
+    "h5_info": {
+      "caption": "----- H5 styling -----",
+      "editor": "Label",
+      "name": "h5_info",
+      "rank": 58
+    },
+    "AFF": {
+      "caption": "Update delay",
+      "default_val": 300,
+      "doc": "After the user stops typing, how long should it wait until it emits a \"Content updated\" event and -- if autobinding is on -- saves the document.",
+      "editor": "DynamicValue",
+      "name": "update_delay",
+      "rank": 4,
+      "value": "number"
     },
     "AEX": {
       "caption": "Placeholder color",
@@ -577,255 +522,6 @@
       "optional": true,
       "rank": 148
     },
-    "image_inline": {
-      "caption": "Inline images",
-      "default_val": false,
-      "doc": "When enabled, images flow inline with text instead of being block-level elements.",
-      "editor": "Checkbox",
-      "name": "image_inline",
-      "rank": 97,
-      "value": "boolean"
-    },
-    "table_allowNodeSelection": {
-      "caption": "Allow table node selection",
-      "default_val": false,
-      "doc": "Controls what happens when the table itself is selected (e.g. by clicking near its border). When disabled (default), the selection is converted to a cell selection covering all cells — which may cause the entire table to appear highlighted. When enabled, the table is selected as a single block, which is less disruptive.",
-      "editor": "Checkbox",
-      "name": "table_allowNodeSelection",
-      "rank": 134
-    },
-    "ext_codeblock": {
-      "caption": "Code Block",
-      "default_val": true,
-      "doc": "Enables fenced code blocks (multi-line code). Users can create them via toolbar or by typing ``` at the start of a line.",
-      "editor": "DynamicValue",
-      "name": "ext_codeblock",
-      "rank": 76,
-      "value": "boolean"
-    },
-    "invisiblecharacters_visible": {
-      "caption": "Start visible",
-      "default_val": true,
-      "doc": "Whether invisible characters are visible when the extension loads. Can be toggled at runtime with the \"Toggle Invisible Characters\" action.",
-      "editor": "DynamicValue",
-      "name": "invisiblecharacters_visible",
-      "rank": 166,
-      "value": "boolean"
-    },
-    "table_lastColumnResizable": {
-      "caption": "Last column resizable",
-      "default_val": true,
-      "doc": "Whether the rightmost column of the table can be resized. Disabling this can prevent unexpected table expansion when resizing the last column.",
-      "editor": "Checkbox",
-      "name": "table_lastColumnResizable",
-      "rank": 135
-    },
-    "mention_triggerChar": {
-      "caption": "Trigger character",
-      "default_val": "@",
-      "doc": "The character that triggers the mention suggestion popup. Default is @. Change to # for hashtag-style mentions, etc.",
-      "editor": "DynamicValue",
-      "name": "mention_triggerChar",
-      "optional": true,
-      "rank": 178,
-      "value": "text"
-    },
-    "AFy": {
-      "caption": "Attach files to",
-      "doc": "Bubble thing that it should attach files to",
-      "editor": "DynamicValue",
-      "name": "attachFilesTo",
-      "optional": true,
-      "rank": 6,
-      "value": "_any_thing"
-    },
-    "h2_color": {
-      "caption": "H2 Color",
-      "default_val": "rgba(17,17,17,10)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "h2_color",
-      "rank": 42
-    },
-    "placeholder_includeChildren": {
-      "caption": "Include children",
-      "default_val": false,
-      "doc": "When enabled, the placeholder also appears inside nested empty nodes (e.g., empty list items, table cells).",
-      "editor": "Checkbox",
-      "name": "placeholder_includeChildren",
-      "rank": 151,
-      "value": "boolean"
-    },
-    "codeblock_adv": {
-      "caption": "Code block CSS override",
-      "doc": "Inject custom CSS properties for code block (<pre>) elements. — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "codeblock_adv",
-      "optional": true,
-      "rank": 82,
-      "value": "text"
-    },
-    "AFK": {
-      "caption": "Highlight CSS override",
-      "doc": "Inject custom CSS for highlighted text (<mark>). Example: background-color: #fef08a; padding: 0.1em 0.2em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "mark_adv",
-      "optional": true,
-      "rank": 30,
-      "value": "text"
-    },
-    "ADy": {
-      "caption": "H5 CSS override",
-      "doc": "Inject custom CSS properties for H5 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "h5_adv",
-      "optional": true,
-      "rank": 63,
-      "value": "text"
-    },
-    "code_adv": {
-      "caption": "Inline code CSS override",
-      "doc": "Inject custom CSS properties for inline <code> elements. — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "code_adv",
-      "optional": true,
-      "rank": 19,
-      "value": "text"
-    },
-    "ext_bubblemenu": {
-      "caption": "Bubble Menu",
-      "default_val": true,
-      "doc": "Enables the bubble menu — a floating toolbar that appears when the user selects text. Provide the Bubble element ID below.",
-      "editor": "DynamicValue",
-      "name": "ext_bubblemenu",
-      "rank": 138,
-      "value": "boolean"
-    },
-    "ext_heading": {
-      "caption": "Heading",
-      "default_val": true,
-      "doc": "Enables heading levels (H1–H6). Configure which levels are available with the 'headings' field below. Users can set headings via toolbar or markdown shortcuts (# , ## , etc.).",
-      "editor": "DynamicValue",
-      "name": "ext_heading",
-      "rank": 32,
-      "value": "boolean"
-    },
-    "ext_bold": {
-      "caption": "Bold",
-      "default_val": true,
-      "doc": "Enables bold text formatting. Users can apply bold with Ctrl/⌘+B or by using the toolbar.",
-      "editor": "DynamicValue",
-      "name": "ext_bold",
-      "rank": 14,
-      "value": "boolean"
-    },
-    "ADf": {
-      "caption": "Zebra background",
-      "default_val": "rgba(238,238,238,1)",
-      "doc": "Background color for odd rows",
-      "editor": "Color",
-      "in_style": true,
-      "name": "table_zebra_background",
-      "rank": 131
-    },
-    "ext_preserve_label": {
-      "caption": "----- Preserve Attributes -----",
-      "editor": "Label",
-      "name": "ext_preserve_label",
-      "rank": 190
-    },
-    "AFO": {
-      "caption": "Unvisited link CSS override",
-      "doc": "Inject custom CSS for unvisited links (a:link). — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "link_unvisited_adv",
-      "optional": true,
-      "rank": 120,
-      "value": "text"
-    },
-    "ext_bulletlist_label": {
-      "caption": "----- Bullet List -----",
-      "editor": "Label",
-      "name": "ext_bulletlist_label",
-      "rank": 83
-    },
-    "invisiblecharacters_adv": {
-      "caption": "Invisible characters CSS override",
-      "doc": "Inject custom CSS for invisible character decorations (.tiptap-invisible-character). — Tip: use an \"arbitrary text\" value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "invisiblecharacters_adv",
-      "optional": true,
-      "rank": 167,
-      "value": "text"
-    },
-    "AGI": {
-      "caption": "Attribute name",
-      "default_val": "id",
-      "doc": "What name should the attribute have? Defaults to 'uid'. Each tagged element will have `data-uid=SOME_UNIQUE_ID` added to them.",
-      "editor": "DynamicValue",
-      "name": "extension_uniqueid_attrName",
-      "optional": true,
-      "rank": 189,
-      "value": "text"
-    },
-    "h4_color": {
-      "caption": "H4 Color",
-      "default_val": "rgba(17, 17, 17, 1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "h4_color",
-      "rank": 54
-    },
-    "AGB": {
-      "caption": "Keep marks after <br>",
-      "default_val": true,
-      "doc": "Decides if to keep a mark after a hardbreak. When checked, and you're typing in bold, when you hit Shift+Enter, the next line will continue with bold. If unchecked, it will revert to normal text.",
-      "editor": "Checkbox",
-      "name": "hardBreakKeepMarks",
-      "rank": 175,
-      "value": "boolean"
-    },
-    "ext_youtube_label": {
-      "caption": "----- YouTube -----",
-      "editor": "Label",
-      "name": "ext_youtube_label",
-      "rank": 98
-    },
-    "ext_focus_mode": {
-      "caption": "Focus mode",
-      "default_val": "deepest",
-      "doc": "Controls which node receives the `has-focus` class. `deepest` = only the innermost node at the cursor (e.g., the paragraph inside a blockquote). `shallowest` = only the outermost node. `all` = all ancestor nodes from the cursor to the root.",
-      "editor": "Dropdown",
-      "name": "ext_focus_mode",
-      "optional": true,
-      "options": "deepest,shallowest,all",
-      "rank": 160
-    },
-    "AED": {
-      "caption": "user_name",
-      "default_val": "John Doe",
-      "doc": "Name displayed to other users",
-      "editor": "DynamicValue",
-      "name": "collab_user_name",
-      "optional": true,
-      "rank": 209,
-      "value": "text"
-    },
-    "ext_history": {
-      "caption": "History (Undo/Redo)",
-      "default_val": true,
-      "doc": "Enables undo/redo (Ctrl/⌘+Z / Ctrl/⌘+Shift+Z). Automatically disabled when collaboration is active (collab has its own history).",
-      "editor": "DynamicValue",
-      "name": "ext_history",
-      "rank": 168,
-      "value": "boolean"
-    },
     "ext_fontfamily": {
       "caption": "Font Family",
       "default_val": false,
@@ -835,74 +531,14 @@
       "rank": 20,
       "value": "boolean"
     },
-    "AFq": {
-      "caption": "Allow Base 64?",
-      "default_val": true,
-      "doc": "Allow images to be parsed as base64 strings. When off Base64 images will remain in the code, but it won't be displayed.",
-      "editor": "Checkbox",
-      "name": "allowBase64",
-      "rank": 96
-    },
-    "ext_placeholder": {
-      "caption": "Placeholder",
-      "default_val": true,
-      "doc": "Enables placeholder text shown when the editor is empty. Configure the text and color below.",
-      "editor": "DynamicValue",
-      "name": "ext_placeholder",
-      "rank": 146,
-      "value": "boolean"
-    },
-    "ADu": {
-      "caption": "H1 CSS override",
-      "doc": "Inject custom CSS properties for H1 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+    "ADx": {
+      "caption": "H4 CSS override",
+      "doc": "Inject custom CSS properties for H4 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
       "editor": "DynamicValue",
       "long_text": false,
-      "name": "h1_adv",
+      "name": "h4_adv",
       "optional": true,
-      "rank": 39,
-      "value": "text"
-    },
-    "AEC": {
-      "caption": "Enable collaboration?",
-      "default_val": false,
-      "doc": "Enable real-time collaborative editing via a Y.js-based provider (Tiptap Cloud, Custom Hocuspocus, or Liveblocks). When collaboration is active, the shared Y.js document is the single source of truth. Note: auto-binding is automatically ignored while collaboration is active — the collaborative document takes priority to prevent conflicts.",
-      "editor": "Checkbox",
-      "name": "collab_active",
-      "rank": 202
-    },
-    "link_target": {
-      "caption": "Open link in",
-      "default_val": "_blank",
-      "doc": "Where links open by default. _blank = new tab, _self = same tab. Individual links can override this if set via the Set link action.",
-      "editor": "Dropdown",
-      "name": "link_target",
-      "options": "_blank,_self",
-      "rank": 112
-    },
-    "ext_heading_label": {
-      "caption": "----- Heading -----",
-      "editor": "Label",
-      "name": "ext_heading_label",
-      "rank": 31
-    },
-    "h5_font_weight": {
-      "caption": "H5 font-weight",
-      "default_val": "500",
-      "doc": "",
-      "editor": "Dropdown",
-      "in_style": true,
-      "name": "h5_font_weight",
-      "options": "900,800,700,600,500,400",
-      "rank": 61
-    },
-    "AAK": {
-      "caption": "Initial content",
-      "doc": "Content in Plain Text or HTML format. If JSON make sure the \"Content is JSON?\" is set to \"yes\".",
-      "editor": "DynamicValue",
-      "long_text": true,
-      "name": "initialContent",
-      "optional": true,
-      "rank": 0,
+      "rank": 57,
       "value": "text"
     },
     "collab_cursor_css": {
@@ -915,675 +551,15 @@
       "rank": 211,
       "value": "text"
     },
-    "ext_link_label": {
-      "caption": "----- Link -----",
-      "editor": "Label",
-      "name": "ext_link_label",
-      "rank": 106
-    },
-    "collab_status_docs": {
-      "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced",
-      "editor": "Label",
-      "name": "collab_status_docs",
-      "rank": 201
-    },
-    "h6_color": {
-      "caption": "H6 Color",
-      "default_val": "rgba(17, 17, 17, 1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "h6_color",
-      "rank": 66
-    },
-    "list_keepMarks": {
-      "caption": "Keep marks on new items",
-      "default_val": false,
-      "doc": "When enabled, text formatting (bold, italic, etc.) is preserved when pressing Enter to create a new list item. Applies to both bullet and ordered lists.",
-      "editor": "Checkbox",
-      "name": "list_keepMarks",
-      "rank": 89,
-      "value": "boolean"
-    },
-    "AGM": {
-      "caption": "Preserve HTML attributes",
-      "default_val": true,
-      "doc": "When enabled, the editor preserves class, style, id, and data-* attributes on HTML elements when parsing and rendering content. This is useful when your content comes from an external source and you want to keep its original styling and structure intact. Applies to block nodes (paragraphs, headings, blockquotes, tables, etc.) and inline marks (bold, italic, strike, code, links).",
-      "editor": "DynamicValue",
-      "name": "preserve_attributes",
-      "rank": 191,
-      "value": "boolean"
-    },
-    "AEB": {
-      "caption": "𝗖𝗢𝗟𝗟𝗔𝗕𝗢𝗥𝗔𝗧𝗜𝗢𝗡",
-      "editor": "Label",
-      "name": "collab_info",
-      "rank": 199
-    },
-    "ext_typography": {
-      "caption": "Typography",
-      "default_val": false,
-      "doc": "Automatically replaces common text patterns with proper typographic characters as you type. Examples: -- → —, ... → …, (c) → ©, != → ≠, << → «, 1/2 → ½, and smart quotes. A nice polish for content-heavy editors.",
-      "editor": "DynamicValue",
-      "name": "ext_typography",
-      "rank": 163,
-      "value": "boolean"
-    },
-    "codeblock_exitOnArrowDown": {
-      "caption": "Exit on arrow down",
-      "default_val": true,
-      "doc": "Pressing the down arrow at the last line of a code block exits it and moves the cursor below.",
-      "editor": "Checkbox",
-      "name": "codeblock_exitOnArrowDown",
-      "rank": 78,
-      "value": "boolean"
-    },
-    "ext_dropcursor": {
-      "caption": "Dropcursor",
-      "default_val": true,
-      "doc": "Shows a cursor indicator when dragging content over the editor, helping users see where the drop will land.",
-      "editor": "DynamicValue",
-      "name": "ext_dropcursor",
-      "rank": 154,
-      "value": "boolean"
-    },
-    "details_summary_adv": {
-      "caption": "Details summary CSS override",
-      "doc": "Inject custom CSS for <summary> elements inside details blocks. — Tip: use an \"arbitrary text\" value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "details_summary_adv",
-      "optional": true,
-      "rank": 198,
-      "value": "text"
-    },
-    "ext_bubblemenu_label": {
-      "caption": "----- Bubble Menu -----",
-      "editor": "Label",
-      "name": "ext_bubblemenu_label",
-      "rank": 137
-    },
-    "link_linkOnPaste": {
-      "caption": "Link on paste",
-      "default_val": true,
-      "doc": "Automatically converts pasted URLs into clickable links. Disable to keep pasted URLs as plain text.",
-      "editor": "Checkbox",
-      "name": "link_linkOnPaste",
-      "rank": 110,
-      "value": "boolean"
-    },
-    "sub_adv": {
-      "caption": "Subscript CSS override",
-      "doc": "Inject custom CSS properties for <sub> (subscript) elements. — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "sub_adv",
-      "optional": true,
-      "rank": 23,
-      "value": "text"
-    },
-    "ADg": {
-      "caption": "Link color",
-      "default_val": "rgba(79, 70, 229, 1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "link_color",
-      "rank": 115
-    },
-    "ext_horizontalrule": {
-      "caption": "Horizontal Rule",
-      "default_val": true,
-      "doc": "Enables horizontal rule (divider line). Users can insert one via toolbar or by typing --- on an empty line.",
-      "editor": "DynamicValue",
-      "name": "ext_horizontalrule",
-      "rank": 74,
-      "value": "boolean"
-    },
-    "ADc": {
-      "caption": "Header background",
-      "default_val": "rgba(0,0,0,1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "table_th_background",
-      "rank": 130
-    },
-    "h6_margin": {
-      "caption": "H6 margin",
-      "default_val": "1rem 0",
-      "doc": "e.g.: \"1rem 0\" means top & bottom 1rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h6_margin",
-      "rank": 68
-    },
-    "ADT": {
-      "caption": "H1 margin",
-      "default_val": "3rem 0",
-      "doc": "e.g.: \"3rem 0\" means top & bottom 3rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h1_margin",
-      "rank": 38
-    },
-    "h5_size": {
-      "caption": "H5 Size",
-      "default_val": "1rem",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h5_size",
-      "rank": 59
-    },
-    "AGU": {
-      "caption": "Nested drag",
-      "default_val": false,
-      "doc": "When enabled, the drag handle also appears for nested content — e.g. individual list items inside bullet/ordered lists, paragraphs inside blockquotes, etc. When disabled, only top-level blocks show a drag handle.",
-      "editor": "Checkbox",
-      "name": "draghandle_nested",
-      "rank": 171
-    },
-    "ext_image": {
-      "caption": "Image",
-      "default_val": true,
-      "doc": "Enables image support. Images can be inserted via the 'Insert image' action, drag-and-drop, or paste.",
-      "editor": "DynamicValue",
-      "name": "ext_image",
-      "rank": 94,
-      "value": "boolean"
-    },
-    "youtube_defaultWidth": {
-      "caption": "Default width",
-      "default_val": 640,
-      "doc": "Default width in pixels for embedded YouTube videos.",
-      "editor": "StaticNumber",
-      "name": "youtube_defaultWidth",
-      "optional": true,
-      "rank": 104
-    },
-    "ADq": {
-      "caption": "YouTube CSS override",
-      "default_val": "width: 100%; //overrides the default 640px",
-      "doc": "Inject custom CSS for YouTube embeds (<iframe>). Example: width: 100%; aspect-ratio: 16/9; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "iframe",
-      "optional": true,
-      "rank": 100,
-      "value": "text"
-    },
-    "h4_font_weight": {
-      "caption": "H4 font-weight",
-      "default_val": "600",
-      "doc": "",
+    "ADQ": {
+      "caption": "Floating Menu Theme",
+      "default_val": "translucent",
+      "doc": "The style of the tooltip box. See more here: https://atomiks.github.io/tippyjs/v5/themes/",
       "editor": "Dropdown",
       "in_style": true,
-      "name": "h4_font_weight",
-      "options": "900,800,700,600,500,400",
-      "rank": 55
-    },
-    "list_keepAttributes": {
-      "caption": "Keep attributes on new items",
-      "default_val": false,
-      "doc": "When enabled, attributes like text alignment are preserved when pressing Enter to create a new list item. Applies to both bullet and ordered lists.",
-      "editor": "Checkbox",
-      "name": "list_keepAttributes",
-      "rank": 90,
-      "value": "boolean"
-    },
-    "ext_hardbreak": {
-      "caption": "Hard Break",
-      "default_val": false,
-      "doc": "Enables Shift+Enter line breaks (hard breaks) within a paragraph. Off by default — when off, Shift+Enter does nothing.",
-      "editor": "DynamicValue",
-      "name": "ext_hardbreak",
-      "rank": 174,
-      "value": "boolean"
-    },
-    "ADa": {
-      "caption": "Row bottom border",
-      "default_val": "1px solid",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "table_th_td_border_bottom",
-      "rank": 126
-    },
-    "ADR": {
-      "caption": "H1 Size",
-      "default_val": "4rem",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h1_size",
-      "rank": 35
-    },
-    "AEW": {
-      "caption": "Max number of characters",
-      "editor": "StaticNumber",
-      "in_style": true,
-      "name": "characterLimit",
-      "optional": true,
-      "rank": 2
-    },
-    "AFN": {
-      "caption": "Link CSS override",
-      "doc": "Inject custom CSS for all links (<a>). Applied to every link state. — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "link_adv",
-      "optional": true,
-      "rank": 119,
-      "value": "text"
-    },
-    "ADl": {
-      "caption": "Link color visited",
-      "default_val": "rgba(75, 85, 99, 1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "link_color_visited",
-      "rank": 118
-    },
-    "AEx": {
-      "caption": "Type of content",
-      "doc": "Which type of db thing should be displayed in the Mentions dropdown.",
-      "editor": "custom_type",
-      "is_list": true,
-      "name": "mention_list_type",
-      "optional": "false",
-      "rank": 179,
-      "value": "_any_thing_bindable"
-    },
-    "h2_font_weight": {
-      "caption": "H2 font-weight",
-      "default_val": "800",
-      "doc": "",
-      "editor": "Dropdown",
-      "in_style": true,
-      "name": "h2_font_weight",
-      "options": "900,800,700,600,500,400",
-      "rank": 44
-    },
-    "ext_highlight": {
-      "caption": "Highlight",
-      "default_val": true,
-      "doc": "Enables text highlighting (background color on text). Users can mark text with a highlight color via the toolbar.",
-      "editor": "DynamicValue",
-      "name": "ext_highlight",
-      "rank": 28,
-      "value": "boolean"
-    },
-    "ACS": {
-      "caption": "Floating menu",
-      "doc": "ID of the group that holds the Floating Menu. This menu shows up on an empty line.",
-      "editor": "DynamicValue",
-      "name": "floatingMenu",
-      "optional": true,
-      "rank": 143,
-      "value": "text"
-    },
-    "ADV": {
-      "caption": "𝗦𝗧𝗬𝗟𝗘𝗦𝗛𝗘𝗘𝗧",
-      "editor": "Label",
-      "name": "info",
-      "rank": 8
-    },
-    "youtube_nocookie": {
-      "caption": "Privacy-enhanced mode",
-      "default_val": true,
-      "doc": "Uses youtube-nocookie.com domain for embeds, which does not set tracking cookies until the user plays the video.",
-      "editor": "Checkbox",
-      "name": "youtube_nocookie",
-      "rank": 101,
-      "value": "boolean"
-    },
-    "ext_color": {
-      "caption": "Text Color",
-      "default_val": false,
-      "doc": "Allows setting the text color on selections. Use the 'Set color' action to apply a color. Off by default.",
-      "editor": "DynamicValue",
-      "name": "ext_color",
-      "rank": 21,
-      "value": "boolean"
-    },
-    "h4_margin": {
-      "caption": "H4 margin",
-      "default_val": "1.5rem 0",
-      "doc": "e.g.: \"1.5rem 0\" means top & bottom 1.5rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h4_margin",
-      "rank": 56
-    },
-    "ext_italic": {
-      "caption": "Italic",
-      "default_val": true,
-      "doc": "Enables italic text formatting. Users can apply italic with Ctrl/⌘+I or by using the toolbar.",
-      "editor": "DynamicValue",
-      "name": "ext_italic",
-      "rank": 15,
-      "value": "boolean"
-    },
-    "h1_font_weight": {
-      "caption": "H1 font-weight",
-      "default_val": "900",
-      "doc": "",
-      "editor": "Dropdown",
-      "in_style": true,
-      "name": "h1_font_weight",
-      "options": "900,800,700,600,500,400",
-      "rank": 37
-    },
-    "table_cellMinWidth": {
-      "caption": "Cell min width",
-      "default_val": 25,
-      "doc": "Minimum width in pixels for table columns when resizing. Default: 25.",
-      "editor": "StaticNumber",
-      "name": "table_cellMinWidth",
-      "optional": true,
-      "rank": 132
-    },
-    "h1_info1": {
-      "caption": "     ----- H1 styling -----",
-      "editor": "Label",
-      "name": "stylesheet_info_h1",
-      "rank": 34
-    },
-    "h6_size": {
-      "caption": "H6 Size",
-      "default_val": "1rem",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h6_size",
-      "rank": 65
-    },
-    "ADk": {
-      "caption": "Link color hover",
-      "default_val": "rgba(147, 51, 234, 1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "link_color_hover",
-      "rank": 116
-    },
-    "ADv": {
-      "caption": "H2 CSS override",
-      "doc": "Inject custom CSS properties for H2 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "h2_adv",
-      "optional": true,
-      "rank": 45,
-      "value": "text"
-    },
-    "ext_placeholder_label": {
-      "caption": "----- Placeholder -----",
-      "editor": "Label",
-      "name": "ext_placeholder_label",
-      "rank": 145
-    },
-    "ADw": {
-      "caption": "H3 CSS override",
-      "doc": "Inject custom CSS properties for H3 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "h3_adv",
-      "optional": true,
-      "rank": 51,
-      "value": "text"
-    },
-    "ext_orderedlist": {
-      "caption": "Ordered List",
-      "default_val": true,
-      "doc": "Enables ordered (numbered) lists. Users can create them via toolbar or by typing 1. at the start of a line.",
-      "editor": "DynamicValue",
-      "name": "ext_orderedlist",
-      "rank": 87,
-      "value": "boolean"
-    },
-    "dropcursor_color": {
-      "caption": "Dropcursor color",
-      "default_val": "rgba(0,0,0,1)",
-      "doc": "Color of the cursor indicator shown when dragging content over the editor.",
-      "editor": "Color",
-      "name": "dropcursor_color",
-      "optional": true,
-      "rank": 155
-    },
-    "AFG": {
-      "caption": "preserveWhitespace",
-      "default_val": "'full'",
-      "doc": "By default, whitespace is collapsed as per HTML's rules. Pass true to preserve whitespace, but normalize newlines to spaces, and 'full' to preserve whitespace entirely.",
-      "editor": "Dropdown",
-      "name": "parseOptions_preserveWhitespace",
-      "options": "false,true,'full'",
-      "rank": 5
-    },
-    "ext_mention_label": {
-      "caption": "----- Mention -----",
-      "editor": "Label",
-      "name": "ext_mention_label",
-      "rank": 176
-    },
-    "collab_url": {
-      "caption": "Custom - URL",
-      "default_val": "default value",
-      "doc": "Paste the collab URL here to enable collaborative editing. Leave empty to disable.",
-      "editor": "StaticText",
-      "name": "collab_url",
-      "rank": 205
-    },
-    "AFP": {
-      "caption": "Visited link CSS override",
-      "doc": "Inject custom CSS for visited links (a:visited). — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "link_visited_adv",
-      "optional": true,
-      "rank": 121,
-      "value": "text"
-    },
-    "youtube_defaultHeight": {
-      "caption": "Default height",
-      "default_val": 480,
-      "doc": "Default height in pixels for embedded YouTube videos.",
-      "editor": "StaticNumber",
-      "name": "youtube_defaultHeight",
-      "optional": true,
-      "rank": 105
-    },
-    "AFB": {
-      "caption": "Border color",
-      "default_val": "rgba(0,0,0,1)",
-      "doc": "Color of the border around the mention on the text",
-      "editor": "Color",
-      "name": "mention_border_color",
-      "rank": 184
-    },
-    "ext_underline": {
-      "caption": "Underline",
-      "default_val": true,
-      "doc": "Enables underline text formatting. Users can apply it with Ctrl/⌘+U or by using the toolbar.",
-      "editor": "DynamicValue",
-      "name": "ext_underline",
-      "rank": 17,
-      "value": "boolean"
-    },
-    "ext_structure_label": {
-      "caption": "----- Structure -----",
-      "editor": "Label",
-      "name": "ext_structure_label",
-      "rank": 73
-    },
-    "ADm": {
-      "caption": "Hovered link CSS override",
-      "default_val": "/*   text-decoration: wavy underline red;  */  /*   background: greenyellow; */",
-      "doc": "Inject custom CSS for hovered links (a:hover). Example: text-decoration: wavy underline red; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "StaticText",
-      "in_style": true,
-      "long_text": false,
-      "name": "link_hover_adv",
-      "rank": 117
-    },
-    "AGP": {
-      "caption": "Debug mode",
-      "default_val": false,
-      "doc": "When enabled, logs detailed information to the browser console. Useful for troubleshooting. Look for messages prefixed with [Tiptap].",
-      "editor": "Checkbox",
-      "name": "debug_mode",
-      "rank": 212
-    },
-    "ext_bulletlist": {
-      "caption": "Bullet List",
-      "default_val": true,
-      "doc": "Enables unordered (bullet) lists. Users can create them via toolbar or by typing - or * at the start of a line.",
-      "editor": "DynamicValue",
-      "name": "ext_bulletlist",
-      "rank": 84,
-      "value": "boolean"
-    },
-    "link_defaultProtocol": {
-      "caption": "Default protocol",
-      "default_val": "https",
-      "doc": "Protocol to prepend when a link URL has no protocol (e.g. typing \"example.com\" becomes \"https://example.com\").",
-      "editor": "Dropdown",
-      "name": "link_defaultProtocol",
-      "options": "https,http",
-      "rank": 111
-    },
-    "AEE": {
-      "caption": "cursor_color",
-      "default_val": "rgba(179,208,252,1)",
-      "doc": "In which color this user's name will show to other users.",
-      "editor": "Color",
-      "name": "collab_cursor_color",
-      "optional": true,
-      "rank": 210,
-      "value": "text"
-    },
-    "codeblock_tabSize": {
-      "caption": "Tab size",
-      "default_val": 4,
-      "doc": "Number of spaces per Tab when Tab indentation is enabled.",
-      "editor": "StaticNumber",
-      "name": "codeblock_tabSize",
-      "optional": true,
-      "rank": 81
-    },
-    "youtube_addPasteHandler": {
-      "caption": "Auto-embed on paste",
-      "default_val": true,
-      "doc": "Automatically converts pasted YouTube URLs into embedded video players.",
-      "editor": "Checkbox",
-      "name": "youtube_addPasteHandler",
-      "rank": 103,
-      "value": "boolean"
-    },
-    "AEV": {
-      "caption": "Blockquote CSS override",
-      "default_val": "// background: green; padding: 0.5rem;",
-      "doc": "Inject custom CSS for <blockquote> elements. Overrides the default Tiptap (ProseMirror) styling. Example: background: #f9f9f9; padding: 1rem; border-left: 4px solid #ccc; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "blockquote_adv",
-      "optional": true,
-      "rank": 72,
-      "value": "text"
-    },
-    "ext_selection_css": {
-      "caption": "Selection CSS override",
-      "doc": "Inject custom CSS for the selection highlight shown when the editor loses focus. The default is a light blue background (background: #accef7). Example: background: #fde68a; border-radius: 2px; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "ext_selection_css",
-      "optional": true,
-      "rank": 162,
-      "value": "text"
-    },
-    "ADd": {
-      "caption": "Row border color",
-      "default_val": "rgba(0,0,0,1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "table_row_border_color",
-      "rank": 127
-    },
-    "ext_strike": {
-      "caption": "Strikethrough",
-      "default_val": true,
-      "doc": "Enables strikethrough text formatting. Users can apply it with Ctrl/⌘+Shift+S or by using the toolbar.",
-      "editor": "DynamicValue",
-      "name": "ext_strike",
-      "rank": 16,
-      "value": "boolean"
-    },
-    "ACL": {
-      "caption": "Bubble menu",
-      "doc": "ID of the group that holds the Bubble Menu. This menu shows up when the user selects some text.",
-      "editor": "DynamicValue",
-      "name": "bubbleMenu",
-      "optional": true,
-      "rank": 139,
-      "value": "text"
-    },
-    "placeholder_showOnlyCurrent": {
-      "caption": "Show only on current node",
-      "default_val": true,
-      "doc": "When enabled, placeholder only appears on the first empty paragraph. When disabled, all empty paragraphs show the placeholder.",
-      "editor": "Checkbox",
-      "name": "placeholder_showOnlyCurrent",
-      "rank": 150,
-      "value": "boolean"
-    },
-    "ext_listkeymap": {
-      "caption": "List Keymap",
-      "default_val": true,
-      "doc": "Improves keyboard behavior in lists. Pressing Backspace at the start of a list item properly lifts it out of the list instead of merging with the previous item. Recommended to keep enabled.",
-      "editor": "DynamicValue",
-      "name": "ext_listkeymap",
-      "rank": 164,
-      "value": "boolean"
-    },
-    "ext_selection": {
-      "caption": "Selection",
-      "default_val": false,
-      "doc": "Keeps the text selection visually highlighted when the editor loses focus. By default, browsers hide the selection highlight when focus moves to another element (e.g., clicking a toolbar button outside the editor). Enable this to maintain a visible selection. The highlight uses the CSS class `selection` — a default blue style is provided automatically.",
-      "editor": "DynamicValue",
-      "name": "ext_selection",
-      "rank": 161,
-      "value": "boolean"
-    },
-    "ext_image_label": {
-      "caption": "----- Image -----",
-      "editor": "Label",
-      "name": "ext_image_label",
-      "rank": 93
-    },
-    "ext_table_label": {
-      "caption": "----- Table -----",
-      "editor": "Label",
-      "name": "ext_table_label",
-      "rank": 123
-    },
-    "AGT": {
-      "caption": "Drag Handle",
-      "default_val": false,
-      "doc": "Enables the Drag Handle extension. When active, a small grip icon appears to the left of blocks (paragraphs, headings, lists, etc.) on hover. Users can click and drag it to reorder blocks in the editor.",
-      "editor": "Checkbox",
-      "name": "ext_draghandle",
-      "rank": 170
-    },
-    "h3_margin": {
-      "caption": "H3 margin",
-      "default_val": "2rem 0",
-      "doc": "e.g.: \"2rem 0\" means top & bottom 2rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h3_margin",
-      "rank": 50
-    },
-    "h2_margin": {
-      "caption": "H2 margin",
-      "default_val": "2.5rem 0",
-      "doc": "e.g.: \"2.5rem 0\" means top & bottom 2.5rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h2_margin",
-      "rank": 43
+      "name": "floatingMenuTheme",
+      "options": "translucent,light,light-border,material",
+      "rank": 144
     },
     "link_rel": {
       "caption": "Link rel attribute",
@@ -1595,44 +571,152 @@
       "rank": 113,
       "value": "text"
     },
-    "h5_color": {
-      "caption": "H5 Color",
+    "ADy": {
+      "caption": "H5 CSS override",
+      "doc": "Inject custom CSS properties for H5 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "h5_adv",
+      "optional": true,
+      "rank": 63,
+      "value": "text"
+    },
+    "ADP": {
+      "caption": "Bubble menu theme",
+      "default_val": "translucent",
+      "doc": "The style of the tooltip box. See more here: https://atomiks.github.io/tippyjs/v5/themes/",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "bubbleMenuTheme",
+      "options": "translucent,light,light-border,material",
+      "rank": 140
+    },
+    "h3_color": {
+      "caption": "H3 Color",
       "default_val": "rgba(17, 17, 17, 1)",
       "editor": "Color",
       "in_style": true,
-      "name": "h5_color",
-      "rank": 60
+      "name": "h3_color",
+      "rank": 48
     },
-    "table_handleWidth": {
-      "caption": "Resize handle width",
-      "default_val": 5,
-      "doc": "Width in pixels of the invisible resize handle zone on column borders. A larger value makes resizing easier to trigger; a smaller value reduces accidental resize activation. Default: 5.",
-      "editor": "StaticNumber",
-      "name": "table_handleWidth",
+    "ext_italic": {
+      "caption": "Italic",
+      "default_val": true,
+      "doc": "Enables italic text formatting. Users can apply italic with Ctrl/⌘+I or by using the toolbar.",
+      "editor": "DynamicValue",
+      "name": "ext_italic",
+      "rank": 15,
+      "value": "boolean"
+    },
+    "ADt": {
+      "caption": "Paragraph CSS override",
+      "doc": "Inject custom CSS properties for paragraph (<p>) elements. This CSS is placed after the default font-size, color, font-family, margin, and font-weight, so any property you set here will override those values. — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "p_adv",
       "optional": true,
-      "rank": 136
+      "rank": 10,
+      "value": "text"
     },
-    "AEy": {
-      "caption": "Label",
-      "editor": "custom_field_AEx",
-      "field_type_restriction": "text_image_file",
-      "name": "mention_field_label",
-      "optional": true,
-      "rank": 182
+    "ADl": {
+      "caption": "Link color visited",
+      "default_val": "rgba(75, 85, 99, 1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "link_color_visited",
+      "rank": 118
     },
-    "ext_formatting_label": {
-      "caption": "----- Text Formatting -----",
+    "ext_structure_label": {
+      "caption": "----- Structure -----",
       "editor": "Label",
-      "name": "ext_formatting_label",
-      "rank": 13
+      "name": "ext_structure_label",
+      "rank": 73
     },
-    "h3_size": {
-      "caption": "H3 Size",
-      "default_val": "2rem",
+    "ext_strike": {
+      "caption": "Strikethrough",
+      "default_val": true,
+      "doc": "Enables strikethrough text formatting. Users can apply it with Ctrl/⌘+Shift+S or by using the toolbar.",
+      "editor": "DynamicValue",
+      "name": "ext_strike",
+      "rank": 16,
+      "value": "boolean"
+    },
+    "details_persist": {
+      "caption": "Persist open state",
+      "default_val": false,
+      "doc": "Keep <details> blocks open/closed state. When enabled, the open/closed state of each block is preserved in the document and will be restored when the editor is re-created.",
+      "editor": "DynamicValue",
+      "name": "details_persist",
+      "rank": 196,
+      "value": "boolean"
+    },
+    "ADm": {
+      "caption": "Hovered link CSS override",
+      "default_val": "/*   text-decoration: wavy underline red;  */  /*   background: greenyellow; */",
+      "doc": "Inject custom CSS for hovered links (a:hover). Example: text-decoration: wavy underline red; — Tip: use an 'arbitrary text' value for more room to write CSS.",
       "editor": "StaticText",
       "in_style": true,
-      "name": "h3_size",
-      "rank": 47
+      "long_text": false,
+      "name": "link_hover_adv",
+      "rank": 117
+    },
+    "code_adv": {
+      "caption": "Inline code CSS override",
+      "doc": "Inject custom CSS properties for inline <code> elements. — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "code_adv",
+      "optional": true,
+      "rank": 19,
+      "value": "text"
+    },
+    "AFz": {
+      "caption": "Allowed MIME Types",
+      "doc": "Which types of files are the users allowed to paste or drop in the editor. Typical types are 'image/jpeg', 'image/png', 'image/gif'. Leaving this blank will allow any file to be uploaded.",
+      "editor": "DynamicValue",
+      "is_list": true,
+      "name": "allowedMimeTypes",
+      "optional": true,
+      "rank": 7,
+      "value": "text"
+    },
+    "ext_hardbreak": {
+      "caption": "Hard Break",
+      "default_val": false,
+      "doc": "Enables Shift+Enter line breaks (hard breaks) within a paragraph. Off by default — when off, Shift+Enter does nothing.",
+      "editor": "DynamicValue",
+      "name": "ext_hardbreak",
+      "rank": 174,
+      "value": "boolean"
+    },
+    "list_keepAttributes": {
+      "caption": "Keep attributes on new items",
+      "default_val": false,
+      "doc": "When enabled, attributes like text alignment are preserved when pressing Enter to create a new list item. Applies to both bullet and ordered lists.",
+      "editor": "Checkbox",
+      "name": "list_keepAttributes",
+      "rank": 90,
+      "value": "boolean"
+    },
+    "ADw": {
+      "caption": "H3 CSS override",
+      "doc": "Inject custom CSS properties for H3 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "h3_adv",
+      "optional": true,
+      "rank": 51,
+      "value": "text"
+    },
+    "ADu": {
+      "caption": "H1 CSS override",
+      "doc": "Inject custom CSS properties for H1 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "h1_adv",
+      "optional": true,
+      "rank": 39,
+      "value": "text"
     },
     "AEw": {
       "caption": "Data source",
@@ -1645,23 +729,114 @@
       "rank": 180,
       "value": "_any_thing"
     },
-    "h6_font_weight": {
-      "caption": "H6 font-weight",
-      "default_val": "500",
+    "codeblock_exitOnTripleEnter": {
+      "caption": "Exit on triple Enter",
+      "default_val": true,
+      "doc": "Pressing Enter three times at the end of a code block exits it and creates a new paragraph below.",
+      "editor": "Checkbox",
+      "name": "codeblock_exitOnTripleEnter",
+      "rank": 77,
+      "value": "boolean"
+    },
+    "h3_font_weight": {
+      "caption": "H3 font-weight",
+      "default_val": "700",
       "doc": "",
       "editor": "Dropdown",
       "in_style": true,
-      "name": "h6_font_weight",
+      "name": "h3_font_weight",
       "options": "900,800,700,600,500,400",
-      "rank": 67
+      "rank": 49
     },
-    "ACZ": {
-      "caption": "Content is JSON?",
-      "default_val": false,
-      "doc": "In case your initial content is in JSON format. It needs to be a valid Tiptap JSON format. More info: https://tiptap.dev/guide/output#option-2-generate-html-from-prosemirror-json",
+    "AEm": {
+      "caption": "Liveblocks key",
+      "doc": "Liveblocks public API key. If you're using Liveblocks, you need to provide this key.",
+      "editor": "StaticText",
+      "name": "liveblocksPublicApiKey",
+      "optional": true,
+      "rank": 208
+    },
+    "AEN": {
+      "caption": "JWT key",
+      "doc": "For both Tiptap Cloud or Custom collab, you need to provide an auth token. Best idea is to create a workflow when the page loads, run 𝗴𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗮𝘂𝘁𝗵 𝘁𝗼𝗸𝗲𝗻 action, and store the token in a state on the page.",
       "editor": "DynamicValue",
-      "name": "content_is_json",
-      "rank": 1,
+      "name": "collab_jwt",
+      "optional": true,
+      "rank": 207,
+      "value": "text"
+    },
+    "AFK": {
+      "caption": "Highlight CSS override",
+      "doc": "Inject custom CSS for highlighted text (<mark>). Example: background-color: #fef08a; padding: 0.1em 0.2em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "mark_adv",
+      "optional": true,
+      "rank": 30,
+      "value": "text"
+    },
+    "h4_color": {
+      "caption": "H4 Color",
+      "default_val": "rgba(17, 17, 17, 1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "h4_color",
+      "rank": 54
+    },
+    "highlight_multicolor": {
+      "caption": "Multicolor",
+      "default_val": true,
+      "doc": "When enabled, allows multiple different highlight colors in the same document. When disabled, only one highlight color can be used at a time.",
+      "editor": "Checkbox",
+      "name": "highlight_multicolor",
+      "rank": 29,
+      "value": "boolean"
+    },
+    "ADR": {
+      "caption": "H1 Size",
+      "default_val": "4rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h1_size",
+      "rank": 35
+    },
+    "AEE": {
+      "caption": "cursor_color",
+      "default_val": "rgba(179,208,252,1)",
+      "doc": "In which color this user's name will show to other users.",
+      "editor": "Color",
+      "name": "collab_cursor_color",
+      "optional": true,
+      "rank": 210,
+      "value": "text"
+    },
+    "h3_margin": {
+      "caption": "H3 margin",
+      "default_val": "2rem 0",
+      "doc": "e.g.: \"2rem 0\" means top & bottom 2rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h3_margin",
+      "rank": 50
+    },
+    "ADr": {
+      "caption": "Image CSS override",
+      "default_val": "width: 100%;",
+      "doc": "Inject custom CSS for images (<img>). Example: width: 100%; border-radius: 8px; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "StaticText",
+      "in_style": true,
+      "long_text": false,
+      "name": "image_css",
+      "optional": true,
+      "rank": 95
+    },
+    "ext_textalign": {
+      "caption": "Text Align",
+      "default_val": true,
+      "doc": "Enables text alignment (left, center, right, justify). Use the 'Align text' action to change alignment.",
+      "editor": "DynamicValue",
+      "name": "ext_textalign",
+      "rank": 153,
       "value": "boolean"
     },
     "tasklist_checkbox_adv": {
@@ -1674,87 +849,6 @@
       "rank": 92,
       "value": "text"
     },
-    "AEI": {
-      "caption": "Document name",
-      "doc": "Name or id of the document. This should be a unique name like a slug or unique id.",
-      "editor": "DynamicValue",
-      "name": "collab_doc_id",
-      "optional": true,
-      "rank": 203,
-      "value": "text"
-    },
-    "ext_mention": {
-      "caption": "Mention",
-      "default_val": false,
-      "doc": "Enables @mentions. When a user types @ followed by a query, a suggestion list appears. Configure the data source and fields below.",
-      "editor": "DynamicValue",
-      "name": "ext_mention",
-      "rank": 177,
-      "value": "boolean"
-    },
-    "AEH": {
-      "caption": "Doc Server ID",
-      "default_val": "",
-      "doc": "Required for both Tiptap Cloud or Custom. Get the app id from 𝗵𝘁𝘁𝗽𝘀://𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 or 𝗵𝘁𝘁𝗽𝘀://𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃",
-      "editor": "StaticText",
-      "name": "collab_app_id",
-      "optional": true,
-      "rank": 206
-    },
-    "ext_floatingmenu_label": {
-      "caption": "----- Floating Menu -----",
-      "editor": "Label",
-      "name": "ext_floatingmenu_label",
-      "rank": 141
-    },
-    "AGS": {
-      "caption": "----- Drag Handle -----",
-      "doc": "Shows a drag handle next to blocks, allowing users to reorder content by dragging.",
-      "editor": "Label",
-      "name": "ext_draghandle_label",
-      "rank": 169
-    },
-    "ext_fontsize": {
-      "caption": "Font Size",
-      "default_val": false,
-      "doc": "Allows setting the font size on text selections. Use the \"Set font size\" action to apply a size (e.g. \"16px\", \"1.2rem\"). Off by default.",
-      "editor": "DynamicValue",
-      "name": "ext_fontsize",
-      "rank": 26,
-      "value": "boolean"
-    },
-    "h3_color": {
-      "caption": "H3 Color",
-      "default_val": "rgba(17, 17, 17, 1)",
-      "editor": "Color",
-      "in_style": true,
-      "name": "h3_color",
-      "rank": 48
-    },
-    "AFQ": {
-      "caption": "Focused link CSS override",
-      "doc": "Inject custom CSS for focused links (a:focus). — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "link_focus_adv",
-      "optional": true,
-      "rank": 122,
-      "value": "text"
-    },
-    "AEz": {
-      "caption": "ID",
-      "editor": "custom_field_AEx",
-      "field_type_restriction": "text_image_file",
-      "name": "mention_field_id",
-      "optional": true,
-      "rank": 183
-    },
-    "AEG": {
-      "caption": "to use the collaboration function you first need an account with one of the providers: 𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
-      "editor": "Label",
-      "name": "collab_info_sub",
-      "rank": 200
-    },
     "ext_table": {
       "caption": "Table",
       "default_val": true,
@@ -1762,132 +856,6 @@
       "editor": "DynamicValue",
       "name": "ext_table",
       "rank": 124,
-      "value": "boolean"
-    },
-    "ABs": {
-      "caption": "This input is enabled",
-      "default_val": true,
-      "editor": "Checkbox",
-      "in_style": true,
-      "name": "isEditable",
-      "optional": false,
-      "rank": 3,
-      "value": "boolean"
-    },
-    "AGN": {
-      "caption": "Preserved attributes (read-only)",
-      "default_val": "class,style,id,data-*",
-      "doc": "Shows which HTML attributes are preserved when the setting above is enabled. Currently hardcoded to: class, style, id, and data-* attributes. This field is informational — the preserved attributes are defined in the extension code.",
-      "editor": "DynamicValue",
-      "name": "preserved_attributes",
-      "rank": 192,
-      "value": "text"
-    },
-    "ADt": {
-      "caption": "Paragraph CSS override",
-      "doc": "Inject custom CSS properties for paragraph (<p>) elements. This CSS is placed after the default font-size, color, font-family, margin, and font-weight, so any property you set here will override those values. — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "p_adv",
-      "optional": true,
-      "rank": 10,
-      "value": "text"
-    },
-    "ADZ": {
-      "caption": "Cell padding",
-      "default_val": "0 1rem",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "table_th_td_padding",
-      "rank": 125
-    },
-    "ADx": {
-      "caption": "H4 CSS override",
-      "doc": "Inject custom CSS properties for H4 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "long_text": false,
-      "name": "h4_adv",
-      "optional": true,
-      "rank": 57,
-      "value": "text"
-    },
-    "details_persist": {
-      "caption": "Persist open state",
-      "default_val": false,
-      "doc": "Keep <details> blocks open/closed state. When enabled, the open/closed state of each block is preserved in the document and will be restored when the editor is re-created.",
-      "editor": "DynamicValue",
-      "name": "details_persist",
-      "rank": 196,
-      "value": "boolean"
-    },
-    "ext_floatingmenu": {
-      "caption": "Floating Menu",
-      "default_val": true,
-      "doc": "Enables the floating menu — a toolbar that appears on empty lines. Provide the Bubble element ID below.",
-      "editor": "DynamicValue",
-      "name": "ext_floatingmenu",
-      "rank": 142,
-      "value": "boolean"
-    },
-    "h4_info": {
-      "caption": "     ----- H4 styling -----",
-      "editor": "Label",
-      "name": "h4_info",
-      "rank": 52
-    },
-    "placeholder_showOnlyWhenEditable": {
-      "caption": "Show only when editable",
-      "default_val": true,
-      "doc": "When enabled, the placeholder text is only shown when the editor is editable. Disable to show the placeholder even in read-only mode.",
-      "editor": "Checkbox",
-      "name": "placeholder_showOnlyWhenEditable",
-      "rank": 149,
-      "value": "boolean"
-    },
-    "ADQ": {
-      "caption": "Floating Menu Theme",
-      "default_val": "translucent",
-      "doc": "The style of the tooltip box. See more here: https://atomiks.github.io/tippyjs/v5/themes/",
-      "editor": "Dropdown",
-      "in_style": true,
-      "name": "floatingMenuTheme",
-      "options": "translucent,light,light-border,material",
-      "rank": 144
-    },
-    "ADp": {
-      "caption": "headings",
-      "default_val": "1,2,3,4,5,6",
-      "doc": "Enable headings. 𝟏,𝟐 will allow only heading 1 and heading 2, etc. Comma separated list of numbers from 1 to 6.",
-      "editor": "StaticText",
-      "in_style": true,
-      "long_text": false,
-      "name": "headings",
-      "rank": 33
-    },
-    "h2_size": {
-      "caption": "H2 Size",
-      "default_val": "3rem",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h2_size",
-      "rank": 41
-    },
-    "ext_textalign": {
-      "caption": "Text Align",
-      "default_val": true,
-      "doc": "Enables text alignment (left, center, right, justify). Use the 'Align text' action to change alignment.",
-      "editor": "DynamicValue",
-      "name": "ext_textalign",
-      "rank": 153,
-      "value": "boolean"
-    },
-    "ext_link": {
-      "caption": "Link",
-      "default_val": true,
-      "doc": "Enables hyperlinks. Users can add links via the 'Set link' action. Configure link colors and styles below.",
-      "editor": "DynamicValue",
-      "name": "ext_link",
-      "rank": 107,
       "value": "boolean"
     },
     "link_autolink": {
@@ -1899,28 +867,210 @@
       "rank": 109,
       "value": "boolean"
     },
-    "ext_uniqueid": {
-      "caption": "Unique ID",
-      "default_val": false,
-      "doc": "Adds unique IDs to specified node types (e.g. paragraphs, headings). Useful for deep-linking to specific parts of the document.",
+    "ext_blockquote": {
+      "caption": "Blockquote",
+      "default_val": true,
+      "doc": "Enables blockquote blocks. Users can create blockquotes via toolbar or by typing > at the start of a line.",
       "editor": "DynamicValue",
-      "name": "ext_uniqueid",
-      "rank": 187,
+      "name": "ext_blockquote",
+      "rank": 71,
       "value": "boolean"
     },
-    "AFC": {
-      "caption": "Background color",
-      "default_val": "rgba(255,255,255,0)",
-      "doc": "Color of the background of the mention.",
-      "editor": "Color",
-      "name": "mention_background_color",
-      "rank": 185
+    "AAK": {
+      "caption": "Initial content",
+      "doc": "Content in Plain Text or HTML format. If JSON make sure the \"Content is JSON?\" is set to \"yes\".",
+      "editor": "DynamicValue",
+      "long_text": true,
+      "name": "initialContent",
+      "optional": true,
+      "rank": 0,
+      "value": "text"
     },
-    "h5_info": {
-      "caption": "----- H5 styling -----",
+    "dropcursor_color": {
+      "caption": "Dropcursor color",
+      "default_val": "rgba(0,0,0,1)",
+      "doc": "Color of the cursor indicator shown when dragging content over the editor.",
+      "editor": "Color",
+      "name": "dropcursor_color",
+      "optional": true,
+      "rank": 155
+    },
+    "ext_superscript": {
+      "caption": "Superscript",
+      "default_val": false,
+      "doc": "Enables superscript text formatting (<sup>). Useful for exponents (x²), ordinal indicators (1st), and footnote references. Users can toggle it via the Superscript action.",
+      "editor": "DynamicValue",
+      "name": "ext_superscript",
+      "rank": 24,
+      "value": "boolean"
+    },
+    "AGS": {
+      "caption": "----- Drag Handle -----",
+      "doc": "Shows a drag handle next to blocks, allowing users to reorder content by dragging.",
       "editor": "Label",
-      "name": "h5_info",
-      "rank": 58
+      "name": "ext_draghandle_label",
+      "rank": 169
+    },
+    "ext_details_label": {
+      "caption": "----- Details / Accordion -----",
+      "editor": "Label",
+      "name": "ext_details_label",
+      "rank": 194
+    },
+    "mention_triggerChar": {
+      "caption": "Trigger character",
+      "default_val": "@",
+      "doc": "The character that triggers the mention suggestion popup. Default is @. Change to # for hashtag-style mentions, etc.",
+      "editor": "DynamicValue",
+      "name": "mention_triggerChar",
+      "optional": true,
+      "rank": 178,
+      "value": "text"
+    },
+    "ext_subscript": {
+      "caption": "Subscript",
+      "default_val": false,
+      "doc": "Enables subscript text formatting (<sub>). Useful for chemical formulas (H₂O), mathematical notation, and footnotes. Users can toggle it via the Subscript action.",
+      "editor": "DynamicValue",
+      "name": "ext_subscript",
+      "rank": 22,
+      "value": "boolean"
+    },
+    "AFG": {
+      "caption": "preserveWhitespace",
+      "default_val": "'full'",
+      "doc": "By default, whitespace is collapsed as per HTML's rules. Pass true to preserve whitespace, but normalize newlines to spaces, and 'full' to preserve whitespace entirely.",
+      "editor": "Dropdown",
+      "name": "parseOptions_preserveWhitespace",
+      "options": "false,true,'full'",
+      "rank": 5
+    },
+    "h3_size": {
+      "caption": "H3 Size",
+      "default_val": "2rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h3_size",
+      "rank": 47
+    },
+    "AGM": {
+      "caption": "Preserve HTML attributes",
+      "default_val": true,
+      "doc": "When enabled, the editor preserves class, style, id, and data-* attributes on HTML elements when parsing and rendering content. This is useful when your content comes from an external source and you want to keep its original styling and structure intact. Applies to block nodes (paragraphs, headings, blockquotes, tables, etc.) and inline marks (bold, italic, strike, code, links).",
+      "editor": "DynamicValue",
+      "name": "preserve_attributes",
+      "rank": 191,
+      "value": "boolean"
+    },
+    "ext_table_label": {
+      "caption": "----- Table -----",
+      "editor": "Label",
+      "name": "ext_table_label",
+      "rank": 123
+    },
+    "ext_placeholder_label": {
+      "caption": "----- Placeholder -----",
+      "editor": "Label",
+      "name": "ext_placeholder_label",
+      "rank": 145
+    },
+    "hr_adv": {
+      "caption": "Horizontal rule CSS override",
+      "doc": "Inject custom CSS properties for <hr> (horizontal rule) elements. Example: border: none; border-top: 2px dashed #ccc; margin: 2rem 0; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "hr_adv",
+      "optional": true,
+      "rank": 75,
+      "value": "text"
+    },
+    "h2_color": {
+      "caption": "H2 Color",
+      "default_val": "rgba(17,17,17,10)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "h2_color",
+      "rank": 42
+    },
+    "AEG": {
+      "caption": "to use the collaboration function you first need an account with one of the providers: 𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
+      "editor": "Label",
+      "name": "collab_info_sub",
+      "rank": 200
+    },
+    "AEy": {
+      "caption": "Label",
+      "editor": "custom_field_AEx",
+      "field_type_restriction": "text_image_file",
+      "name": "mention_field_label",
+      "optional": true,
+      "rank": 182
+    },
+    "ext_mention": {
+      "caption": "Mention",
+      "default_val": false,
+      "doc": "Enables @mentions. When a user types @ followed by a query, a suggestion list appears. Configure the data source and fields below.",
+      "editor": "DynamicValue",
+      "name": "ext_mention",
+      "rank": 177,
+      "value": "boolean"
+    },
+    "AFy": {
+      "caption": "Attach files to",
+      "doc": "Bubble thing that it should attach files to",
+      "editor": "DynamicValue",
+      "name": "attachFilesTo",
+      "optional": true,
+      "rank": 6,
+      "value": "_any_thing"
+    },
+    "ext_floatingmenu_label": {
+      "caption": "----- Floating Menu -----",
+      "editor": "Label",
+      "name": "ext_floatingmenu_label",
+      "rank": 141
+    },
+    "AEV": {
+      "caption": "Blockquote CSS override",
+      "default_val": "// background: green; padding: 0.5rem;",
+      "doc": "Inject custom CSS for <blockquote> elements. Overrides the default Tiptap (ProseMirror) styling. Example: background: #f9f9f9; padding: 1rem; border-left: 4px solid #ccc; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "blockquote_adv",
+      "optional": true,
+      "rank": 72,
+      "value": "text"
+    },
+    "ext_underline": {
+      "caption": "Underline",
+      "default_val": true,
+      "doc": "Enables underline text formatting. Users can apply it with Ctrl/⌘+U or by using the toolbar.",
+      "editor": "DynamicValue",
+      "name": "ext_underline",
+      "rank": 17,
+      "value": "boolean"
+    },
+    "ADV": {
+      "caption": "𝗦𝗧𝗬𝗟𝗘𝗦𝗛𝗘𝗘𝗧",
+      "editor": "Label",
+      "name": "info",
+      "rank": 8
+    },
+    "h2_size": {
+      "caption": "H2 Size",
+      "default_val": "3rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h2_size",
+      "rank": 41
+    },
+    "AFB": {
+      "caption": "Border color",
+      "default_val": "rgba(0,0,0,1)",
+      "doc": "Color of the border around the mention on the text",
+      "editor": "Color",
+      "name": "mention_border_color",
+      "rank": 184
     },
     "ext_trailingnode": {
       "caption": "Trailing Node",
@@ -1931,38 +1081,67 @@
       "rank": 158,
       "value": "boolean"
     },
-    "ADz": {
-      "caption": "H6 CSS override",
-      "doc": "Inject custom CSS properties for H6 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+    "h2_font_weight": {
+      "caption": "H2 font-weight",
+      "default_val": "800",
+      "doc": "",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "h2_font_weight",
+      "options": "900,800,700,600,500,400",
+      "rank": 44
+    },
+    "ext_hardbreak_label": {
+      "caption": "----- Hard Break -----",
+      "editor": "Label",
+      "name": "ext_hardbreak_label",
+      "rank": 173
+    },
+    "table_allowNodeSelection": {
+      "caption": "Allow table node selection",
+      "default_val": false,
+      "doc": "Controls what happens when the table itself is selected (e.g. by clicking near its border). When disabled (default), the selection is converted to a cell selection covering all cells — which may cause the entire table to appear highlighted. When enabled, the table is selected as a single block, which is less disruptive.",
+      "editor": "Checkbox",
+      "name": "table_allowNodeSelection",
+      "rank": 134
+    },
+    "ext_link": {
+      "caption": "Link",
+      "default_val": true,
+      "doc": "Enables hyperlinks. Users can add links via the 'Set link' action. Configure link colors and styles below.",
+      "editor": "DynamicValue",
+      "name": "ext_link",
+      "rank": 107,
+      "value": "boolean"
+    },
+    "ext_focus_mode": {
+      "caption": "Focus mode",
+      "default_val": "deepest",
+      "doc": "Controls which node receives the `has-focus` class. `deepest` = only the innermost node at the cursor (e.g., the paragraph inside a blockquote). `shallowest` = only the outermost node. `all` = all ancestor nodes from the cursor to the root.",
+      "editor": "Dropdown",
+      "name": "ext_focus_mode",
+      "optional": true,
+      "options": "deepest,shallowest,all",
+      "rank": 160
+    },
+    "AGP": {
+      "caption": "Debug mode",
+      "default_val": false,
+      "doc": "When enabled, logs detailed information to the browser console. Useful for troubleshooting. Look for messages prefixed with [Tiptap].",
+      "editor": "Checkbox",
+      "name": "debug_mode",
+      "rank": 212
+    },
+    "ADq": {
+      "caption": "YouTube CSS override",
+      "default_val": "width: 100%; //overrides the default 640px",
+      "doc": "Inject custom CSS for YouTube embeds (<iframe>). Example: width: 100%; aspect-ratio: 16/9; — Tip: use an 'arbitrary text' value for more room to write CSS.",
       "editor": "DynamicValue",
       "long_text": false,
-      "name": "h6_adv",
+      "name": "iframe",
       "optional": true,
-      "rank": 69,
+      "rank": 100,
       "value": "text"
-    },
-    "AEm": {
-      "caption": "Liveblocks key",
-      "doc": "Liveblocks public API key. If you're using Liveblocks, you need to provide this key.",
-      "editor": "StaticText",
-      "name": "liveblocksPublicApiKey",
-      "optional": true,
-      "rank": 208
-    },
-    "ext_section_label": {
-      "caption": "𝗘𝗫𝗧𝗘𝗡𝗦𝗜𝗢𝗡𝗦",
-      "editor": "Label",
-      "name": "ext_section_label",
-      "rank": 12
-    },
-    "ext_superscript": {
-      "caption": "Superscript",
-      "default_val": false,
-      "doc": "Enables superscript text formatting (<sup>). Useful for exponents (x²), ordinal indicators (1st), and footnote references. Users can toggle it via the Superscript action.",
-      "editor": "DynamicValue",
-      "name": "ext_superscript",
-      "rank": 24,
-      "value": "boolean"
     },
     "AEi": {
       "caption": "Ordered list CSS override",
@@ -1975,38 +1154,117 @@
       "rank": 88,
       "value": "text"
     },
-    "h6_info": {
-      "caption": "     ----- H6 styling -----",
-      "editor": "Label",
-      "name": "h6_info",
-      "rank": 64
-    },
-    "codeblock_defaultLanguage": {
-      "caption": "Default language",
-      "doc": "Default programming language for new code blocks (e.g. \"javascript\", \"python\"). Leave empty for no default.",
+    "ACS": {
+      "caption": "Floating menu",
+      "doc": "ID of the group that holds the Floating Menu. This menu shows up on an empty line.",
       "editor": "DynamicValue",
-      "name": "codeblock_defaultLanguage",
+      "name": "floatingMenu",
       "optional": true,
-      "rank": 79,
+      "rank": 143,
       "value": "text"
     },
-    "ADb": {
-      "caption": "Header font weight",
-      "default_val": "800",
-      "doc": "",
-      "editor": "Dropdown",
+    "ADg": {
+      "caption": "Link color",
+      "default_val": "rgba(79, 70, 229, 1)",
+      "editor": "Color",
       "in_style": true,
-      "name": "table_th_font_weight",
-      "options": "900,800,700,600,500,400",
-      "rank": 128
+      "name": "link_color",
+      "rank": 115
     },
-    "ext_code": {
-      "caption": "Code (inline)",
+    "h6_size": {
+      "caption": "H6 Size",
+      "default_val": "1rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h6_size",
+      "rank": 65
+    },
+    "AGO": {
+      "caption": "Preserve unknown HTML tags",
       "default_val": true,
-      "doc": "Enables inline code formatting — wraps selected text in a <code> tag. Users can apply it with Ctrl/⌘+E.",
+      "doc": "When enabled (and \"Preserve HTML attributes\" is also on), the editor will recognize <div> elements in your HTML content instead of stripping them. Useful when your content contains custom layouts or structures wrapped in divs. Without this, any <div> tags in the input HTML would be ignored.",
       "editor": "DynamicValue",
-      "name": "ext_code",
-      "rank": 18,
+      "name": "preserve_unknown_tags",
+      "rank": 193,
+      "value": "boolean"
+    },
+    "h5_color": {
+      "caption": "H5 Color",
+      "default_val": "rgba(17, 17, 17, 1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "h5_color",
+      "rank": 60
+    },
+    "ADS": {
+      "caption": "H1 Color",
+      "default_val": "rgba(17, 17, 17, 1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "h1_color",
+      "rank": 36
+    },
+    "ADd": {
+      "caption": "Row border color",
+      "default_val": "rgba(0,0,0,1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "table_row_border_color",
+      "rank": 127
+    },
+    "details_adv": {
+      "caption": "Details CSS override",
+      "doc": "Inject custom CSS for <details> elements. Overrides the default border, padding, and margin. — Tip: use an \"arbitrary text\" value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "details_adv",
+      "optional": true,
+      "rank": 197,
+      "value": "text"
+    },
+    "ext_heading": {
+      "caption": "Heading",
+      "default_val": true,
+      "doc": "Enables heading levels (H1–H6). Configure which levels are available with the 'headings' field below. Users can set headings via toolbar or markdown shortcuts (# , ## , etc.).",
+      "editor": "DynamicValue",
+      "name": "ext_heading",
+      "rank": 32,
+      "value": "boolean"
+    },
+    "h4_margin": {
+      "caption": "H4 margin",
+      "default_val": "1.5rem 0",
+      "doc": "e.g.: \"1.5rem 0\" means top & bottom 1.5rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h4_margin",
+      "rank": 56
+    },
+    "youtube_allowFullscreen": {
+      "caption": "Allow fullscreen",
+      "default_val": true,
+      "doc": "Allow YouTube embeds to be viewed in fullscreen mode.",
+      "editor": "Checkbox",
+      "name": "youtube_allowFullscreen",
+      "rank": 102,
+      "value": "boolean"
+    },
+    "ext_ai_toolkit": {
+      "caption": "AI Toolkit",
+      "default_val": false,
+      "doc": "Enables Tiptap's AI Toolkit (ServerAiToolkit) so block ids used by Tiptap's server-side AI API (api.tiptap.dev/v4/ai/toolkit) survive editing. Requires a paid Tiptap account — without one, the API calls will fail server-side.",
+      "editor": "DynamicValue",
+      "name": "ext_ai_toolkit",
+      "rank": 213,
+      "value": "boolean"
+    },
+    "ext_gapcursor": {
+      "caption": "Gapcursor",
+      "default_val": true,
+      "doc": "Allows placing the cursor in gaps that would normally be inaccessible — for example, before or after a table or image.",
+      "editor": "DynamicValue",
+      "name": "ext_gapcursor",
+      "rank": 157,
       "value": "boolean"
     },
     "AEh": {
@@ -2020,124 +1278,15 @@
       "rank": 85,
       "value": "text"
     },
-    "ext_highlight_label": {
-      "caption": "----- Highlight -----",
-      "editor": "Label",
-      "name": "ext_highlight_label",
-      "rank": 27
-    },
-    "youtube_allowFullscreen": {
-      "caption": "Allow fullscreen",
-      "default_val": true,
-      "doc": "Allow YouTube embeds to be viewed in fullscreen mode.",
-      "editor": "Checkbox",
-      "name": "youtube_allowFullscreen",
-      "rank": 102,
-      "value": "boolean"
-    },
-    "link_openOnClick": {
-      "caption": "Open on click",
-      "default_val": false,
-      "doc": "When enabled, clicking a link in the editor navigates to the URL. When disabled (default), clicking a link selects it for editing instead. Users can always open links with Ctrl/⌘+click regardless of this setting.",
-      "editor": "Checkbox",
-      "name": "link_openOnClick",
-      "rank": 108,
-      "value": "boolean"
-    },
-    "h3_font_weight": {
-      "caption": "H3 font-weight",
-      "default_val": "700",
-      "doc": "",
-      "editor": "Dropdown",
-      "in_style": true,
-      "name": "h3_font_weight",
-      "options": "900,800,700,600,500,400",
-      "rank": 49
-    },
-    "ext_youtube": {
-      "caption": "YouTube",
-      "default_val": true,
-      "doc": "Enables YouTube video embeds. Use the 'Add YouTube' action to insert a video by URL.",
-      "editor": "DynamicValue",
-      "name": "ext_youtube",
-      "rank": 99,
-      "value": "boolean"
-    },
-    "AEN": {
-      "caption": "JWT key",
-      "doc": "For both Tiptap Cloud or Custom collab, you need to provide an auth token. Best idea is to create a workflow when the page loads, run 𝗴𝗲𝗻𝗲𝗿𝗮𝘁𝗲 𝗮𝘂𝘁𝗵 𝘁𝗼𝗸𝗲𝗻 action, and store the token in a state on the page.",
-      "editor": "DynamicValue",
-      "name": "collab_jwt",
-      "optional": true,
-      "rank": 207,
-      "value": "text"
-    },
-    "ext_uniqueid_label": {
-      "caption": "----- Unique ID -----",
-      "editor": "Label",
-      "name": "ext_uniqueid_label",
-      "rank": 186
-    },
-    "ACA": {
-      "caption": "Placeholder",
-      "default_val": "Write something...",
-      "doc": "The text that is displayed when the editor is empty. Make sure that it is selected in the Extensions panel below.",
+    "AEj": {
+      "caption": "Base div CSS override",
+      "default_val": "    flex-grow: 1;     word-wrap: break-word; \tword-break: break-word; \twhite-space: pre-wrap;",
+      "doc": "Inject custom CSS into the editor's root container. This is the last rule in the stylesheet, so it can override anything above it. Useful for layout tweaks (flex, overflow, whitespace, etc.). — Tip: use an 'arbitrary text' value for more room to write CSS.",
       "editor": "DynamicValue",
       "long_text": false,
-      "name": "placeholder",
+      "name": "baseDiv",
       "optional": true,
-      "rank": 147,
-      "value": "text"
-    },
-    "AGO": {
-      "caption": "Preserve unknown HTML tags",
-      "default_val": true,
-      "doc": "When enabled (and \"Preserve HTML attributes\" is also on), the editor will recognize <div> elements in your HTML content instead of stripping them. Useful when your content contains custom layouts or structures wrapped in divs. Without this, any <div> tags in the input HTML would be ignored.",
-      "editor": "DynamicValue",
-      "name": "preserve_unknown_tags",
-      "rank": 193,
-      "value": "boolean"
-    },
-    "ext_invisiblecharacters": {
-      "caption": "Invisible Characters",
-      "default_val": false,
-      "doc": "Shows invisible characters like paragraph marks (¶), spaces (·), and hard breaks. Useful for power users and content editors who need to see whitespace formatting.",
-      "editor": "DynamicValue",
-      "name": "ext_invisiblecharacters",
-      "rank": 165,
-      "value": "boolean"
-    },
-    "ext_subscript": {
-      "caption": "Subscript",
-      "default_val": false,
-      "doc": "Enables subscript text formatting (<sub>). Useful for chemical formulas (H₂O), mathematical notation, and footnotes. Users can toggle it via the Subscript action.",
-      "editor": "DynamicValue",
-      "name": "ext_subscript",
-      "rank": 22,
-      "value": "boolean"
-    },
-    "ext_blockquote": {
-      "caption": "Blockquote",
-      "default_val": true,
-      "doc": "Enables blockquote blocks. Users can create blockquotes via toolbar or by typing > at the start of a line.",
-      "editor": "DynamicValue",
-      "name": "ext_blockquote",
-      "rank": 71,
-      "value": "boolean"
-    },
-    "ext_behavior_label": {
-      "caption": "----- Editor Behavior -----",
-      "editor": "Label",
-      "name": "ext_behavior_label",
-      "rank": 152
-    },
-    "AGV": {
-      "caption": "Drag handle CSS override",
-      "doc": "Inject custom CSS for the drag handle element. The handle has the class `.tiptap-drag-handle`. Useful for changing the icon size, colors, hover effects, or positioning. — Tip: use an \"arbitrary text\" value for more room to write CSS.",
-      "editor": "DynamicValue",
-      "name": "draghandle_adv",
-      "optional": true,
-      "rank": 172,
+      "rank": 11,
       "value": "text"
     },
     "table_resizable": {
@@ -2148,151 +1297,90 @@
       "name": "table_resizable",
       "rank": 133
     },
-    "AEv": {
-      "caption": "Base URL",
-      "doc": "generally `Website home URL/[users profile]` ",
-      "editor": "DynamicValue",
-      "name": "mention_base_url",
-      "optional": true,
-      "rank": 181,
-      "value": "text"
-    },
-    "h3_info": {
-      "caption": "     ----- H3 styling -----",
-      "editor": "Label",
-      "name": "stylesheet_info_h3",
-      "rank": 46
-    },
-    "AEk": {
-      "caption": "Provider",
-      "default_val": "tiptap",
-      "doc": "Which collab provider you would like to use. Tiptap requires a subscription with cloud.tiptap.com and an auth token. Liveblocks requires the public key. For custom requires the url of the server and an auth token.",
-      "editor": "Dropdown",
-      "name": "collabProvider",
-      "optional": true,
-      "options": "tiptap,liveblocks,custom",
-      "rank": 204
-    },
-    "highlight_multicolor": {
-      "caption": "Multicolor",
+    "ext_horizontalrule": {
+      "caption": "Horizontal Rule",
       "default_val": true,
-      "doc": "When enabled, allows multiple different highlight colors in the same document. When disabled, only one highlight color can be used at a time.",
-      "editor": "Checkbox",
-      "name": "highlight_multicolor",
-      "rank": 29,
+      "doc": "Enables horizontal rule (divider line). Users can insert one via toolbar or by typing --- on an empty line.",
+      "editor": "DynamicValue",
+      "name": "ext_horizontalrule",
+      "rank": 74,
       "value": "boolean"
     },
-    "h4_size": {
-      "caption": "H4 Size",
-      "default_val": "1.5rem",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h4_size",
-      "rank": 53
-    },
-    "ADP": {
-      "caption": "Bubble menu theme",
-      "default_val": "translucent",
-      "doc": "The style of the tooltip box. See more here: https://atomiks.github.io/tippyjs/v5/themes/",
-      "editor": "Dropdown",
-      "in_style": true,
-      "name": "bubbleMenuTheme",
-      "options": "translucent,light,light-border,material",
-      "rank": 140
-    },
-    "dropcursor_width": {
-      "caption": "Dropcursor width",
-      "default_val": 2,
-      "doc": "Width in pixels of the dropcursor line.",
-      "editor": "StaticNumber",
-      "name": "dropcursor_width",
-      "optional": true,
-      "rank": 156
-    },
-    "ext_gapcursor": {
-      "caption": "Gapcursor",
-      "default_val": true,
-      "doc": "Allows placing the cursor in gaps that would normally be inaccessible — for example, before or after a table or image.",
+    "ext_uniqueid": {
+      "caption": "Unique ID",
+      "default_val": false,
+      "doc": "Adds unique IDs to specified node types (e.g. paragraphs, headings). Useful for deep-linking to specific parts of the document.",
       "editor": "DynamicValue",
-      "name": "ext_gapcursor",
-      "rank": 157,
+      "name": "ext_uniqueid",
+      "rank": 187,
       "value": "boolean"
     },
-    "ext_blockquote_label": {
-      "caption": "----- Blockquote -----",
-      "editor": "Label",
-      "name": "ext_blockquote_label",
-      "rank": 70
-    },
-    "ADS": {
-      "caption": "H1 Color",
+    "h6_color": {
+      "caption": "H6 Color",
       "default_val": "rgba(17, 17, 17, 1)",
       "editor": "Color",
       "in_style": true,
-      "name": "h1_color",
-      "rank": 36
+      "name": "h6_color",
+      "rank": 66
     },
-    "ext_details_label": {
-      "caption": "----- Details / Accordion -----",
-      "editor": "Label",
-      "name": "ext_details_label",
-      "rank": 194
-    },
-    "h5_margin": {
-      "caption": "H5 margin",
-      "default_val": "1rem 0",
-      "doc": "e.g.: \"1rem 0\" means top & bottom 1rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
-      "editor": "StaticText",
-      "in_style": true,
-      "name": "h5_margin",
-      "rank": 62
-    },
-    "hr_adv": {
-      "caption": "Horizontal rule CSS override",
-      "doc": "Inject custom CSS properties for <hr> (horizontal rule) elements. Example: border: none; border-top: 2px dashed #ccc; margin: 2rem 0; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+    "AGN": {
+      "caption": "Preserved attributes (read-only)",
+      "default_val": "class,style,id,data-*",
+      "doc": "Shows which HTML attributes are preserved when the setting above is enabled. Currently hardcoded to: class, style, id, and data-* attributes. This field is informational — the preserved attributes are defined in the extension code.",
       "editor": "DynamicValue",
-      "long_text": false,
-      "name": "hr_adv",
-      "optional": true,
-      "rank": 75,
+      "name": "preserved_attributes",
+      "rank": 192,
       "value": "text"
     },
-    "ext_tasklist": {
-      "caption": "Task List",
-      "default_val": true,
-      "doc": "Enables task lists (checkboxes). Users can create them via toolbar or by typing [ ] or [x] at the start of a line.",
+    "ext_color": {
+      "caption": "Text Color",
+      "default_val": false,
+      "doc": "Allows setting the text color on selections. Use the 'Set color' action to apply a color. Off by default.",
       "editor": "DynamicValue",
-      "name": "ext_tasklist",
-      "rank": 91,
+      "name": "ext_color",
+      "rank": 21,
       "value": "boolean"
     },
-    "AFF": {
-      "caption": "Update delay",
-      "default_val": 300,
-      "doc": "After the user stops typing, how long should it wait until it emits a \"Content updated\" event and -- if autobinding is on -- saves the document.",
-      "editor": "DynamicValue",
-      "name": "update_delay",
-      "rank": 4,
-      "value": "number"
-    },
-    "ADr": {
-      "caption": "Image CSS override",
-      "default_val": "width: 100%;",
-      "doc": "Inject custom CSS for images (<img>). Example: width: 100%; border-radius: 8px; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+    "AEH": {
+      "caption": "Doc Server ID",
+      "default_val": "",
+      "doc": "Required for both Tiptap Cloud or Custom. Get the app id from 𝗵𝘁𝘁𝗽𝘀://𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 or 𝗵𝘁𝘁𝗽𝘀://𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃",
       "editor": "StaticText",
-      "in_style": true,
-      "long_text": false,
-      "name": "image_css",
+      "name": "collab_app_id",
       "optional": true,
-      "rank": 95
+      "rank": 206
     },
-    "codeblock_exitOnTripleEnter": {
-      "caption": "Exit on triple Enter",
+    "ext_preserve_label": {
+      "caption": "----- Preserve Attributes -----",
+      "editor": "Label",
+      "name": "ext_preserve_label",
+      "rank": 190
+    },
+    "ext_youtube": {
+      "caption": "YouTube",
       "default_val": true,
-      "doc": "Pressing Enter three times at the end of a code block exits it and creates a new paragraph below.",
+      "doc": "Enables YouTube video embeds. Use the 'Add YouTube' action to insert a video by URL.",
+      "editor": "DynamicValue",
+      "name": "ext_youtube",
+      "rank": 99,
+      "value": "boolean"
+    },
+    "ACL": {
+      "caption": "Bubble menu",
+      "doc": "ID of the group that holds the Bubble Menu. This menu shows up when the user selects some text.",
+      "editor": "DynamicValue",
+      "name": "bubbleMenu",
+      "optional": true,
+      "rank": 139,
+      "value": "text"
+    },
+    "youtube_nocookie": {
+      "caption": "Privacy-enhanced mode",
+      "default_val": true,
+      "doc": "Uses youtube-nocookie.com domain for embeds, which does not set tracking cookies until the user plays the video.",
       "editor": "Checkbox",
-      "name": "codeblock_exitOnTripleEnter",
-      "rank": 77,
+      "name": "youtube_nocookie",
+      "rank": 101,
       "value": "boolean"
     },
     "sup_adv": {
@@ -2305,6 +1393,840 @@
       "rank": 25,
       "value": "text"
     },
+    "ADb": {
+      "caption": "Header font weight",
+      "default_val": "800",
+      "doc": "",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "table_th_font_weight",
+      "options": "900,800,700,600,500,400",
+      "rank": 128
+    },
+    "ext_image_label": {
+      "caption": "----- Image -----",
+      "editor": "Label",
+      "name": "ext_image_label",
+      "rank": 93
+    },
+    "ADp": {
+      "caption": "headings",
+      "default_val": "1,2,3,4,5,6",
+      "doc": "Enable headings. 𝟏,𝟐 will allow only heading 1 and heading 2, etc. Comma separated list of numbers from 1 to 6.",
+      "editor": "StaticText",
+      "in_style": true,
+      "long_text": false,
+      "name": "headings",
+      "rank": 33
+    },
+    "collab_status_docs": {
+      "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced",
+      "editor": "Label",
+      "name": "collab_status_docs",
+      "rank": 201
+    },
+    "ADk": {
+      "caption": "Link color hover",
+      "default_val": "rgba(147, 51, 234, 1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "link_color_hover",
+      "rank": 116
+    },
+    "list_keepMarks": {
+      "caption": "Keep marks on new items",
+      "default_val": false,
+      "doc": "When enabled, text formatting (bold, italic, etc.) is preserved when pressing Enter to create a new list item. Applies to both bullet and ordered lists.",
+      "editor": "Checkbox",
+      "name": "list_keepMarks",
+      "rank": 89,
+      "value": "boolean"
+    },
+    "sub_adv": {
+      "caption": "Subscript CSS override",
+      "doc": "Inject custom CSS properties for <sub> (subscript) elements. — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "sub_adv",
+      "optional": true,
+      "rank": 23,
+      "value": "text"
+    },
+    "AGU": {
+      "caption": "Nested drag",
+      "default_val": false,
+      "doc": "When enabled, the drag handle also appears for nested content — e.g. individual list items inside bullet/ordered lists, paragraphs inside blockquotes, etc. When disabled, only top-level blocks show a drag handle.",
+      "editor": "Checkbox",
+      "name": "draghandle_nested",
+      "rank": 171
+    },
+    "ext_history": {
+      "caption": "History (Undo/Redo)",
+      "default_val": true,
+      "doc": "Enables undo/redo (Ctrl/⌘+Z / Ctrl/⌘+Shift+Z). Automatically disabled when collaboration is active (collab has its own history).",
+      "editor": "DynamicValue",
+      "name": "ext_history",
+      "rank": 168,
+      "value": "boolean"
+    },
+    "ADc": {
+      "caption": "Header background",
+      "default_val": "rgba(0,0,0,1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "table_th_background",
+      "rank": 130
+    },
+    "ext_bold": {
+      "caption": "Bold",
+      "default_val": true,
+      "doc": "Enables bold text formatting. Users can apply bold with Ctrl/⌘+B or by using the toolbar.",
+      "editor": "DynamicValue",
+      "name": "ext_bold",
+      "rank": 14,
+      "value": "boolean"
+    },
+    "image_inline": {
+      "caption": "Inline images",
+      "default_val": false,
+      "doc": "When enabled, images flow inline with text instead of being block-level elements.",
+      "editor": "Checkbox",
+      "name": "image_inline",
+      "rank": 97,
+      "value": "boolean"
+    },
+    "ADz": {
+      "caption": "H6 CSS override",
+      "doc": "Inject custom CSS properties for H6 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "h6_adv",
+      "optional": true,
+      "rank": 69,
+      "value": "text"
+    },
+    "ext_invisiblecharacters": {
+      "caption": "Invisible Characters",
+      "default_val": false,
+      "doc": "Shows invisible characters like paragraph marks (¶), spaces (·), and hard breaks. Useful for power users and content editors who need to see whitespace formatting.",
+      "editor": "DynamicValue",
+      "name": "ext_invisiblecharacters",
+      "rank": 165,
+      "value": "boolean"
+    },
+    "link_defaultProtocol": {
+      "caption": "Default protocol",
+      "default_val": "https",
+      "doc": "Protocol to prepend when a link URL has no protocol (e.g. typing \"example.com\" becomes \"https://example.com\").",
+      "editor": "Dropdown",
+      "name": "link_defaultProtocol",
+      "options": "https,http",
+      "rank": 111
+    },
+    "youtube_defaultHeight": {
+      "caption": "Default height",
+      "default_val": 480,
+      "doc": "Default height in pixels for embedded YouTube videos.",
+      "editor": "StaticNumber",
+      "name": "youtube_defaultHeight",
+      "optional": true,
+      "rank": 105
+    },
+    "collab_url": {
+      "caption": "Custom - URL",
+      "default_val": "default value",
+      "doc": "Paste the collab URL here to enable collaborative editing. Leave empty to disable.",
+      "editor": "StaticText",
+      "name": "collab_url",
+      "rank": 205
+    },
+    "h6_info": {
+      "caption": "     ----- H6 styling -----",
+      "editor": "Label",
+      "name": "h6_info",
+      "rank": 64
+    },
+    "ext_focus": {
+      "caption": "Focus",
+      "default_val": false,
+      "doc": "Adds a CSS class to the currently focused node in the editor. Use this to style the active block — e.g., add a background or left border to the paragraph/heading the cursor is in. The class name is `has-focus`. Style it via the Base div CSS override or your app's stylesheets. See the Focus Mode option below to control which node gets the class.",
+      "editor": "DynamicValue",
+      "name": "ext_focus",
+      "rank": 159,
+      "value": "boolean"
+    },
+    "h4_info": {
+      "caption": "     ----- H4 styling -----",
+      "editor": "Label",
+      "name": "h4_info",
+      "rank": 52
+    },
+    "ADf": {
+      "caption": "Zebra background",
+      "default_val": "rgba(238,238,238,1)",
+      "doc": "Background color for odd rows",
+      "editor": "Color",
+      "in_style": true,
+      "name": "table_zebra_background",
+      "rank": 131
+    },
+    "ext_codeblock": {
+      "caption": "Code Block",
+      "default_val": true,
+      "doc": "Enables fenced code blocks (multi-line code). Users can create them via toolbar or by typing ``` at the start of a line.",
+      "editor": "DynamicValue",
+      "name": "ext_codeblock",
+      "rank": 76,
+      "value": "boolean"
+    },
+    "ext_highlight": {
+      "caption": "Highlight",
+      "default_val": true,
+      "doc": "Enables text highlighting (background color on text). Users can mark text with a highlight color via the toolbar.",
+      "editor": "DynamicValue",
+      "name": "ext_highlight",
+      "rank": 28,
+      "value": "boolean"
+    },
+    "table_cellMinWidth": {
+      "caption": "Cell min width",
+      "default_val": 25,
+      "doc": "Minimum width in pixels for table columns when resizing. Default: 25.",
+      "editor": "StaticNumber",
+      "name": "table_cellMinWidth",
+      "optional": true,
+      "rank": 132
+    },
+    "AGT": {
+      "caption": "Drag Handle",
+      "default_val": false,
+      "doc": "Enables the Drag Handle extension. When active, a small grip icon appears to the left of blocks (paragraphs, headings, lists, etc.) on hover. Users can click and drag it to reorder blocks in the editor.",
+      "editor": "Checkbox",
+      "name": "ext_draghandle",
+      "rank": 170
+    },
+    "h6_margin": {
+      "caption": "H6 margin",
+      "default_val": "1rem 0",
+      "doc": "e.g.: \"1rem 0\" means top & bottom 1rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h6_margin",
+      "rank": 68
+    },
+    "AEC": {
+      "caption": "Enable collaboration?",
+      "default_val": false,
+      "doc": "Enable real-time collaborative editing via a Y.js-based provider (Tiptap Cloud, Custom Hocuspocus, or Liveblocks). When collaboration is active, the shared Y.js document is the single source of truth. Note: auto-binding is automatically ignored while collaboration is active — the collaborative document takes priority to prevent conflicts.",
+      "editor": "Checkbox",
+      "name": "collab_active",
+      "rank": 202
+    },
+    "AEB": {
+      "caption": "𝗖𝗢𝗟𝗟𝗔𝗕𝗢𝗥𝗔𝗧𝗜𝗢𝗡",
+      "editor": "Label",
+      "name": "collab_info",
+      "rank": 199
+    },
+    "ext_highlight_label": {
+      "caption": "----- Highlight -----",
+      "editor": "Label",
+      "name": "ext_highlight_label",
+      "rank": 27
+    },
+    "h4_font_weight": {
+      "caption": "H4 font-weight",
+      "default_val": "600",
+      "doc": "",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "h4_font_weight",
+      "options": "900,800,700,600,500,400",
+      "rank": 55
+    },
+    "AEk": {
+      "caption": "Provider",
+      "default_val": "tiptap",
+      "doc": "Which collab provider you would like to use. Tiptap requires a subscription with cloud.tiptap.com and an auth token. Liveblocks requires the public key. For custom requires the url of the server and an auth token.",
+      "editor": "Dropdown",
+      "name": "collabProvider",
+      "optional": true,
+      "options": "tiptap,liveblocks,custom",
+      "rank": 204
+    },
+    "table_lastColumnResizable": {
+      "caption": "Last column resizable",
+      "default_val": true,
+      "doc": "Whether the rightmost column of the table can be resized. Disabling this can prevent unexpected table expansion when resizing the last column.",
+      "editor": "Checkbox",
+      "name": "table_lastColumnResizable",
+      "rank": 135
+    },
+    "link_linkOnPaste": {
+      "caption": "Link on paste",
+      "default_val": true,
+      "doc": "Automatically converts pasted URLs into clickable links. Disable to keep pasted URLs as plain text.",
+      "editor": "Checkbox",
+      "name": "link_linkOnPaste",
+      "rank": 110,
+      "value": "boolean"
+    },
+    "AFP": {
+      "caption": "Visited link CSS override",
+      "doc": "Inject custom CSS for visited links (a:visited). — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "link_visited_adv",
+      "optional": true,
+      "rank": 121,
+      "value": "text"
+    },
+    "AGB": {
+      "caption": "Keep marks after <br>",
+      "default_val": true,
+      "doc": "Decides if to keep a mark after a hardbreak. When checked, and you're typing in bold, when you hit Shift+Enter, the next line will continue with bold. If unchecked, it will revert to normal text.",
+      "editor": "Checkbox",
+      "name": "hardBreakKeepMarks",
+      "rank": 175,
+      "value": "boolean"
+    },
+    "AEz": {
+      "caption": "ID",
+      "editor": "custom_field_AEx",
+      "field_type_restriction": "text_image_file",
+      "name": "mention_field_id",
+      "optional": true,
+      "rank": 183
+    },
+    "h6_font_weight": {
+      "caption": "H6 font-weight",
+      "default_val": "500",
+      "doc": "",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "h6_font_weight",
+      "options": "900,800,700,600,500,400",
+      "rank": 67
+    },
+    "ext_image": {
+      "caption": "Image",
+      "default_val": true,
+      "doc": "Enables image support. Images can be inserted via the 'Insert image' action, drag-and-drop, or paste.",
+      "editor": "DynamicValue",
+      "name": "ext_image",
+      "rank": 94,
+      "value": "boolean"
+    },
+    "ext_orderedlist_label": {
+      "caption": "----- Ordered List -----",
+      "editor": "Label",
+      "name": "ext_orderedlist_label",
+      "rank": 86
+    },
+    "ADe": {
+      "caption": "Header font color",
+      "default_val": "rgba(255,255,255,1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "table_header_font_color",
+      "rank": 129
+    },
+    "AFC": {
+      "caption": "Background color",
+      "default_val": "rgba(255,255,255,0)",
+      "doc": "Color of the background of the mention.",
+      "editor": "Color",
+      "name": "mention_background_color",
+      "rank": 185
+    },
+    "h2_margin": {
+      "caption": "H2 margin",
+      "default_val": "2.5rem 0",
+      "doc": "e.g.: \"2.5rem 0\" means top & bottom 2.5rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h2_margin",
+      "rank": 43
+    },
+    "ext_dropcursor": {
+      "caption": "Dropcursor",
+      "default_val": true,
+      "doc": "Shows a cursor indicator when dragging content over the editor, helping users see where the drop will land.",
+      "editor": "DynamicValue",
+      "name": "ext_dropcursor",
+      "rank": 154,
+      "value": "boolean"
+    },
+    "codeblock_adv": {
+      "caption": "Code block CSS override",
+      "doc": "Inject custom CSS properties for code block (<pre>) elements. — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "codeblock_adv",
+      "optional": true,
+      "rank": 82,
+      "value": "text"
+    },
+    "link_target": {
+      "caption": "Open link in",
+      "default_val": "_blank",
+      "doc": "Where links open by default. _blank = new tab, _self = same tab. Individual links can override this if set via the Set link action.",
+      "editor": "Dropdown",
+      "name": "link_target",
+      "options": "_blank,_self",
+      "rank": 112
+    },
+    "ext_bubblemenu_label": {
+      "caption": "----- Bubble Menu -----",
+      "editor": "Label",
+      "name": "ext_bubblemenu_label",
+      "rank": 137
+    },
+    "h5_size": {
+      "caption": "H5 Size",
+      "default_val": "1rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h5_size",
+      "rank": 59
+    },
+    "AFQ": {
+      "caption": "Focused link CSS override",
+      "doc": "Inject custom CSS for focused links (a:focus). — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "link_focus_adv",
+      "optional": true,
+      "rank": 122,
+      "value": "text"
+    },
+    "AEI": {
+      "caption": "Document name",
+      "doc": "Name or id of the document. This should be a unique name like a slug or unique id.",
+      "editor": "DynamicValue",
+      "name": "collab_doc_id",
+      "optional": true,
+      "rank": 203,
+      "value": "text"
+    },
+    "ext_selection": {
+      "caption": "Selection",
+      "default_val": false,
+      "doc": "Keeps the text selection visually highlighted when the editor loses focus. By default, browsers hide the selection highlight when focus moves to another element (e.g., clicking a toolbar button outside the editor). Enable this to maintain a visible selection. The highlight uses the CSS class `selection` — a default blue style is provided automatically.",
+      "editor": "DynamicValue",
+      "name": "ext_selection",
+      "rank": 161,
+      "value": "boolean"
+    },
+    "ABs": {
+      "caption": "This input is enabled",
+      "default_val": true,
+      "editor": "Checkbox",
+      "in_style": true,
+      "name": "isEditable",
+      "optional": false,
+      "rank": 3,
+      "value": "boolean"
+    },
+    "codeblock_defaultLanguage": {
+      "caption": "Default language",
+      "doc": "Default programming language for new code blocks (e.g. \"javascript\", \"python\"). Leave empty for no default.",
+      "editor": "DynamicValue",
+      "name": "codeblock_defaultLanguage",
+      "optional": true,
+      "rank": 79,
+      "value": "text"
+    },
+    "ext_uniqueid_label": {
+      "caption": "----- Unique ID -----",
+      "editor": "Label",
+      "name": "ext_uniqueid_label",
+      "rank": 186
+    },
+    "ADZ": {
+      "caption": "Cell padding",
+      "default_val": "0 1rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "table_th_td_padding",
+      "rank": 125
+    },
+    "AFq": {
+      "caption": "Allow Base 64?",
+      "default_val": true,
+      "doc": "Allow images to be parsed as base64 strings. When off Base64 images will remain in the code, but it won't be displayed.",
+      "editor": "Checkbox",
+      "name": "allowBase64",
+      "rank": 96
+    },
+    "AEW": {
+      "caption": "Max number of characters",
+      "editor": "StaticNumber",
+      "in_style": true,
+      "name": "characterLimit",
+      "optional": true,
+      "rank": 2
+    },
+    "ext_floatingmenu": {
+      "caption": "Floating Menu",
+      "default_val": true,
+      "doc": "Enables the floating menu — a toolbar that appears on empty lines. Provide the Bubble element ID below.",
+      "editor": "DynamicValue",
+      "name": "ext_floatingmenu",
+      "rank": 142,
+      "value": "boolean"
+    },
+    "link_protocols": {
+      "caption": "Additional protocols",
+      "doc": "Comma-separated list of additional protocols to auto-detect as links (e.g. tel, spotify, custom-app). Both formats are recognized: tel:5551234 and tel://5551234. Standard protocols like http, https, ftp, and mailto are always recognized without needing to add them here.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "link_protocols",
+      "optional": true,
+      "rank": 114,
+      "value": "text"
+    },
+    "h5_font_weight": {
+      "caption": "H5 font-weight",
+      "default_val": "500",
+      "doc": "",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "h5_font_weight",
+      "options": "900,800,700,600,500,400",
+      "rank": 61
+    },
+    "h3_info": {
+      "caption": "     ----- H3 styling -----",
+      "editor": "Label",
+      "name": "stylesheet_info_h3",
+      "rank": 46
+    },
+    "AFN": {
+      "caption": "Link CSS override",
+      "doc": "Inject custom CSS for all links (<a>). Applied to every link state. — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "link_adv",
+      "optional": true,
+      "rank": 119,
+      "value": "text"
+    },
+    "ext_blockquote_label": {
+      "caption": "----- Blockquote -----",
+      "editor": "Label",
+      "name": "ext_blockquote_label",
+      "rank": 70
+    },
+    "codeblock_tabIndentation": {
+      "caption": "Tab indentation",
+      "default_val": false,
+      "doc": "Allow the Tab key to indent inside code blocks instead of moving focus to the next element.",
+      "editor": "Checkbox",
+      "name": "codeblock_tabIndentation",
+      "rank": 80,
+      "value": "boolean"
+    },
+    "ext_behavior_label": {
+      "caption": "----- Editor Behavior -----",
+      "editor": "Label",
+      "name": "ext_behavior_label",
+      "rank": 152
+    },
+    "ACA": {
+      "caption": "Placeholder",
+      "default_val": "Write something...",
+      "doc": "The text that is displayed when the editor is empty. Make sure that it is selected in the Extensions panel below.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "placeholder",
+      "optional": true,
+      "rank": 147,
+      "value": "text"
+    },
+    "invisiblecharacters_adv": {
+      "caption": "Invisible characters CSS override",
+      "doc": "Inject custom CSS for invisible character decorations (.tiptap-invisible-character). — Tip: use an \"arbitrary text\" value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "invisiblecharacters_adv",
+      "optional": true,
+      "rank": 167,
+      "value": "text"
+    },
+    "ext_typography": {
+      "caption": "Typography",
+      "default_val": false,
+      "doc": "Automatically replaces common text patterns with proper typographic characters as you type. Examples: -- → —, ... → …, (c) → ©, != → ≠, << → «, 1/2 → ½, and smart quotes. A nice polish for content-heavy editors.",
+      "editor": "DynamicValue",
+      "name": "ext_typography",
+      "rank": 163,
+      "value": "boolean"
+    },
+    "placeholder_showOnlyWhenEditable": {
+      "caption": "Show only when editable",
+      "default_val": true,
+      "doc": "When enabled, the placeholder text is only shown when the editor is editable. Disable to show the placeholder even in read-only mode.",
+      "editor": "Checkbox",
+      "name": "placeholder_showOnlyWhenEditable",
+      "rank": 149,
+      "value": "boolean"
+    },
+    "ADW": {
+      "caption": "paragraph",
+      "editor": "Label",
+      "name": "stylesheet_info_paragraph",
+      "rank": 9
+    },
+    "ext_link_label": {
+      "caption": "----- Link -----",
+      "editor": "Label",
+      "name": "ext_link_label",
+      "rank": 106
+    },
+    "ext_listkeymap": {
+      "caption": "List Keymap",
+      "default_val": true,
+      "doc": "Improves keyboard behavior in lists. Pressing Backspace at the start of a list item properly lifts it out of the list instead of merging with the previous item. Recommended to keep enabled.",
+      "editor": "DynamicValue",
+      "name": "ext_listkeymap",
+      "rank": 164,
+      "value": "boolean"
+    },
+    "AEx": {
+      "caption": "Type of content",
+      "doc": "Which type of db thing should be displayed in the Mentions dropdown.",
+      "editor": "custom_type",
+      "is_list": true,
+      "name": "mention_list_type",
+      "optional": "false",
+      "rank": 179,
+      "value": "_any_thing_bindable"
+    },
+    "ADT": {
+      "caption": "H1 margin",
+      "default_val": "3rem 0",
+      "doc": "e.g.: \"3rem 0\" means top & bottom 3rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h1_margin",
+      "rank": 38
+    },
+    "ext_bulletlist_label": {
+      "caption": "----- Bullet List -----",
+      "editor": "Label",
+      "name": "ext_bulletlist_label",
+      "rank": 83
+    },
+    "ext_bubblemenu": {
+      "caption": "Bubble Menu",
+      "default_val": true,
+      "doc": "Enables the bubble menu — a floating toolbar that appears when the user selects text. Provide the Bubble element ID below.",
+      "editor": "DynamicValue",
+      "name": "ext_bubblemenu",
+      "rank": 138,
+      "value": "boolean"
+    },
+    "AEv": {
+      "caption": "Base URL",
+      "doc": "generally `Website home URL/[users profile]` ",
+      "editor": "DynamicValue",
+      "name": "mention_base_url",
+      "optional": true,
+      "rank": 181,
+      "value": "text"
+    },
+    "placeholder_includeChildren": {
+      "caption": "Include children",
+      "default_val": false,
+      "doc": "When enabled, the placeholder also appears inside nested empty nodes (e.g., empty list items, table cells).",
+      "editor": "Checkbox",
+      "name": "placeholder_includeChildren",
+      "rank": 151,
+      "value": "boolean"
+    },
+    "AGI": {
+      "caption": "Attribute name",
+      "default_val": "id",
+      "doc": "What name should the attribute have? Defaults to 'uid'. Each tagged element will have `data-uid=SOME_UNIQUE_ID` added to them.",
+      "editor": "DynamicValue",
+      "name": "extension_uniqueid_attrName",
+      "optional": true,
+      "rank": 189,
+      "value": "text"
+    },
+    "h5_margin": {
+      "caption": "H5 margin",
+      "default_val": "1rem 0",
+      "doc": "e.g.: \"1rem 0\" means top & bottom 1rem, left & right 0.  Accepts CSS margin shorthand notation. For more info: google: \"mdn CSS margin\" OR ask in the forum thread.",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h5_margin",
+      "rank": 62
+    },
+    "placeholder_showOnlyCurrent": {
+      "caption": "Show only on current node",
+      "default_val": true,
+      "doc": "When enabled, placeholder only appears on the first empty paragraph. When disabled, all empty paragraphs show the placeholder.",
+      "editor": "Checkbox",
+      "name": "placeholder_showOnlyCurrent",
+      "rank": 150,
+      "value": "boolean"
+    },
+    "ext_tasklist": {
+      "caption": "Task List",
+      "default_val": true,
+      "doc": "Enables task lists (checkboxes). Users can create them via toolbar or by typing [ ] or [x] at the start of a line.",
+      "editor": "DynamicValue",
+      "name": "ext_tasklist",
+      "rank": 91,
+      "value": "boolean"
+    },
+    "link_openOnClick": {
+      "caption": "Open on click",
+      "default_val": false,
+      "doc": "When enabled, clicking a link in the editor navigates to the URL. When disabled (default), clicking a link selects it for editing instead. Users can always open links with Ctrl/⌘+click regardless of this setting.",
+      "editor": "Checkbox",
+      "name": "link_openOnClick",
+      "rank": 108,
+      "value": "boolean"
+    },
+    "ext_placeholder": {
+      "caption": "Placeholder",
+      "default_val": true,
+      "doc": "Enables placeholder text shown when the editor is empty. Configure the text and color below.",
+      "editor": "DynamicValue",
+      "name": "ext_placeholder",
+      "rank": 146,
+      "value": "boolean"
+    },
+    "ext_mention_label": {
+      "caption": "----- Mention -----",
+      "editor": "Label",
+      "name": "ext_mention_label",
+      "rank": 176
+    },
+    "details_summary_adv": {
+      "caption": "Details summary CSS override",
+      "doc": "Inject custom CSS for <summary> elements inside details blocks. — Tip: use an \"arbitrary text\" value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "details_summary_adv",
+      "optional": true,
+      "rank": 198,
+      "value": "text"
+    },
+    "table_handleWidth": {
+      "caption": "Resize handle width",
+      "default_val": 5,
+      "doc": "Width in pixels of the invisible resize handle zone on column borders. A larger value makes resizing easier to trigger; a smaller value reduces accidental resize activation. Default: 5.",
+      "editor": "StaticNumber",
+      "name": "table_handleWidth",
+      "optional": true,
+      "rank": 136
+    },
+    "ext_heading_label": {
+      "caption": "----- Heading -----",
+      "editor": "Label",
+      "name": "ext_heading_label",
+      "rank": 31
+    },
+    "AGV": {
+      "caption": "Drag handle CSS override",
+      "doc": "Inject custom CSS for the drag handle element. The handle has the class `.tiptap-drag-handle`. Useful for changing the icon size, colors, hover effects, or positioning. — Tip: use an \"arbitrary text\" value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "name": "draghandle_adv",
+      "optional": true,
+      "rank": 172,
+      "value": "text"
+    },
+    "h4_size": {
+      "caption": "H4 Size",
+      "default_val": "1.5rem",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "h4_size",
+      "rank": 53
+    },
+    "h1_font_weight": {
+      "caption": "H1 font-weight",
+      "default_val": "900",
+      "doc": "",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "h1_font_weight",
+      "options": "900,800,700,600,500,400",
+      "rank": 37
+    },
+    "ADa": {
+      "caption": "Row bottom border",
+      "default_val": "1px solid",
+      "editor": "StaticText",
+      "in_style": true,
+      "name": "table_th_td_border_bottom",
+      "rank": 126
+    },
+    "ACZ": {
+      "caption": "Content is JSON?",
+      "default_val": false,
+      "doc": "In case your initial content is in JSON format. It needs to be a valid Tiptap JSON format. More info: https://tiptap.dev/guide/output#option-2-generate-html-from-prosemirror-json",
+      "editor": "DynamicValue",
+      "name": "content_is_json",
+      "rank": 1,
+      "value": "boolean"
+    },
+    "ext_selection_css": {
+      "caption": "Selection CSS override",
+      "doc": "Inject custom CSS for the selection highlight shown when the editor loses focus. The default is a light blue background (background: #accef7). Example: background: #fde68a; border-radius: 2px; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "ext_selection_css",
+      "optional": true,
+      "rank": 162,
+      "value": "text"
+    },
+    "ext_formatting_label": {
+      "caption": "----- Text Formatting -----",
+      "editor": "Label",
+      "name": "ext_formatting_label",
+      "rank": 13
+    },
+    "youtube_defaultWidth": {
+      "caption": "Default width",
+      "default_val": 640,
+      "doc": "Default width in pixels for embedded YouTube videos.",
+      "editor": "StaticNumber",
+      "name": "youtube_defaultWidth",
+      "optional": true,
+      "rank": 104
+    },
+    "ext_fontsize": {
+      "caption": "Font Size",
+      "default_val": false,
+      "doc": "Allows setting the font size on text selections. Use the \"Set font size\" action to apply a size (e.g. \"16px\", \"1.2rem\"). Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_fontsize",
+      "rank": 26,
+      "value": "boolean"
+    },
+    "invisiblecharacters_visible": {
+      "caption": "Start visible",
+      "default_val": true,
+      "doc": "Whether invisible characters are visible when the extension loads. Can be toggled at runtime with the \"Toggle Invisible Characters\" action.",
+      "editor": "DynamicValue",
+      "name": "invisiblecharacters_visible",
+      "rank": 166,
+      "value": "boolean"
+    },
+    "youtube_addPasteHandler": {
+      "caption": "Auto-embed on paste",
+      "default_val": true,
+      "doc": "Automatically converts pasted YouTube URLs into embedded video players.",
+      "editor": "Checkbox",
+      "name": "youtube_addPasteHandler",
+      "rank": 103,
+      "value": "boolean"
+    },
     "ext_details": {
       "caption": "Details / Accordion",
       "default_val": false,
@@ -2314,17 +2236,104 @@
       "rank": 195,
       "value": "boolean"
     },
-    "ADW": {
-      "caption": "paragraph",
-      "editor": "Label",
-      "name": "stylesheet_info_paragraph",
-      "rank": 9
+    "codeblock_exitOnArrowDown": {
+      "caption": "Exit on arrow down",
+      "default_val": true,
+      "doc": "Pressing the down arrow at the last line of a code block exits it and moves the cursor below.",
+      "editor": "Checkbox",
+      "name": "codeblock_exitOnArrowDown",
+      "rank": 78,
+      "value": "boolean"
     },
-    "ext_hardbreak_label": {
-      "caption": "----- Hard Break -----",
+    "h1_info1": {
+      "caption": "     ----- H1 styling -----",
       "editor": "Label",
-      "name": "ext_hardbreak_label",
-      "rank": 173
+      "name": "stylesheet_info_h1",
+      "rank": 34
+    },
+    "ext_youtube_label": {
+      "caption": "----- YouTube -----",
+      "editor": "Label",
+      "name": "ext_youtube_label",
+      "rank": 98
+    },
+    "ext_code": {
+      "caption": "Code (inline)",
+      "default_val": true,
+      "doc": "Enables inline code formatting — wraps selected text in a <code> tag. Users can apply it with Ctrl/⌘+E.",
+      "editor": "DynamicValue",
+      "name": "ext_code",
+      "rank": 18,
+      "value": "boolean"
+    },
+    "ADv": {
+      "caption": "H2 CSS override",
+      "doc": "Inject custom CSS properties for H2 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "h2_adv",
+      "optional": true,
+      "rank": 45,
+      "value": "text"
+    },
+    "ext_section_label": {
+      "caption": "𝗘𝗫𝗧𝗘𝗡𝗦𝗜𝗢𝗡𝗦",
+      "editor": "Label",
+      "name": "ext_section_label",
+      "rank": 12
+    },
+    "ext_orderedlist": {
+      "caption": "Ordered List",
+      "default_val": true,
+      "doc": "Enables ordered (numbered) lists. Users can create them via toolbar or by typing 1. at the start of a line.",
+      "editor": "DynamicValue",
+      "name": "ext_orderedlist",
+      "rank": 87,
+      "value": "boolean"
+    },
+    "ext_bulletlist": {
+      "caption": "Bullet List",
+      "default_val": true,
+      "doc": "Enables unordered (bullet) lists. Users can create them via toolbar or by typing - or * at the start of a line.",
+      "editor": "DynamicValue",
+      "name": "ext_bulletlist",
+      "rank": 84,
+      "value": "boolean"
+    },
+    "codeblock_tabSize": {
+      "caption": "Tab size",
+      "default_val": 4,
+      "doc": "Number of spaces per Tab when Tab indentation is enabled.",
+      "editor": "StaticNumber",
+      "name": "codeblock_tabSize",
+      "optional": true,
+      "rank": 81
+    },
+    "AFO": {
+      "caption": "Unvisited link CSS override",
+      "doc": "Inject custom CSS for unvisited links (a:link). — Tip: use an 'arbitrary text' value for more room to write CSS.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "link_unvisited_adv",
+      "optional": true,
+      "rank": 120,
+      "value": "text"
+    },
+    "h2_info": {
+      "caption": "     ----- H2 styling -----",
+      "editor": "Label",
+      "name": "stylesheet_info_h2",
+      "rank": 40
+    },
+    "AED": {
+      "caption": "user_name",
+      "default_val": "John Doe",
+      "doc": "Name displayed to other users",
+      "editor": "DynamicValue",
+      "name": "collab_user_name",
+      "optional": true,
+      "rank": 209,
+      "value": "text"
     }
   },
   "has_reset_fn": false,
@@ -2339,98 +2348,12 @@
     "resizable": true
   },
   "states": {
-    "can_undo": {
-      "caption": "Can undo?",
-      "doc": "Whether there is an action that can be undone",
+    "AAr": {
+      "caption": "paragraph is a h3",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },
-      "is_list": false,
-      "name": "can_undo",
-      "value": "boolean"
-    },
-    "AGA": {
-      "caption": "File upload URLs",
-      "doc": "URLs of files that have been uploaded",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "is_list": true,
-      "name": "fileUploadUrls",
-      "value": "text"
-    },
-    "AEg": {
-      "caption": "paragraph is plain text",
-      "doc": "It's not a heading",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "body",
-      "value": "boolean"
-    },
-    "AFb": {
-      "caption": "Font family",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "font_family",
-      "value": "text"
-    },
-    "ACj": {
-      "caption": "Text is highlighted",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "highlight",
-      "value": "boolean"
-    },
-    "ABJ": {
-      "caption": "list item can be outdented",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "liftListItem",
-      "value": "boolean"
-    },
-    "ABL": {
-      "caption": "selection is a block quote",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "blockquote",
-      "value": "boolean"
-    },
-    "ABR": {
-      "caption": "selection is a task item",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "taskItem",
-      "value": "boolean"
-    },
-    "AAs": {
-      "caption": "paragraph is a h4",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "h4",
-      "value": "boolean"
-    },
-    "AFx": {
-      "caption": "File upload error message",
-      "doc": "If there is an error, it will be shown here",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "name": "fileUploadErrorMessage",
-      "value": "text"
-    },
-    "ACf": {
-      "caption": "Text is left aligned",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "align_left",
+      "name": "h3",
       "value": "boolean"
     },
     "AHh": {
@@ -2442,151 +2365,39 @@
       "name": "font_size",
       "value": "text"
     },
-    "ACg": {
-      "caption": "Text is center aligned",
+    "is_empty": {
+      "caption": "Is empty?",
+      "doc": "Whether the editor currently has no content",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },
-      "name": "align_center",
+      "is_list": false,
+      "name": "is_empty",
       "value": "boolean"
     },
-    "AAr": {
-      "caption": "paragraph is a h3",
+    "ACh": {
+      "caption": "Text is right aligned",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },
-      "name": "h3",
+      "name": "align_right",
       "value": "boolean"
     },
-    "ABQ": {
-      "caption": "selection is a task list",
+    "ABR": {
+      "caption": "selection is a task item",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },
-      "name": "taskList",
+      "name": "taskItem",
       "value": "boolean"
     },
-    "AFn": {
-      "caption": "selectedHTML",
-      "doc": "The current selection from block element to block element.",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "name": "selectedHTML",
-      "value": "text"
-    },
-    "invisible_characters_visible_state": {
-      "caption": "Invisible characters visible",
-      "doc": "Whether invisible characters are currently being shown in the editor.",
+    "ACB": {
+      "caption": "Character count",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },
-      "name": "invisible_characters_visible",
-      "value": "boolean"
-    },
-    "AFw": {
-      "caption": "File upload progress",
-      "doc": "Upload progress. From 0 to 1.",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "name": "fileUploadProgress",
+      "name": "characterCount",
       "value": "number"
-    },
-    "AAt": {
-      "caption": "paragraph is a h5",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "h5",
-      "value": "boolean"
-    },
-    "AHg": {
-      "caption": "selection is superscript",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "superscript",
-      "value": "boolean"
-    },
-    "AAn": {
-      "caption": "paragraph is a h1",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "h1",
-      "value": "boolean"
-    },
-    "collab_synced": {
-      "caption": "Collaboration synced?",
-      "doc": "Whether the collaboration document has synced with the server",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "collab_synced",
-      "value": "boolean"
-    },
-    "ACP": {
-      "caption": "is a link",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "link",
-      "value": "boolean"
-    },
-    "ACa": {
-      "caption": "Is ready",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "is_ready",
-      "value": "boolean"
-    },
-    "ACc": {
-      "caption": "Selected text",
-      "doc": "The current selected text",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "selected_text",
-      "value": "text"
-    },
-    "ACM": {
-      "caption": "Content (JSON)",
-      "doc": "Content as a JSON",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "contentJSON",
-      "value": "text"
-    },
-    "AFo": {
-      "caption": "selectedJSON",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "name": "selectedJSON",
-      "value": "text"
-    },
-    "can_redo": {
-      "caption": "Can redo?",
-      "doc": "Whether there is an action that can be redone",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "can_redo",
-      "value": "boolean"
-    },
-    "ABP": {
-      "caption": "Content (Plain Text)",
-      "doc": "Content in plain text",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "contentText",
-      "value": "text"
     },
     "AFJ": {
       "caption": "Test is justified",
@@ -2594,56 +2405,6 @@
         "fn": "function(properties, context) {}"
       },
       "name": "align_justified",
-      "value": "boolean"
-    },
-    "collab_connected_users": {
-      "caption": "Collaboration connected users",
-      "doc": "The number of users currently connected to this collaborative document",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "collab_connected_users",
-      "value": "number"
-    },
-    "ADE": {
-      "caption": "Is a table",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "table",
-      "value": "boolean"
-    },
-    "ACC": {
-      "caption": "Word count",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "wordCount",
-      "value": "number"
-    },
-    "AAu": {
-      "caption": "paragraph is a h6",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "h6",
-      "value": "boolean"
-    },
-    "AAS": {
-      "caption": "selection is bold",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "bold",
-      "value": "boolean"
-    },
-    "AAq": {
-      "caption": "paragraph is a h2",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "h2",
       "value": "boolean"
     },
     "ABn": {
@@ -2655,65 +2416,13 @@
       "name": "isFocused",
       "value": "boolean"
     },
-    "AAJ": {
-      "caption": "Content (HTML)",
-      "doc": "Returns the current editor document as HTML",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "contentHTML",
-      "value": "text"
-    },
-    "AFg": {
-      "caption": "selection begin position",
-      "doc": "The current selection's start",
+    "AFo": {
+      "caption": "selectedJSON",
       "initialization_code": {
         "fn": "function(properties, context) {\n\n\n\n}"
       },
-      "name": "from",
-      "value": "number"
-    },
-    "ACQ": {
-      "caption": "link's URL",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "url",
+      "name": "selectedJSON",
       "value": "text"
-    },
-    "ACh": {
-      "caption": "Text is right aligned",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "align_right",
-      "value": "boolean"
-    },
-    "ABB": {
-      "caption": "is a bullet list",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "bulletList",
-      "value": "boolean"
-    },
-    "ABt": {
-      "caption": "is editable",
-      "doc": "",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "isEditable",
-      "value": "boolean"
-    },
-    "AFh": {
-      "caption": "selection end position",
-      "doc": "The current selection's end",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "name": "to",
-      "value": "number"
     },
     "AHf": {
       "caption": "selection is subscript",
@@ -2723,91 +2432,23 @@
       "name": "subscript",
       "value": "boolean"
     },
-    "ACB": {
-      "caption": "Character count",
+    "AHg": {
+      "caption": "selection is superscript",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },
-      "name": "characterCount",
+      "name": "superscript",
+      "value": "boolean"
+    },
+    "collab_connected_users": {
+      "caption": "Collaboration connected users",
+      "doc": "The number of users currently connected to this collaborative document",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "collab_connected_users",
       "value": "number"
-    },
-    "collab_status": {
-      "caption": "Collaboration status",
-      "doc": "The current collaboration connection status: disconnected, connecting, connected, or synced",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "collab_status",
-      "value": "text"
-    },
-    "ABF": {
-      "caption": "list item can be indented",
-      "doc": "Sink or it can be indentend.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "sinkListItem",
-      "value": "boolean"
-    },
-    "AFl": {
-      "caption": "selectedContent",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "name": "selectedContent",
-      "value": "text"
-    },
-    "ADD": {
-      "caption": "Text is underlined",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "underline",
-      "value": "boolean"
-    },
-    "details_state": {
-      "caption": "selection is details",
-      "doc": "Whether the cursor is currently inside a details/accordion block.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "details",
-      "value": "boolean"
-    },
-    "is_empty": {
-      "caption": "Is empty?",
-      "doc": "Whether the editor currently has no content",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "is_empty",
-      "value": "boolean"
-    },
-    "AAk": {
-      "caption": "selection is italic",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "italic",
-      "value": "boolean"
-    },
-    "ABD": {
-      "caption": "is an ordered list",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "orderedList",
-      "value": "boolean"
-    },
-    "ABM": {
-      "caption": "selection is a code block",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "codeBlock",
-      "value": "boolean"
     },
     "AFa": {
       "caption": "Color of selection",
@@ -2823,6 +2464,374 @@
         "fn": "function(properties, context) {}"
       },
       "name": "strike",
+      "value": "boolean"
+    },
+    "ACf": {
+      "caption": "Text is left aligned",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "align_left",
+      "value": "boolean"
+    },
+    "AFg": {
+      "caption": "selection begin position",
+      "doc": "The current selection's start",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "name": "from",
+      "value": "number"
+    },
+    "ADD": {
+      "caption": "Text is underlined",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "underline",
+      "value": "boolean"
+    },
+    "ACM": {
+      "caption": "Content (JSON)",
+      "doc": "Content as a JSON",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "contentJSON",
+      "value": "text"
+    },
+    "ACa": {
+      "caption": "Is ready",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "is_ready",
+      "value": "boolean"
+    },
+    "ACg": {
+      "caption": "Text is center aligned",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "align_center",
+      "value": "boolean"
+    },
+    "AFw": {
+      "caption": "File upload progress",
+      "doc": "Upload progress. From 0 to 1.",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "name": "fileUploadProgress",
+      "value": "number"
+    },
+    "ACC": {
+      "caption": "Word count",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "wordCount",
+      "value": "number"
+    },
+    "invisible_characters_visible_state": {
+      "caption": "Invisible characters visible",
+      "doc": "Whether invisible characters are currently being shown in the editor.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "invisible_characters_visible",
+      "value": "boolean"
+    },
+    "ABD": {
+      "caption": "is an ordered list",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "orderedList",
+      "value": "boolean"
+    },
+    "ACQ": {
+      "caption": "link's URL",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "url",
+      "value": "text"
+    },
+    "can_redo": {
+      "caption": "Can redo?",
+      "doc": "Whether there is an action that can be redone",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "can_redo",
+      "value": "boolean"
+    },
+    "ABL": {
+      "caption": "selection is a block quote",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "blockquote",
+      "value": "boolean"
+    },
+    "ABF": {
+      "caption": "list item can be indented",
+      "doc": "Sink or it can be indentend.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "sinkListItem",
+      "value": "boolean"
+    },
+    "AAs": {
+      "caption": "paragraph is a h4",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "h4",
+      "value": "boolean"
+    },
+    "collab_synced": {
+      "caption": "Collaboration synced?",
+      "doc": "Whether the collaboration document has synced with the server",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "collab_synced",
+      "value": "boolean"
+    },
+    "ABJ": {
+      "caption": "list item can be outdented",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "liftListItem",
+      "value": "boolean"
+    },
+    "ABP": {
+      "caption": "Content (Plain Text)",
+      "doc": "Content in plain text",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "contentText",
+      "value": "text"
+    },
+    "ABt": {
+      "caption": "is editable",
+      "doc": "",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "isEditable",
+      "value": "boolean"
+    },
+    "AEg": {
+      "caption": "paragraph is plain text",
+      "doc": "It's not a heading",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "body",
+      "value": "boolean"
+    },
+    "AAJ": {
+      "caption": "Content (HTML)",
+      "doc": "Returns the current editor document as HTML",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "contentHTML",
+      "value": "text"
+    },
+    "ABQ": {
+      "caption": "selection is a task list",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "taskList",
+      "value": "boolean"
+    },
+    "ABM": {
+      "caption": "selection is a code block",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "codeBlock",
+      "value": "boolean"
+    },
+    "AFn": {
+      "caption": "selectedHTML",
+      "doc": "The current selection from block element to block element.",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "name": "selectedHTML",
+      "value": "text"
+    },
+    "AFh": {
+      "caption": "selection end position",
+      "doc": "The current selection's end",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "name": "to",
+      "value": "number"
+    },
+    "AAu": {
+      "caption": "paragraph is a h6",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "h6",
+      "value": "boolean"
+    },
+    "AFb": {
+      "caption": "Font family",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "font_family",
+      "value": "text"
+    },
+    "AAS": {
+      "caption": "selection is bold",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "bold",
+      "value": "boolean"
+    },
+    "ACc": {
+      "caption": "Selected text",
+      "doc": "The current selected text",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "selected_text",
+      "value": "text"
+    },
+    "can_undo": {
+      "caption": "Can undo?",
+      "doc": "Whether there is an action that can be undone",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "can_undo",
+      "value": "boolean"
+    },
+    "collab_status": {
+      "caption": "Collaboration status",
+      "doc": "The current collaboration connection status: disconnected, connecting, connected, or synced",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "collab_status",
+      "value": "text"
+    },
+    "AAq": {
+      "caption": "paragraph is a h2",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "h2",
+      "value": "boolean"
+    },
+    "ABB": {
+      "caption": "is a bullet list",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "bulletList",
+      "value": "boolean"
+    },
+    "AAt": {
+      "caption": "paragraph is a h5",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "h5",
+      "value": "boolean"
+    },
+    "AFl": {
+      "caption": "selectedContent",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "name": "selectedContent",
+      "value": "text"
+    },
+    "ADE": {
+      "caption": "Is a table",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "table",
+      "value": "boolean"
+    },
+    "details_state": {
+      "caption": "selection is details",
+      "doc": "Whether the cursor is currently inside a details/accordion block.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "details",
+      "value": "boolean"
+    },
+    "AGA": {
+      "caption": "File upload URLs",
+      "doc": "URLs of files that have been uploaded",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "is_list": true,
+      "name": "fileUploadUrls",
+      "value": "text"
+    },
+    "AFx": {
+      "caption": "File upload error message",
+      "doc": "If there is an error, it will be shown here",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "name": "fileUploadErrorMessage",
+      "value": "text"
+    },
+    "ACP": {
+      "caption": "is a link",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "link",
+      "value": "boolean"
+    },
+    "AAk": {
+      "caption": "selection is italic",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "italic",
+      "value": "boolean"
+    },
+    "ACj": {
+      "caption": "Text is highlighted",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "highlight",
+      "value": "boolean"
+    },
+    "AAn": {
+      "caption": "paragraph is a h1",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "h1",
       "value": "boolean"
     }
   },

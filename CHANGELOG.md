@@ -4,6 +4,17 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.7.1
+
+### ✨ AI Toolkit extension (#3)
+
+Added support for Tiptap's AI Toolkit (`@tiptap/ai-toolkit` v0.3.0), enabling server-side AI editing via `api.tiptap.dev/v4/ai/toolkit/*`.
+
+- **New "AI Toolkit" checkbox** on the element (off by default). When enabled, the `ServerAiToolkit` extension is registered, so the block-targeting attributes used by Tiptap's server-side AI API survive local editing — previously they were wiped as soon as someone typed.
+- Included with Tiptap's approval; the server-side API requires a paid Tiptap account.
+
+---
+
 ## v4.6.1
 
 ### Bug Fix — Image resize not persisting

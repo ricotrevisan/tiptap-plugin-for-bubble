@@ -13,6 +13,7 @@
         "@hocuspocus/provider": "^3.4.4",
         "@liveblocks/client": "^3.2.1",
         "@liveblocks/yjs": "^3.2.1",
+        "@tiptap/ai-toolkit": "^0.3.0",
         "@tiptap/core": "^3.0.9",
         "@tiptap/extension-blockquote": "^3.0.9",
         "@tiptap/extension-bold": "^3.0.9",
