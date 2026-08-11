@@ -5,6 +5,17 @@ instance.data._debug_mode = properties.debug_mode;
 instance.data._lastProperties = properties;
 instance.data._lastContext = context;
 
+// The AI Toolkit extension changes the editor schema, so toggling it requires
+// a full rebuild. Run this before collaboration prerequisite checks so disabling
+// it always clears stale context, even while a new JWT or document ID is loading.
+if (
+    instance.data.editor_is_ready &&
+    instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit
+) {
+    instance.data.debug("AI Toolkit extension changed — rebuilding editor");
+    instance.data.teardownEditor("AI Toolkit extension changed");
+}
+
 if (properties.collab_active === true && !properties.collab_jwt) {
     instance.data.debug("collab is active but auth token is not yet loaded. Returning...");
     if (!instance.data._jwtEmptyWarningShown) {
@@ -30,16 +41,6 @@ if (properties.collab_active && properties.bubble.auto_binding() && !instance.da
     context.reportDebugger(
         "Collaboration and auto-binding are both enabled. Auto-binding will be ignored while collaboration is active — the collaborative document is the source of truth.",
     );
-}
-
-// The AI Toolkit extension changes the editor schema, so toggling it requires
-// a full rebuild. This also clears any previously published editor context.
-if (
-    instance.data.editor_is_ready &&
-    instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit
-) {
-    instance.data.debug("AI Toolkit extension changed — rebuilding editor");
-    instance.data.teardownEditor("AI Toolkit extension changed");
 }
 
 // Detect collab_doc_id change and rebuild editor if needed
