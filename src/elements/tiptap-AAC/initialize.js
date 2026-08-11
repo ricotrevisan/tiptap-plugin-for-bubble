@@ -2059,6 +2059,7 @@ instance.data.setupEditor = function (properties, context) {
     try {
         instance.data.editor = new Editor(options);
         instance.data.isEditorSetup = true;
+        instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
         instance.data._currentCollabDocId = properties.collab_doc_id;
         instance.data.debug("editor instance created, waiting for onCreate");
     } catch (error) {

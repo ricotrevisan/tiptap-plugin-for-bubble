@@ -32,6 +32,16 @@ if (properties.collab_active && properties.bubble.auto_binding() && !instance.da
     );
 }
 
+// The AI Toolkit extension changes the editor schema, so toggling it requires
+// a full rebuild. This also clears any previously published editor context.
+if (
+    instance.data.editor_is_ready &&
+    instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit
+) {
+    instance.data.debug("AI Toolkit extension changed — rebuilding editor");
+    instance.data.teardownEditor("AI Toolkit extension changed");
+}
+
 // Detect collab_doc_id change and rebuild editor if needed
 if (
     instance.data.editor_is_ready &&
