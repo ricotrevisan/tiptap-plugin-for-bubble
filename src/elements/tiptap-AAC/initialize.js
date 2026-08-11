@@ -20,6 +20,7 @@ try {
     instance.publishState("is_empty", true);
     instance.publishState("can_undo", false);
     instance.publishState("can_redo", false);
+    instance.publishState("ai_editor_context", "");
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
     instance.publishState("collab_connected_users", 0);
@@ -583,6 +584,7 @@ try {
         instance.publishState("is_empty", true);
         instance.publishState("can_undo", false);
         instance.publishState("can_redo", false);
+        instance.publishState("ai_editor_context", "");
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
         instance.data.publishCollabStatus("disconnected");
@@ -1314,6 +1316,7 @@ instance.data.setupEditor = function (properties, context) {
         InvisibleCharacters,
         DragHandle,
         ServerAiToolkit,
+        getEditorContext,
     } = window.tiptap;
 
     // Store extension states for action files to reference
@@ -1861,6 +1864,20 @@ instance.data.setupEditor = function (properties, context) {
             // CharacterCount is always loaded as a core extension
             instance.publishState("characterCount", editor.storage.characterCount.characters());
             instance.publishState("wordCount", editor.storage.characterCount.words());
+
+            // AI Toolkit REST calls require editorContext generated from the exact
+            // extension configuration used by this live editor.
+            if (properties.ext_ai_toolkit) {
+                try {
+                    const editorContext = getEditorContext(editor);
+                    instance.publishState("ai_editor_context", JSON.stringify(editorContext));
+                } catch (error) {
+                    instance.publishState("ai_editor_context", "");
+                    const message = "Failed to generate AI editor context: " + (error?.message || error);
+                    instance.data.debug(message);
+                    context.reportDebugger(message);
+                }
+            }
 
             // Publish initial invisible characters state
             if (properties.ext_invisiblecharacters) {
