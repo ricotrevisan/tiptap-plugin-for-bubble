@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "build": "esbuild index.js --bundle --minify --outfile=dist.js"
+        "build": "esbuild index.js --bundle --minify --outfile=dist.js",
+        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs"
     },
     "keywords": [],
     "author": "Rico Trevisan",
@@ -69,5 +70,8 @@
         "tippy.js": "^6.3.7",
         "tiptap-extension-resizable": "^1.1.1",
         "yjs": "^13.6.27"
+    },
+    "devDependencies": {
+        "happy-dom": "^20.11.2"
     }
 }

@@ -20,6 +20,7 @@ try {
     instance.publishState("is_empty", true);
     instance.publishState("can_undo", false);
     instance.publishState("can_redo", false);
+    instance.publishState("ai_editor_context", "");
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
     instance.publishState("collab_connected_users", 0);
@@ -583,6 +584,7 @@ try {
         instance.publishState("is_empty", true);
         instance.publishState("can_undo", false);
         instance.publishState("can_redo", false);
+        instance.publishState("ai_editor_context", "");
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
         instance.data.publishCollabStatus("disconnected");
@@ -1234,8 +1236,19 @@ instance.data.setupEditor = function (properties, context) {
     instance.data.debug("starting editor setup");
 
     let initialContent = properties.bubble.auto_binding() ? properties.autobinding : properties.initialContent;
-    instance.data.initialContent = initialContent;
-    let content = properties.content_is_json ? JSON.parse(initialContent) : initialContent;
+
+    // A runtime AI Toolkit toggle tears down the editor and rebuilds it with a
+    // new schema. Rebuilding must not reset an unsaved local document back to
+    // this element's initialContent property. Prefer the preserved snapshot.
+    if (instance.data._pendingRebuildContent) {
+        instance.data.initialContent = instance.data._pendingRebuildInitialContent ?? initialContent;
+        content = instance.data._pendingRebuildContent;
+        instance.data._pendingRebuildContent = null;
+        instance.data._pendingRebuildInitialContent = null;
+    } else {
+        instance.data.initialContent = initialContent;
+        content = properties.content_is_json ? JSON.parse(initialContent) : initialContent;
+    }
 
     let placeholder = properties.placeholder;
     let bubbleMenu = properties.bubbleMenu;
@@ -1314,6 +1327,7 @@ instance.data.setupEditor = function (properties, context) {
         InvisibleCharacters,
         DragHandle,
         ServerAiToolkit,
+        getEditorContext,
     } = window.tiptap;
 
     // Store extension states for action files to reference
@@ -1862,6 +1876,20 @@ instance.data.setupEditor = function (properties, context) {
             instance.publishState("characterCount", editor.storage.characterCount.characters());
             instance.publishState("wordCount", editor.storage.characterCount.words());
 
+            // AI Toolkit REST calls require editorContext generated from the exact
+            // extension configuration used by this live editor.
+            if (properties.ext_ai_toolkit) {
+                try {
+                    const editorContext = getEditorContext(editor);
+                    instance.publishState("ai_editor_context", JSON.stringify(editorContext));
+                } catch (error) {
+                    instance.publishState("ai_editor_context", "");
+                    const message = "Failed to generate AI editor context: " + (error?.message || error);
+                    instance.data.debug(message);
+                    context.reportDebugger(message);
+                }
+            }
+
             // Publish initial invisible characters state
             if (properties.ext_invisiblecharacters) {
                 instance.publishState("invisible_characters_visible", properties.invisiblecharacters_visible !== false);
@@ -2042,6 +2070,7 @@ instance.data.setupEditor = function (properties, context) {
     try {
         instance.data.editor = new Editor(options);
         instance.data.isEditorSetup = true;
+        instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
         instance.data._currentCollabDocId = properties.collab_doc_id;
         instance.data.debug("editor instance created, waiting for onCreate");
     } catch (error) {

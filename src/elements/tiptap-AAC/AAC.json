@@ -2500,6 +2500,15 @@
       "name": "contentJSON",
       "value": "text"
     },
+    "ai_editor_context": {
+      "caption": "AI editor context (JSON)",
+      "doc": "The editor context required by Tiptap AI Toolkit REST calls, generated from this editor's active extension configuration when AI Toolkit is enabled.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "ai_editor_context",
+      "value": "text"
+    },
     "ACa": {
       "caption": "Is ready",
       "initialization_code": {
