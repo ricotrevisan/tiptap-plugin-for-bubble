@@ -4,6 +4,17 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.7.2
+
+### AI Toolkit editor context (#6)
+
+- Added the **AI editor context (JSON)** state. When **AI Toolkit** is enabled, it contains the `editorContext` generated from that editor's actual extension configuration for use with Tiptap's server-side AI Toolkit API.
+- The state stays empty while AI Toolkit is disabled and is cleared during editor teardown or schema rebuilds.
+- Toggling AI Toolkit rebuilds the editor schema without discarding the current unsaved local document.
+- This release exposes the required editor context only. It does not call Tiptap's API, sign JWTs, execute AI tools, or include an AI-provider integration. Tiptap's server-side AI Toolkit requires a compatible paid Tiptap account.
+
+---
+
 ## v4.7.1
 
 ### ✨ AI Toolkit extension (#3)

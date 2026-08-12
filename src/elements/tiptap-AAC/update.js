@@ -13,6 +13,11 @@ if (
     instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit
 ) {
     instance.data.debug("AI Toolkit extension changed — rebuilding editor");
+    // Rebuilding changes the schema, but it must not reset an unsaved local
+    // document back to the element's initialContent property.
+    if (!properties.collab_active && instance.data.editor) {
+        instance.data._pendingRebuildContent = instance.data.editor.getJSON();
+    }
     instance.data.teardownEditor("AI Toolkit extension changed");
 }
 

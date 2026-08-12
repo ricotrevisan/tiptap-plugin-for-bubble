@@ -1237,7 +1237,13 @@ instance.data.setupEditor = function (properties, context) {
 
     let initialContent = properties.bubble.auto_binding() ? properties.autobinding : properties.initialContent;
     instance.data.initialContent = initialContent;
-    let content = properties.content_is_json ? JSON.parse(initialContent) : initialContent;
+    let content;
+    if (instance.data._pendingRebuildContent) {
+        content = instance.data._pendingRebuildContent;
+        instance.data._pendingRebuildContent = null;
+    } else {
+        content = properties.content_is_json ? JSON.parse(initialContent) : initialContent;
+    }
 
     let placeholder = properties.placeholder;
     let bubbleMenu = properties.bubbleMenu;
