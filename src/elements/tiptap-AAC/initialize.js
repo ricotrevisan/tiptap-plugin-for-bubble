@@ -1236,12 +1236,17 @@ instance.data.setupEditor = function (properties, context) {
     instance.data.debug("starting editor setup");
 
     let initialContent = properties.bubble.auto_binding() ? properties.autobinding : properties.initialContent;
-    instance.data.initialContent = initialContent;
-    let content;
+
+    // A runtime AI Toolkit toggle tears down the editor and rebuilds it with a
+    // new schema. Rebuilding must not reset an unsaved local document back to
+    // this element's initialContent property. Prefer the preserved snapshot.
     if (instance.data._pendingRebuildContent) {
+        instance.data.initialContent = instance.data._pendingRebuildInitialContent ?? initialContent;
         content = instance.data._pendingRebuildContent;
         instance.data._pendingRebuildContent = null;
+        instance.data._pendingRebuildInitialContent = null;
     } else {
+        instance.data.initialContent = initialContent;
         content = properties.content_is_json ? JSON.parse(initialContent) : initialContent;
     }
 
