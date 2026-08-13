@@ -4,5 +4,5 @@ if (!instance.data.editor_is_ready)
 if (instance.data.ext.lineheight) {
     instance.data.editor.chain().focus().unsetLineHeight().run();
 } else {
-    console.log("tried to unset line height but Line Height extension is not active.");
+    return instance.data.returnAndReportErrorIfExtensionNotActive("Unset line height", "Line Height");
 }

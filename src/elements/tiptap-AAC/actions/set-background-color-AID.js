@@ -6,5 +6,5 @@ if (instance.data.ext.backgroundcolor) {
     if (!background_color) return;
     instance.data.editor.chain().focus().setBackgroundColor(background_color).run();
 } else {
-    console.log("tried to set background color but Background Color extension is not active.");
+    return instance.data.returnAndReportErrorIfExtensionNotActive("Set background color", "Background Color");
 }

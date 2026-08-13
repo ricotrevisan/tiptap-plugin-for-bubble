@@ -491,6 +491,17 @@ try {
     }
     instance.data.returnAndReportErrorIfEditorNotReady = returnAndReportErrorIfEditorNotReady;
 
+    function returnAndReportErrorIfExtensionNotActive(actionName, extensionName) {
+        const message =
+            "Tried to run '" + actionName + "' but the " + extensionName +
+            " extension is not enabled. Enable it on the Tiptap element (Extensions > " +
+            extensionName + ") first. Returning";
+        instance.data.debug(message);
+        context.reportDebugger(message);
+        return;
+    }
+    instance.data.returnAndReportErrorIfExtensionNotActive = returnAndReportErrorIfExtensionNotActive;
+
     // Helper to set initial content on a new (empty) collab document.
     // Called from both the provider's onSynced and the editor's onCreate,
     // because either can fire first depending on network timing.

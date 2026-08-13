@@ -6,5 +6,5 @@ if (instance.data.ext.lineheight) {
     if (!line_height) return;
     instance.data.editor.chain().focus().setLineHeight(line_height).run();
 } else {
-    console.log("tried to set line height but Line Height extension is not active.");
+    return instance.data.returnAndReportErrorIfExtensionNotActive("Set line height", "Line Height");
 }

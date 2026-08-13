@@ -4,5 +4,5 @@ if (!instance.data.editor_is_ready)
 if (instance.data.ext.backgroundcolor) {
     instance.data.editor.chain().focus().unsetBackgroundColor().run();
 } else {
-    console.log("tried to unset background color but Background Color extension is not active.");
+    return instance.data.returnAndReportErrorIfExtensionNotActive("Unset background color", "Background Color");
 }
