@@ -4,6 +4,18 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.8.0
+
+### Line height & background color (#10)
+
+- Added **Line Height** and **Background Color** support, closing the formatting-parity gap next to the existing text color and font controls.
+- New element toggles: **Line Height** (`ext_lineheight`) and **Background Color** (`ext_backgroundcolor`), both off by default.
+- New workflow actions: **Set line height** / **Unset line height** and **Set background color** / **Unset background color**.
+- New states: **Line height** and **Background color**, mirroring the existing `color` / `font_size` / `font_family` states.
+- Both features apply as inline styles on the text-style mark and round-trip correctly through HTML and JSON. No new dependency — they're sub-exports of `@tiptap/extension-text-style`, already bundled.
+
+---
+
 ## v4.7.2
 
 ### AI Toolkit editor context (#6)
