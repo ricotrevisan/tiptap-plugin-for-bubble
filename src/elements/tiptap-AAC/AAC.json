@@ -425,6 +425,42 @@
     "ABK": {
       "caption": "Blockquote",
       "doc": ""
+    },
+    "AIA": {
+      "caption": "Set line height",
+      "doc": "Sets the line height on the current selection, applied as an inline style. Values can be a unitless number (e.g. \"1.5\") or a CSS length (e.g. \"24px\").",
+      "fields": {
+        "AIB": {
+          "caption": "Line height",
+          "default_val": "1.5",
+          "doc": "CSS line-height value, e.g. \"1.5\", \"24px\", \"1.2rem\".",
+          "editor": "DynamicValue",
+          "name": "line_height",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
+    "AIC": {
+      "caption": "Unset line height",
+      "doc": "Removes the line height from the current selection, reverting to the default."
+    },
+    "AID": {
+      "caption": "Set background color",
+      "doc": "Sets the text background color on the current selection, applied as an inline style. Distinct from text color and the highlight mark.",
+      "fields": {
+        "AIE": {
+          "caption": "Background color",
+          "default_val": "rgba(255, 204, 0, 1)",
+          "editor": "Color",
+          "name": "background_color",
+          "rank": 0
+        }
+      }
+    },
+    "AIF": {
+      "caption": "Unset background color",
+      "doc": "Removes the text background color from the current selection."
     }
   },
   "add_hover_pressed": true,
@@ -2334,6 +2370,24 @@
       "optional": true,
       "rank": 209,
       "value": "text"
+    },
+    "ext_lineheight": {
+      "caption": "Line Height",
+      "default_val": false,
+      "doc": "Allows setting the line height on text selections. Use the \"Set line height\" action to apply a value (e.g. \"1.5\", \"24px\"). Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_lineheight",
+      "rank": 27,
+      "value": "boolean"
+    },
+    "ext_backgroundcolor": {
+      "caption": "Background Color",
+      "default_val": false,
+      "doc": "Allows setting the text background color on selections. Use the \"Set background color\" action to apply a color. Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_backgroundcolor",
+      "rank": 28,
+      "value": "boolean"
     }
   },
   "has_reset_fn": false,
@@ -2842,6 +2896,24 @@
       },
       "name": "h1",
       "value": "boolean"
+    },
+    "AIG": {
+      "caption": "Line height",
+      "doc": "The line height of the current selection, if set via the Line Height extension.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "line_height",
+      "value": "text"
+    },
+    "AIH": {
+      "caption": "Background color",
+      "doc": "The text background color of the current selection, if set via the Background Color extension.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "background_color",
+      "value": "text"
     }
   },
   "support_autobinding": true

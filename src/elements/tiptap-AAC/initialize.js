@@ -1140,17 +1140,13 @@ function publishActiveStates(editor) {
     }
     instance.publishState("color", instance.data.textStyleColor);
 
-    if (textStyle && textStyle.fontFamily) {
-        instance.publishState("font_family", textStyle.fontFamily);
-    } else {
-        instance.publishState("font_family", "");
-    }
-
-    if (textStyle && textStyle.fontSize) {
-        instance.publishState("font_size", textStyle.fontSize);
-    } else {
-        instance.publishState("font_size", "");
-    }
+    const publishTextStyleAttr = (attr, stateName) => {
+        instance.publishState(stateName, textStyle && textStyle[attr] ? textStyle[attr] : "");
+    };
+    publishTextStyleAttr("fontFamily", "font_family");
+    publishTextStyleAttr("fontSize", "font_size");
+    publishTextStyleAttr("lineHeight", "line_height");
+    publishTextStyleAttr("backgroundColor", "background_color");
 }
 instance.data.publishActiveStates = publishActiveStates;
 
@@ -1293,6 +1289,8 @@ instance.data.setupEditor = function (properties, context) {
         FontFamily,
         Color,
         TextStyle,
+        LineHeight,
+        BackgroundColor,
         TextAlign,
         Highlight,
         Image,
@@ -1340,6 +1338,8 @@ instance.data.setupEditor = function (properties, context) {
         highlight: properties.ext_highlight,
         fontfamily: properties.ext_fontfamily,
         color: properties.ext_color,
+        lineheight: properties.ext_lineheight,
+        backgroundcolor: properties.ext_backgroundcolor,
         heading: properties.ext_heading,
         blockquote: properties.ext_blockquote,
         horizontalrule: properties.ext_horizontalrule,
@@ -1439,6 +1439,8 @@ instance.data.setupEditor = function (properties, context) {
     if (properties.ext_strike) extensions.push(Strike);
     if (properties.ext_fontfamily) extensions.push(FontFamily);
     if (properties.ext_color) extensions.push(Color);
+    if (properties.ext_lineheight) extensions.push(LineHeight);
+    if (properties.ext_backgroundcolor) extensions.push(BackgroundColor);
     if (properties.ext_heading) extensions.push(Heading.configure({ levels: instance.data.headings }));
     if (properties.ext_bulletlist) extensions.push(BulletList.configure({
         keepMarks: properties.list_keepMarks || false,
