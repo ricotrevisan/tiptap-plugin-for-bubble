@@ -5,25 +5,30 @@ instance.data._debug_mode = properties.debug_mode;
 instance.data._lastProperties = properties;
 instance.data._lastContext = context;
 
-// The AI Toolkit extension changes the editor schema, so toggling it requires
-// a full rebuild. Run this before collaboration prerequisite checks so disabling
-// it always clears stale context, even while a new JWT or document ID is loading.
+// Construction-time extensions require a full rebuild when their dynamic
+// Bubble toggle changes. Run this before collaboration prerequisite checks so
+// disabling one always clears stale state, even while credentials are loading.
 // Gate on isEditorSetup (not editor_is_ready) so a toggle that arrives while the
 // editor is still being created asynchronously is not silently lost.
-if (
-    instance.data.isEditorSetup &&
-    instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit
-) {
-    instance.data.debug("AI Toolkit extension changed — rebuilding editor");
-    // Rebuilding changes the schema, but it must not reset an unsaved local
-    // document back to the element's initialContent property. Record the prior
-    // initialContent too so a simultaneous initialContent change in this same
-    // update is still applied after the rebuild instead of being swallowed.
+const aiToolkitChanged =
+    instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit;
+const findReplaceChanged =
+    instance.data._currentFindReplaceEnabled !== !!properties.ext_find_replace;
+if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged)) {
+    const changedExtensions = [];
+    if (aiToolkitChanged) changedExtensions.push("AI Toolkit");
+    if (findReplaceChanged) changedExtensions.push("Find & Replace");
+    const rebuildReason = changedExtensions.join(" and ") + " extension changed";
+    instance.data.debug(rebuildReason + " — rebuilding editor");
+
+    // Rebuilding must not reset an unsaved local document back to the element's
+    // initialContent property. Record the prior initialContent too so a
+    // simultaneous property change is still applied after the rebuild.
     if (!properties.collab_active && instance.data.editor_is_ready && instance.data.editor) {
         instance.data._pendingRebuildContent = instance.data.editor.getJSON();
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
     }
-    instance.data.teardownEditor("AI Toolkit extension changed");
+    instance.data.teardownEditor(rebuildReason);
 }
 
 if (properties.collab_active === true && !properties.collab_jwt) {

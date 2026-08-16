@@ -16,11 +16,24 @@ try {
     // this boolean turns true when the editor is initialized and ready.
     instance.data.editor_is_ready = false;
 
+    instance.data.emptyFindReplaceState = function () {
+        return {
+            searchTerm: "",
+            replaceTerm: "",
+            currentMatch: 0,
+            matchCount: 0,
+            caseSensitive: false,
+            useRegex: false,
+            wholeWord: false,
+        };
+    };
+
     instance.publishState("is_ready", false);
     instance.publishState("is_empty", true);
     instance.publishState("can_undo", false);
     instance.publishState("can_redo", false);
     instance.publishState("ai_editor_context", "");
+    instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
     instance.publishState("collab_connected_users", 0);
@@ -596,6 +609,7 @@ try {
         instance.publishState("can_undo", false);
         instance.publishState("can_redo", false);
         instance.publishState("ai_editor_context", "");
+        instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
         instance.data.publishCollabStatus("disconnected");
@@ -1102,6 +1116,26 @@ instance.data.rgbToHex = function (colorString) {
     return hex;
 };
 
+// Publish the Find & Replace extension storage as one JSON state so Bubble
+// workflows can render their own search UI without reaching into the editor.
+function publishFindReplaceState(editor) {
+    const storage = editor.storage.findAndReplace;
+    const state = storage
+        ? {
+            searchTerm: storage.searchTerm,
+            replaceTerm: storage.replaceTerm,
+            currentMatch: storage.currentIndex === null ? 0 : storage.currentIndex + 1,
+            matchCount: storage.results.length,
+            caseSensitive: storage.caseSensitive,
+            useRegex: storage.useRegex,
+            wholeWord: storage.wholeWord,
+        }
+        : instance.data.emptyFindReplaceState();
+
+    instance.publishState("find_replace_state", JSON.stringify(state));
+}
+instance.data.publishFindReplaceState = publishFindReplaceState;
+
 // Publish all formatting-related active states for the current cursor/selection.
 // Called from both onTransaction and onSelectionUpdate to avoid duplication.
 function publishActiveStates(editor) {
@@ -1335,6 +1369,7 @@ instance.data.setupEditor = function (properties, context) {
         DetailsSummary,
         InvisibleCharacters,
         DragHandle,
+        FindAndReplace,
         ServerAiToolkit,
         getEditorContext,
     } = window.tiptap;
@@ -1378,6 +1413,7 @@ instance.data.setupEditor = function (properties, context) {
         details: properties.ext_details,
         invisiblecharacters: properties.ext_invisiblecharacters,
         draghandle: properties.ext_draghandle,
+        findreplace: properties.ext_find_replace,
     };
 
     // parse heading levels
@@ -1441,6 +1477,9 @@ instance.data.setupEditor = function (properties, context) {
     if (properties.ext_focus) extensions.push(Focus.configure({ className: "has-focus", mode: properties.ext_focus_mode || "deepest" }));
     if (properties.ext_selection) extensions.push(Selection);
     if (properties.ext_ai_toolkit) extensions.push(ServerAiToolkit);
+    if (properties.ext_find_replace) {
+        extensions.push(FindAndReplace.configure({ searchDebounceMs: 0 }));
+    }
     if (properties.ext_hardbreak) {
         extensions.push(HardBreak.configure({ keepMarks: properties.hardBreakKeepMarks }));
     }
@@ -1888,6 +1927,7 @@ instance.data.setupEditor = function (properties, context) {
             // CharacterCount is always loaded as a core extension
             instance.publishState("characterCount", editor.storage.characterCount.characters());
             instance.publishState("wordCount", editor.storage.characterCount.words());
+            instance.data.publishFindReplaceState(editor);
 
             // AI Toolkit REST calls require editorContext generated from the exact
             // extension configuration used by this live editor.
@@ -1982,6 +2022,7 @@ instance.data.setupEditor = function (properties, context) {
         onTransaction({ editor, transaction }) {
             instance.data.getSelection(editor);
             instance.data.publishActiveStates(editor);
+            instance.data.publishFindReplaceState(editor);
             instance.publishState("is_empty", editor.isEmpty);
             instance.publishState("can_undo", editor.can().undo());
             instance.publishState("can_redo", editor.can().redo());
@@ -2084,6 +2125,7 @@ instance.data.setupEditor = function (properties, context) {
         instance.data.editor = new Editor(options);
         instance.data.isEditorSetup = true;
         instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
+        instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
         instance.data._currentCollabDocId = properties.collab_doc_id;
         instance.data.debug("editor instance created, waiting for onCreate");
     } catch (error) {
