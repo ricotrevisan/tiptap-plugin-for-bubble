@@ -18,7 +18,7 @@ The plugin does not include an AI model provider or chat interface. You can use 
 
 ## Prerequisites
 
-- Update the Bubble plugin to **v4.9.0**
+- Update the Bubble plugin to the version containing the **Server AI Toolkit bridge beta**
 - A Tiptap environment with the Server AI Toolkit entitlement
 - Its Access Control environment ID and ES256 PKCS#8 private key
 - A Bubble test page—please do not start with production data
@@ -133,7 +133,7 @@ Expected:
 Reply with:
 
 ```text
-Plugin version: 4.9.0
+Plugin version:
 Browser:
 Tiptap environment type: Cloud / on-prem
 Inline fetch-tools: pass / fail

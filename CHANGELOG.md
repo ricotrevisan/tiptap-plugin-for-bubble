@@ -4,13 +4,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## v4.9.0
-
-### Find & Replace (#12)
-
-- Added opt-in **Find**, **Replace**, and **Replace all** element actions.
-- Added a `find_replace_state` JSON state for match count, current match, search options, and Bubble-driven search interfaces.
-- Supports case sensitivity, whole-word matching, RE2-compatible regular expressions, directional navigation, and wrapped results.
+## Unreleased
 
 ### Functional Server AI Toolkit bridge — beta (#5)
 
