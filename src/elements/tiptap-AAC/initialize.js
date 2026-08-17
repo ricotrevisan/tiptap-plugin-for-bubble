@@ -28,14 +28,18 @@ try {
         };
     };
 
+    instance.data.resetTableOfContentsState = function () {
+        instance.data._tableOfContentsJSON = "[]";
+        instance.publishState("table_of_contents", instance.data._tableOfContentsJSON);
+    };
+
     instance.publishState("is_ready", false);
     instance.publishState("is_empty", true);
     instance.publishState("can_undo", false);
     instance.publishState("can_redo", false);
     instance.publishState("ai_editor_context", "");
     instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
-    instance.data._tableOfContentsJSON = "[]";
-    instance.publishState("table_of_contents", instance.data._tableOfContentsJSON);
+    instance.data.resetTableOfContentsState();
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
     instance.publishState("collab_connected_users", 0);
@@ -612,8 +616,7 @@ try {
         instance.publishState("can_redo", false);
         instance.publishState("ai_editor_context", "");
         instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
-        instance.data._tableOfContentsJSON = "[]";
-        instance.publishState("table_of_contents", instance.data._tableOfContentsJSON);
+        instance.data.resetTableOfContentsState();
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
         instance.data.publishCollabStatus("disconnected");
@@ -1167,6 +1170,16 @@ function publishTableOfContentsState(editor, anchors, forceEvent = false) {
     }
 }
 instance.data.publishTableOfContentsState = publishTableOfContentsState;
+
+function scrollToTableOfContentsHeading(headingId, options) {
+    const headings = instance.data.editor.storage.tableOfContents?.content || [];
+    const heading = headings.find((item) => item.id === headingId);
+
+    if (!heading) return false;
+    heading.dom.scrollIntoView(options);
+    return true;
+}
+instance.data.scrollToTableOfContentsHeading = scrollToTableOfContentsHeading;
 
 // Publish all formatting-related active states for the current cursor/selection.
 // Called from both onTransaction and onSelectionUpdate to avoid duplication.
