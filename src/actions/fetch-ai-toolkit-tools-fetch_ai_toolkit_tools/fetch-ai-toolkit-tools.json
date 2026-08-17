@@ -1,0 +1,79 @@
+{
+  "category": "data (things)",
+  "code": {
+    "automatically_added_packages": "{\"jsonwebtoken\":\"latest\"}",
+    "package": {
+      "fn": "{\n    \"dependencies\": {\n        \"jsonwebtoken\": \"^9.0.2\"\n    }\n}",
+      "invalid_package": false,
+      "package_hash": "",
+      "package_status": "to_install"
+    },
+    "package_hash": "",
+    "package_status": "to_install",
+    "package_used": true,
+    "server": {
+      "fn": "async function(properties, context)"
+    }
+  },
+  "display": "Fetch AI Toolkit tools",
+  "doc": "Securely fetches Tiptap Server AI Toolkit v4 tool definitions. Configure Tiptap AI credentials in the plugin settings. All tools are disabled unless named in the explicit allowlist.",
+  "fields": {
+    "editor_context_json": {
+      "caption": "AI editor context (JSON)",
+      "doc": "Use the Tiptap element's AI editor context state. AI Toolkit compatibility must be enabled so hashes survive later edits.",
+      "editor": "DynamicValue",
+      "long_text": true,
+      "name": "editor_context_json",
+      "rank": 0,
+      "value": "text"
+    },
+    "tool_allowlist": {
+      "caption": "Tool allowlist (comma-separated)",
+      "doc": "Exact v4 tool names to enable. Supported: tiptapRead, tiptapEdit, getThreads, editThreads, readDocument, readSelection, proofread. Leave empty to enable no tools. Start with tiptapRead,tiptapEdit for the common read/edit workflow.",
+      "editor": "DynamicValue",
+      "name": "tool_allowlist",
+      "optional": true,
+      "rank": 1,
+      "value": "text"
+    }
+  },
+  "return_value": {
+    "success": {
+      "caption": "success",
+      "name": "success",
+      "rank": 0,
+      "value": "boolean"
+    },
+    "status_code": {
+      "caption": "status code",
+      "name": "status_code",
+      "rank": 1,
+      "value": "number"
+    },
+    "error_code": {
+      "caption": "error code",
+      "name": "error_code",
+      "rank": 2,
+      "value": "text"
+    },
+    "error_message": {
+      "caption": "error message",
+      "name": "error_message",
+      "rank": 3,
+      "value": "text"
+    },
+    "system_prompt": {
+      "caption": "system prompt",
+      "name": "system_prompt",
+      "rank": 4,
+      "value": "text"
+    },
+    "tools_json": {
+      "caption": "tool definitions (JSON)",
+      "name": "tools_json",
+      "rank": 5,
+      "value": "text"
+    }
+  },
+  "type": "server_side"
+}

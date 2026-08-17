@@ -1,0 +1,138 @@
+{
+  "category": "data (things)",
+  "code": {
+    "automatically_added_packages": "{\"jsonwebtoken\":\"latest\"}",
+    "package": {
+      "fn": "{\n    \"dependencies\": {\n        \"jsonwebtoken\": \"^9.0.2\"\n    }\n}",
+      "invalid_package": false,
+      "package_hash": "",
+      "package_status": "to_install"
+    },
+    "package_hash": "",
+    "package_status": "to_install",
+    "package_used": true,
+    "server": {
+      "fn": "async function(properties, context)"
+    }
+  },
+  "display": "Execute AI Toolkit tool",
+  "doc": "Securely executes one non-streaming Tiptap Server AI Toolkit v4 tool call. Inline mode returns updated Tiptap document JSON for the existing Set content action. Collaborative mode updates the scoped Tiptap Cloud document; connected editors receive the change through collaboration.",
+  "fields": {
+    "editor_context_json": {
+      "caption": "AI editor context (JSON)",
+      "doc": "Use the Tiptap element's AI editor context state.",
+      "editor": "DynamicValue",
+      "long_text": true,
+      "name": "editor_context_json",
+      "rank": 0,
+      "value": "text"
+    },
+    "tool_call_json": {
+      "caption": "Tool call (JSON)",
+      "doc": "The selected LLM tool call as {\"name\":\"tiptapEdit\",\"input\":{...}}. Optional developer configuration belongs in \"config\"; model-generated arguments belong in \"input\".",
+      "editor": "DynamicValue",
+      "long_text": true,
+      "name": "tool_call_json",
+      "rank": 1,
+      "value": "text"
+    },
+    "document_mode": {
+      "caption": "Document mode",
+      "default_val": "Inline",
+      "doc": "Inline sends document JSON and returns updated JSON. Collaborative targets a Tiptap Cloud document and relies on the existing collaboration connection for updates.",
+      "editor": "Dropdown",
+      "name": "document_mode",
+      "options": "Inline,Collaborative",
+      "rank": 2
+    },
+    "inline_document_json": {
+      "caption": "Inline document (JSON)",
+      "doc": "Required in Inline mode. Use the editor's content JSON state.",
+      "editor": "DynamicValue",
+      "long_text": true,
+      "name": "inline_document_json",
+      "optional": true,
+      "rank": 3,
+      "value": "text"
+    },
+    "collaborative_document_id": {
+      "caption": "Collaborative document ID",
+      "doc": "Required in Collaborative mode. Documents:Write permission is scoped to this exact ID.",
+      "editor": "DynamicValue",
+      "name": "collaborative_document_id",
+      "optional": true,
+      "rank": 4,
+      "value": "text"
+    },
+    "collaborative_field": {
+      "caption": "Collaborative field",
+      "default_val": "default",
+      "doc": "Optional Y.js field within the cloud document. Leave as default unless the document has multiple editable fields.",
+      "editor": "DynamicValue",
+      "name": "collaborative_field",
+      "optional": true,
+      "rank": 5,
+      "value": "text"
+    },
+    "user_id": {
+      "caption": "User ID",
+      "doc": "Optional identifier attributed to AI edits for auditability.",
+      "editor": "DynamicValue",
+      "name": "user_id",
+      "optional": true,
+      "rank": 6,
+      "value": "text"
+    }
+  },
+  "return_value": {
+    "success": {
+      "caption": "success",
+      "name": "success",
+      "rank": 0,
+      "value": "boolean"
+    },
+    "status_code": {
+      "caption": "status code",
+      "name": "status_code",
+      "rank": 1,
+      "value": "number"
+    },
+    "error_code": {
+      "caption": "error code",
+      "name": "error_code",
+      "rank": 2,
+      "value": "text"
+    },
+    "error_message": {
+      "caption": "error message",
+      "name": "error_message",
+      "rank": 3,
+      "value": "text"
+    },
+    "tool_result_json": {
+      "caption": "tool result (JSON)",
+      "name": "tool_result_json",
+      "rank": 4,
+      "value": "text"
+    },
+    "tool_output_json": {
+      "caption": "tool output (JSON)",
+      "name": "tool_output_json",
+      "rank": 5,
+      "value": "text"
+    },
+    "document_changed": {
+      "caption": "document changed",
+      "name": "document_changed",
+      "rank": 6,
+      "value": "boolean"
+    },
+    "updated_document_json": {
+      "caption": "updated inline document (JSON)",
+      "name": "updated_document_json",
+      "rank": 7,
+      "value": "text"
+    }
+  },
+  "type": "server_side"
+}

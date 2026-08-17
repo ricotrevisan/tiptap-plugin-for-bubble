@@ -15,6 +15,7 @@ try {
 
     // this boolean turns true when the editor is initialized and ready.
     instance.data.editor_is_ready = false;
+    instance.data._aiContextGeneration = 0;
 
     instance.data.emptyFindReplaceState = function () {
         return {
@@ -33,6 +34,7 @@ try {
     instance.publishState("can_undo", false);
     instance.publishState("can_redo", false);
     instance.publishState("ai_editor_context", "");
+    instance.publishState("ai_context_error", "");
     instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
@@ -599,9 +601,10 @@ try {
         instance.data._collabRetryPending = false;
         instance.data._currentCollabDocId = null;
 
-        // Reset flags for re-initialization
+        // Reset flags for re-initialization and invalidate any lazy AI context load.
         instance.data.isEditorSetup = false;
         instance.data.editor_is_ready = false;
+        instance.data._aiContextGeneration++;
 
         // Publish states - reset to initial values
         instance.publishState("is_ready", false);
@@ -609,6 +612,7 @@ try {
         instance.publishState("can_undo", false);
         instance.publishState("can_redo", false);
         instance.publishState("ai_editor_context", "");
+        instance.publishState("ai_context_error", "");
         instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
@@ -1270,6 +1274,85 @@ function getSelection(editor) {
 }
 instance.data.getSelection = getSelection;
 
+// Single Bubble-facing seam for automatic and manual AI editor-context
+// generation. Keeping publication/event/error handling here ensures every
+// workflow observes the same lifecycle.
+instance.data.refreshAiEditorContext = async function (refreshContext = context) {
+    const editor = instance.data.editor;
+    const generation = ++instance.data._aiContextGeneration;
+    const aiCompatibilityActive = !!editor?.extensionManager?.extensions?.some(
+        (extension) => extension.name === "serverAiToolkit" || extension.name === "serverAiToolkitHash",
+    );
+
+    if (!instance.data.editor_is_ready || !editor) {
+        const message = "Cannot generate AI editor context because the editor is not ready.";
+        instance.publishState("ai_editor_context", "");
+        instance.publishState("ai_context_error", message);
+        instance.triggerEvent("ai_editor_context_failed");
+        refreshContext.reportDebugger(message);
+        return false;
+    }
+
+    if (!aiCompatibilityActive) {
+        const message =
+            "AI Toolkit compatibility is not enabled. Enable it before generating context so required _hash attributes survive editor round-trips.";
+        instance.publishState("ai_editor_context", "");
+        instance.publishState("ai_context_error", message);
+        instance.triggerEvent("ai_editor_context_failed");
+        refreshContext.reportDebugger(message);
+        return false;
+    }
+
+    try {
+        const getEditorContext = await window.tiptap.loadAiEditorContextGenerator();
+        if (generation !== instance.data._aiContextGeneration || editor !== instance.data.editor) return false;
+        const editorContext = getEditorContext(editor);
+
+        // customDiv is owned by this plugin rather than @tiptap/ai-toolkit.
+        // Describe it here so the server sees every node the active editor can emit.
+        const customDivActive = editor.extensionManager.extensions.some((extension) => extension.name === "customDiv");
+        if (customDivActive && !editorContext.items.some((item) => item.extensionName === "customDiv")) {
+            editorContext.items.push({
+                extensionName: "customDiv",
+                name: "Custom Div",
+                description: "Block container preserved from unknown HTML div elements",
+                attributes: {
+                    $schema: "https://json-schema.org/draft/2020-12/schema",
+                    type: "object",
+                    properties: {
+                        class: { anyOf: [{ type: "string" }, { type: "null" }] },
+                        style: { anyOf: [{ type: "string" }, { type: "null" }] },
+                        id: { anyOf: [{ type: "string" }, { type: "null" }] },
+                        "data-attributes": {
+                            anyOf: [
+                                { type: "object", additionalProperties: { type: "string" } },
+                                { type: "null" },
+                            ],
+                        },
+                    },
+                    additionalProperties: false,
+                },
+            });
+        }
+
+        if (generation !== instance.data._aiContextGeneration || editor !== instance.data.editor) return false;
+        instance.publishState("ai_editor_context", JSON.stringify(editorContext));
+        instance.publishState("ai_context_error", "");
+        instance.triggerEvent("ai_editor_context_ready");
+        return true;
+    } catch (error) {
+        if (generation !== instance.data._aiContextGeneration || editor !== instance.data.editor) return false;
+        const detail = error && error.message ? error.message : String(error);
+        const message = "Failed to generate AI editor context: " + detail;
+        instance.publishState("ai_editor_context", "");
+        instance.publishState("ai_context_error", message);
+        instance.triggerEvent("ai_editor_context_failed");
+        instance.data.debug(message);
+        refreshContext.reportDebugger(message);
+        return false;
+    }
+};
+
 // ─────────────────────────────────────────────────────────────
 // setupEditor — called once from update.js on first property load
 // ─────────────────────────────────────────────────────────────
@@ -1371,7 +1454,6 @@ instance.data.setupEditor = function (properties, context) {
         DragHandle,
         FindAndReplace,
         ServerAiToolkit,
-        getEditorContext,
     } = window.tiptap;
 
     // Store extension states for action files to reference
@@ -1932,15 +2014,7 @@ instance.data.setupEditor = function (properties, context) {
             // AI Toolkit REST calls require editorContext generated from the exact
             // extension configuration used by this live editor.
             if (properties.ext_ai_toolkit) {
-                try {
-                    const editorContext = getEditorContext(editor);
-                    instance.publishState("ai_editor_context", JSON.stringify(editorContext));
-                } catch (error) {
-                    instance.publishState("ai_editor_context", "");
-                    const message = "Failed to generate AI editor context: " + (error?.message || error);
-                    instance.data.debug(message);
-                    context.reportDebugger(message);
-                }
+                instance.data.refreshAiEditorContext(context);
             }
 
             // Publish initial invisible characters state

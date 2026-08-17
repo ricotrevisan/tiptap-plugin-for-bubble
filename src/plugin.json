@@ -152,6 +152,18 @@
     "custom_collab_jwt_secret": {
       "caption": "Custom collab document server secret",
       "type": "secure"
+    },
+    "tiptap_ai_environment_id": {
+      "caption": "Tiptap AI environment ID",
+      "type": "secure"
+    },
+    "tiptap_ai_private_key": {
+      "caption": "Tiptap AI ES256 private key",
+      "type": "secure"
+    },
+    "tiptap_ai_api_base_url": {
+      "caption": "Tiptap AI API base URL",
+      "type": "secure"
     }
   }
 }

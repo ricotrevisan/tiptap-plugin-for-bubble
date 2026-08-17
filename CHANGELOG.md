@@ -4,6 +4,18 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## Unreleased
+
+### Functional Server AI Toolkit bridge (#5)
+
+- Added automatic/manual AI editor-context lifecycle states and ready/failed events.
+- Added secure plugin settings plus server-side **Fetch AI Toolkit tools** and **Execute AI Toolkit tool** actions for the supported non-streaming v4 REST API.
+- Added short-lived ES256 Access Control JWTs with document-scoped `Documents:Write` permission for collaborative execution.
+- Added documented inline and collaborative Bubble workflows with explicit tool allowlisting and structured action errors.
+- Replaced the full client AI Toolkit dependency graph with a small MIT-noticed schema adapter, reducing the normal browser bundle by about 330 KB while preserving `_hash` and editor-context behavior.
+
+---
+
 ## v4.8.0
 
 ### Line height & background color (#10)

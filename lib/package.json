@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "build": "esbuild index.js --bundle --minify --outfile=dist.js",
-        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/find-and-replace.mjs"
+        "build": "esbuild index.js --bundle --minify --external:https://* --outfile=dist.js",
+        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/ai-toolkit-server-actions.mjs && node tests/ai-toolkit-plugin-metadata.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/find-and-replace.mjs"
     },
     "keywords": [],
     "author": "Rico Trevisan",
@@ -14,7 +14,6 @@
         "@hocuspocus/provider": "^3.4.4",
         "@liveblocks/client": "^3.2.1",
         "@liveblocks/yjs": "^3.2.1",
-        "@tiptap/ai-toolkit": "^0.3.0",
         "@tiptap/core": "3.30.0",
         "@tiptap/extension-blockquote": "3.30.0",
         "@tiptap/extension-bold": "3.30.0",
@@ -73,6 +72,8 @@
         "yjs": "^13.6.27"
     },
     "devDependencies": {
-        "happy-dom": "^20.11.2"
+        "happy-dom": "^20.11.2",
+        "jsonwebtoken": "^9.0.2",
+        "@tiptap/ai-toolkit": "0.3.0"
     }
 }

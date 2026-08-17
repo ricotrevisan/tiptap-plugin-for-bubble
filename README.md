@@ -25,6 +25,71 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 
 ---
 
+## Tiptap Server AI Toolkit
+
+The plugin provides a server-side bridge to Tiptap's **Server AI Toolkit v4**. It supplies editor schema context, securely signs short-lived access-control JWTs, fetches an explicit set of Tiptap tools, and executes a tool call. Your Bubble app still owns the AI provider, prompts, UI, and model/tool-calling loop.
+
+### Prerequisites and credentials
+
+1. Enable Server AI Toolkit for your own Tiptap Cloud environment. This is a paid Tiptap entitlement.
+2. In **Plugins → Rich Text Editor (Tiptap.dev) → settings**, configure:
+   - **Tiptap AI environment ID** — the Access Control environment ID used as the JWT issuer.
+   - **Tiptap AI ES256 private key** — the PKCS#8 P-256 private key issued for that environment. PEM text with escaped `\n` newlines is accepted.
+   - **Tiptap AI API base URL** — optional; leave empty for `https://api.tiptap.dev`. Set it only to an HTTPS URL for a supported on-premises deployment.
+3. Configure OpenAI, Anthropic, Google, or another model provider separately in your app. Model-provider credentials are not Tiptap credentials and this plugin does not store them.
+
+The ES256 key is used only inside Bubble server-side actions. It is never an element property, browser state, browser action input, log value, or action output. Tokens expire after 30 minutes. Collaborative execution grants `Documents:Write` only for the requested document ID.
+
+### Configure the editor
+
+Enable **AI Toolkit** on the Tiptap element. This compatibility toggle preserves the `_hash` attributes used by server tools; by itself it does **not** call Tiptap or invoke AI.
+
+When the editor is ready, the plugin publishes:
+
+- **AI editor context** — serialized JSON for the editor's exact active schema.
+- **AI context error** — empty on success, otherwise a human-readable generation error.
+- **AI editor context ready / failed** events — deterministic workflow triggers.
+
+Use **Refresh AI editor context** after rebuilding or changing the editor schema. Refresh fails visibly if AI Toolkit compatibility is disabled, because executing later with stripped hashes would be unsafe. The pinned `@tiptap/ai-toolkit` 0.3.0 context module is loaded on demand from jsDelivr only for this AI path; non-AI editors do not download its dependency graph.
+
+### Fetch tools and call your model
+
+Run the server-side **Fetch AI Toolkit tools** action with the AI editor context and a comma-separated allowlist. All tools are disabled unless explicitly named. Tiptap currently supports:
+
+Use the exact names `tiptapRead`, `tiptapEdit`, `getThreads`, `editThreads`, `readDocument`, `readSelection`, and `proofread`.
+
+Start with `tiptapRead,tiptapEdit`. Pass the returned **system prompt** and **tool definitions (JSON)** to your chosen model provider. When the model selects a tool, keep its generated arguments under `input`; optional developer-owned configuration belongs under `config`:
+
+```json
+{
+  "name": "tiptapEdit",
+  "input": { "operations": [] },
+  "config": {}
+}
+```
+
+Every server action returns `success`, `status_code`, `error_code`, and `error_message`, so Bubble workflows can branch without parsing logs. Tool definitions and tool results are JSON text.
+
+### Inline document workflow
+
+1. Run **Execute AI Toolkit tool** with document mode **Inline**.
+2. Pass the selected tool-call JSON, AI editor context, and the editor's **content JSON** state.
+3. On success, if **document changed** is yes, run the existing **Set content** element action with **updated inline document (JSON)** and set **Is JSON?** to yes.
+
+Do not apply an old result blindly if the user changed the document while the AI request was in flight; decide in your workflow whether to retry, confirm, or replace.
+
+### Collaborative document workflow
+
+1. Connect the editor to the same Tiptap Cloud document through the plugin's existing collaboration settings.
+2. Run **Execute AI Toolkit tool** with document mode **Collaborative** and that exact document ID. Set the collaborative field only if your document uses a field other than `default`.
+3. Do **not** call Set content. The Tiptap server writes the cloud document and the existing collaboration provider delivers the update to connected editors. Handle `concurrent_edit_conflict` (HTTP 409) by retrying from current state when appropriate.
+
+Every client editing one collaborative document must use a compatible schema, including the same AI Toolkit setting and relevant extensions. Thread tools are not supported in Inline mode; `getThreads`, `editThreads`, and selection-aware workflows require the documented cloud setup.
+
+This bridge uses only the non-streaming v4 endpoints `/v4/ai/toolkit/fetch-tools` and `/v4/ai/toolkit/execute-tool`. Streaming, chat UI, and a bundled model provider are intentionally out of scope.
+
+---
+
 ## Fork & develop locally
 
 Want to customize the plugin, add extensions, or contribute? Here's how to get your own copy running.
