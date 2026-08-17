@@ -34,6 +34,8 @@ try {
     instance.publishState("can_redo", false);
     instance.publishState("ai_editor_context", "");
     instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
+    instance.data._tableOfContentsJSON = "[]";
+    instance.publishState("table_of_contents", instance.data._tableOfContentsJSON);
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
     instance.publishState("collab_connected_users", 0);
@@ -610,6 +612,8 @@ try {
         instance.publishState("can_redo", false);
         instance.publishState("ai_editor_context", "");
         instance.publishState("find_replace_state", JSON.stringify(instance.data.emptyFindReplaceState()));
+        instance.data._tableOfContentsJSON = "[]";
+        instance.publishState("table_of_contents", instance.data._tableOfContentsJSON);
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
         instance.data.publishCollabStatus("disconnected");
@@ -1136,6 +1140,34 @@ function publishFindReplaceState(editor) {
 }
 instance.data.publishFindReplaceState = publishFindReplaceState;
 
+// Publish only the serializable Table of Contents fields. Tiptap's storage also
+// contains Editor, ProseMirror Node, and HTMLElement references that cannot be
+// exposed through a Bubble text state.
+function publishTableOfContentsState(editor, anchors, forceEvent = false) {
+    const content = anchors || editor.storage.tableOfContents?.content || [];
+    const state = content.map((anchor) => ({
+        id: anchor.id,
+        textContent: anchor.textContent,
+        level: anchor.level,
+        originalLevel: anchor.originalLevel,
+        itemIndex: anchor.itemIndex,
+        pos: anchor.pos,
+        isActive: anchor.isActive,
+        isScrolledOver: anchor.isScrolledOver,
+    }));
+    const json = JSON.stringify(state);
+    const changed = json !== instance.data._tableOfContentsJSON;
+
+    if (changed) {
+        instance.data._tableOfContentsJSON = json;
+        instance.publishState("table_of_contents", json);
+    }
+    if ((changed || forceEvent) && instance.data.editor_is_ready) {
+        instance.triggerEvent("table_of_contents_updated");
+    }
+}
+instance.data.publishTableOfContentsState = publishTableOfContentsState;
+
 // Publish all formatting-related active states for the current cursor/selection.
 // Called from both onTransaction and onSelectionUpdate to avoid duplication.
 function publishActiveStates(editor) {
@@ -1370,6 +1402,7 @@ instance.data.setupEditor = function (properties, context) {
         InvisibleCharacters,
         DragHandle,
         FindAndReplace,
+        TableOfContents,
         ServerAiToolkit,
         getEditorContext,
     } = window.tiptap;
@@ -1414,6 +1447,7 @@ instance.data.setupEditor = function (properties, context) {
         invisiblecharacters: properties.ext_invisiblecharacters,
         draghandle: properties.ext_draghandle,
         findreplace: properties.ext_find_replace,
+        tableofcontents: properties.ext_table_of_contents,
     };
 
     // parse heading levels
@@ -1479,6 +1513,12 @@ instance.data.setupEditor = function (properties, context) {
     if (properties.ext_ai_toolkit) extensions.push(ServerAiToolkit);
     if (properties.ext_find_replace) {
         extensions.push(FindAndReplace.configure({ searchDebounceMs: 0 }));
+    }
+    if (properties.ext_table_of_contents) {
+        extensions.push(TableOfContents.configure({
+            scrollParent: () => instance.canvas[0] || instance.canvas.get?.(0) || window,
+            onUpdate: (anchors) => instance.data.publishTableOfContentsState(instance.data.editor, anchors),
+        }));
     }
     if (properties.ext_hardbreak) {
         extensions.push(HardBreak.configure({ keepMarks: properties.hardBreakKeepMarks }));
@@ -1928,6 +1968,7 @@ instance.data.setupEditor = function (properties, context) {
             instance.publishState("characterCount", editor.storage.characterCount.characters());
             instance.publishState("wordCount", editor.storage.characterCount.words());
             instance.data.publishFindReplaceState(editor);
+            instance.data.publishTableOfContentsState(editor, null, properties.ext_table_of_contents === true);
 
             // AI Toolkit REST calls require editorContext generated from the exact
             // extension configuration used by this live editor.
@@ -2126,6 +2167,7 @@ instance.data.setupEditor = function (properties, context) {
         instance.data.isEditorSetup = true;
         instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
         instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
+        instance.data._currentTableOfContentsEnabled = !!properties.ext_table_of_contents;
         instance.data._currentCollabDocId = properties.collab_doc_id;
         instance.data.debug("editor instance created, waiting for onCreate");
     } catch (error) {

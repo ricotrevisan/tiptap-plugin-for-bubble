@@ -536,6 +536,36 @@
           "value": "text"
         }
       }
+    },
+    "scroll_to_heading": {
+      "caption": "Scroll to heading",
+      "doc": "Scrolls the editor to a heading from the Table of Contents state.",
+      "fields": {
+        "scroll_to_heading_id": {
+          "caption": "Heading ID",
+          "doc": "The id from an item in the table_of_contents JSON state.",
+          "editor": "DynamicValue",
+          "name": "heading_id",
+          "rank": 0,
+          "value": "text"
+        },
+        "scroll_to_heading_behavior": {
+          "caption": "Scroll behavior",
+          "default_val": "smooth",
+          "editor": "Dropdown",
+          "name": "behavior",
+          "options": "smooth,auto",
+          "rank": 1
+        },
+        "scroll_to_heading_block": {
+          "caption": "Vertical alignment",
+          "default_val": "start",
+          "editor": "Dropdown",
+          "name": "block",
+          "options": "start,center,end,nearest",
+          "rank": 2
+        }
+      }
     }
   },
   "add_hover_pressed": true,
@@ -586,6 +616,10 @@
     "collab_synced": {
       "caption": "Collaboration synced",
       "name": "collab_synced"
+    },
+    "table_of_contents_updated": {
+      "caption": "Table of contents updated",
+      "name": "table_of_contents_updated"
     }
   },
   "fields": {
@@ -2472,6 +2506,15 @@
       "name": "ext_find_replace",
       "rank": 169,
       "value": "boolean"
+    },
+    "ext_table_of_contents": {
+      "caption": "Table of Contents",
+      "default_val": false,
+      "doc": "Builds a live JSON outline from headings and enables the Scroll to heading action. Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_table_of_contents",
+      "rank": 215,
+      "value": "boolean"
     }
   },
   "has_reset_fn": false,
@@ -3006,6 +3049,15 @@
         "fn": "function(properties, context) {}"
       },
       "name": "find_replace_state",
+      "value": "text"
+    },
+    "table_of_contents": {
+      "caption": "Table of contents (JSON)",
+      "doc": "A JSON array of headings with id, textContent, level, originalLevel, itemIndex, pos, isActive, and isScrolledOver.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "table_of_contents",
       "value": "text"
     }
   },

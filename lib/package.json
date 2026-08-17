@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "build": "esbuild index.js --bundle --minify --outfile=dist.js",
-        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/find-and-replace.mjs"
+        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/find-and-replace.mjs && node tests/table-of-contents.mjs"
     },
     "keywords": [],
     "author": "Rico Trevisan",
@@ -57,6 +57,7 @@
         "@tiptap/extension-subscript": "3.30.0",
         "@tiptap/extension-superscript": "3.30.0",
         "@tiptap/extension-table": "3.30.0",
+        "@tiptap/extension-table-of-contents": "3.30.0",
         "@tiptap/extension-task-item": "3.30.0",
         "@tiptap/extension-task-list": "3.30.0",
         "@tiptap/extension-text": "3.30.0",

@@ -14,10 +14,13 @@ const aiToolkitChanged =
     instance.data._currentAiToolkitEnabled !== !!properties.ext_ai_toolkit;
 const findReplaceChanged =
     instance.data._currentFindReplaceEnabled !== !!properties.ext_find_replace;
-if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged)) {
+const tableOfContentsChanged =
+    instance.data._currentTableOfContentsEnabled !== !!properties.ext_table_of_contents;
+if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || tableOfContentsChanged)) {
     const changedExtensions = [];
     if (aiToolkitChanged) changedExtensions.push("AI Toolkit");
     if (findReplaceChanged) changedExtensions.push("Find & Replace");
+    if (tableOfContentsChanged) changedExtensions.push("Table of Contents");
     const rebuildReason = changedExtensions.join(" and ") + " extension changed";
     instance.data.debug(rebuildReason + " — rebuilding editor");
 
