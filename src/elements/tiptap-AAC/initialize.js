@@ -1538,7 +1538,15 @@ instance.data.setupEditor = function (properties, context) {
                     break;
                 }
                 const overflowY = window.getComputedStyle(element).overflowY;
-                if (/^(auto|scroll|overlay)$/.test(overflowY)) {
+                const inlineHeight = element.style.height.trim().toLowerCase();
+                const inlineMaxHeight = element.style.maxHeight.trim().toLowerCase();
+                const hasConstrainedHeight = (
+                    inlineHeight && !/^(auto|max-content|min-content|fit-content)$/.test(inlineHeight)
+                ) || (inlineMaxHeight && inlineMaxHeight !== "none");
+                if (
+                    /^(auto|scroll|overlay)$/.test(overflowY) &&
+                    (element.scrollHeight > element.clientHeight || hasConstrainedHeight)
+                ) {
                     tableOfContentsScrollParent = element;
                     break;
                 }
