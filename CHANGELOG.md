@@ -4,6 +4,17 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## Unreleased
+
+### Dedicated Table of Contents element (#8)
+
+- Added **Tiptap Table of Contents**, a dependency-free visual element that consumes the editor's live Table of contents JSON state.
+- Renders semantic nested navigation, preserves focus during active-heading updates, and styles active/scrolled-over headings.
+- Supports automatic heading scrolling plus a Clicked heading ID state and Heading clicked event for custom workflows.
+- Handles empty and invalid JSON without leaving stale navigation visible.
+
+---
+
 ## v4.8.0
 
 ### Line height & background color (#10)

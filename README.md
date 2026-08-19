@@ -17,6 +17,7 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 - **Media** — Images (inline or block) and YouTube embeds
 - **Links** — With custom styling and configurable protocols
 - **Menus** — Top toolbar, bubble menu (on text selection), and floating menu
+- **Table of contents** — Live JSON output plus a dedicated accessible visual outline with active-heading styling
 - **Real-time collaboration** — Via Tiptap Cloud, custom Hocuspocus server, or Liveblocks, with cursor labels, connection status, and JWT auth
 - **Output formats** — HTML, plain text, and JSON — all exposed as Bubble states
 - **55+ workflow actions** — Control the editor programmatically from Bubble workflows
@@ -118,12 +119,13 @@ src/
 │   ├── generate-auth-token-AEK/      # JWT auth token generation
 │   └── convert-webhook-payload.../    # Hocuspocus webhook → HTML
 ├── elements/
-│   └── tiptap-AAC/                    # Main editor element
-│       ├── actions/                   # 55 element actions (bold, italic, tables, etc.)
-│       ├── initialize.js              # Editor setup and configuration
-│       ├── update.js                  # Property change handling
-│       ├── preview.js                 # Bubble editor preview
-│       └── reset.js                   # Teardown and cleanup
+│   ├── tiptap-AAC/                    # Main editor element
+│   │   ├── actions/                   # 55 element actions (bold, italic, tables, etc.)
+│   │   ├── initialize.js              # Editor setup and configuration
+│   │   ├── update.js                  # Property change handling
+│   │   ├── preview.js                 # Bubble editor preview
+│   │   └── reset.js                   # Teardown and cleanup
+│   └── table-of-contents-toc_element/ # Dedicated visual outline element
 ├── plugin.json                        # Plugin metadata and field definitions
 └── shared.html                        # Shared HTML resources
 lib/
@@ -133,6 +135,10 @@ lib/
 ```
 
 ---
+
+## Table of contents element
+
+Enable **Table of Contents** on the Tiptap editor, place **Tiptap Table of Contents** on the page, and bind its **Table of contents JSON** property to the editor's state with the same name. The element renders a nested accessible outline, follows the editor's active-heading state, and scrolls to headings when clicked. It also exposes **Clicked heading ID** and a **Heading clicked** event for custom workflows.
 
 ## Library management
 

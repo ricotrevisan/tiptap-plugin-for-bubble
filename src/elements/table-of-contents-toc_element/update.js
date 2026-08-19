@@ -1,0 +1,1 @@
+instance.data.renderTableOfContents(properties, context);
