@@ -3582,6 +3582,170 @@
         }
       },
       "support_autobinding": true
+    },
+    "toc_element": {
+      "actions": {},
+      "add_is_visible": true,
+      "can_fit_height": true,
+      "can_fit_width": true,
+      "category": "visual elements",
+      "code": {
+        "initialize": {
+          "fn": "function(instance, context) {\nconst canvas = instance.canvas[0] || instance.canvas.get?.(0);\nconst uid = `tiptap-toc-${Math.random().toString(36).slice(2)}`;\nconst style = document.createElement(\"style\");\nconst root = document.createElement(\"div\");\nroot.dataset.tiptapToc = uid;\ncanvas.appendChild(style);\ncanvas.appendChild(root);\n\ninstance.data.tocRoot = root;\ninstance.data.tocStyle = style;\ninstance.data.tocItems = [];\ninstance.data.tocAnchors = new Map();\ninstance.data.tocStructureSignature = \"\";\ninstance.data.tocOptions = { autoScroll: true, behavior: \"smooth\", block: \"start\" };\ninstance.data.tocLastError = \"\";\n\ninstance.publishState(\"clicked_heading_id\", \"\");\n\nfunction clampNumber(value, fallback, minimum, maximum) {\n    const number = Number(value);\n    return Number.isFinite(number) ? Math.min(maximum, Math.max(minimum, number)) : fallback;\n}\n\nfunction reportError(message, context) {\n    instance.data.tocClickedHeadingId = \"\";\n    instance.publishState(\"clicked_heading_id\", \"\");\n    if (instance.data.tocLastError !== message) {\n        instance.data.tocLastError = message;\n        context?.reportDebugger?.(`Table of Contents: ${message}`);\n    }\n}\n\nfunction clearError() {\n    instance.data.tocLastError = \"\";\n}\n\nfunction parseItems(value) {\n    const source = typeof value === \"string\" ? value.trim() : \"\";\n    if (!source) return [];\n    let parsed;\n    try {\n        parsed = JSON.parse(source);\n    } catch {\n        throw new Error(\"JSON input is not valid JSON.\");\n    }\n    if (!Array.isArray(parsed)) throw new Error(\"JSON input must be an array.\");\n    const ids = new Set();\n    let previousLevel = 0;\n    return parsed.map((item, index) => {\n        const path = `Item ${index + 1}`;\n        if (!item || typeof item !== \"object\" || Array.isArray(item)) {\n            throw new Error(`${path} must be an object.`);\n        }\n        const id = typeof item.id === \"string\" ? item.id.trim() : \"\";\n        if (!id) throw new Error(`${path} must have a non-empty id.`);\n        if (ids.has(id)) throw new Error(`${path} repeats heading id \"${id}\".`);\n        ids.add(id);\n        if (typeof item.textContent !== \"string\" || !item.textContent.trim()) {\n            throw new Error(`${path} must have non-empty textContent.`);\n        }\n        const level = Number(item.level);\n        if (!Number.isInteger(level) || level < 1 || level > 6) {\n            throw new Error(`${path} level must be an integer from 1 to 6.`);\n        }\n        if (index === 0 && level !== 1) throw new Error(\"The first heading level must be 1.\");\n        if (index > 0 && level > previousLevel + 1) {\n            throw new Error(`${path} level cannot jump from ${previousLevel} to ${level}.`);\n        }\n        previousLevel = level;\n        return {\n            id,\n            textContent: item.textContent,\n            level,\n            isActive: item.isActive === true,\n            isScrolledOver: item.isScrolledOver === true,\n        };\n    });\n}\n\nfunction applyItemState(anchor, item) {\n    anchor.dataset.active = String(item.isActive);\n    anchor.dataset.scrolledOver = String(item.isScrolledOver);\n    if (item.isActive) anchor.setAttribute(\"aria-current\", \"location\");\n    else anchor.removeAttribute(\"aria-current\");\n}\n\nfunction buildNavigation(items, label) {\n    const nav = document.createElement(\"nav\");\n    nav.setAttribute(\"aria-label\", label || \"Table of contents\");\n    const rootList = document.createElement(\"ul\");\n    nav.appendChild(rootList);\n    const stack = [{ list: rootList, lastItem: null }];\n    const anchors = new Map();\n\n    items.forEach((item) => {\n        while (stack.length > item.level) stack.pop();\n        while (stack.length < item.level) {\n            const parentItem = stack[stack.length - 1].lastItem;\n            const nestedList = document.createElement(\"ul\");\n            parentItem.appendChild(nestedList);\n            stack.push({ list: nestedList, lastItem: null });\n        }\n        const listItem = document.createElement(\"li\");\n        const anchor = document.createElement(\"a\");\n        anchor.href = `#${encodeURIComponent(item.id)}`;\n        anchor.dataset.headingId = item.id;\n        anchor.textContent = item.textContent;\n        applyItemState(anchor, item);\n        listItem.appendChild(anchor);\n        stack[stack.length - 1].list.appendChild(listItem);\n        stack[stack.length - 1].lastItem = listItem;\n        anchors.set(item.id, anchor);\n    });\n\n    return { nav, anchors };\n}\n\ninstance.data.renderTableOfContents = function (properties, context) {\n    const indent = clampNumber(properties.indent_px, 16, 0, 64);\n    const gap = clampNumber(properties.item_gap_px, 4, 0, 32);\n    const normalColor = properties.normal_color || \"rgba(15,23,42,1)\";\n    const scrolledOverColor = properties.scrolled_over_color || \"rgba(100,116,139,1)\";\n    const activeColor = properties.active_color || \"rgba(79,70,229,1)\";\n    const activeBackground = properties.active_background || \"rgba(79,70,229,0.12)\";\n    const activeFontWeight = [\"400\", \"500\", \"600\", \"700\", \"800\", \"900\"].includes(String(properties.active_font_weight))\n        ? String(properties.active_font_weight)\n        : \"600\";\n    const activeIndicatorWidth = clampNumber(properties.active_indicator_width, 3, 0, 8);\n    style.textContent = `\n[data-tiptap-toc=\"${uid}\"] { width: 100%; height: 100%; }\n[data-tiptap-toc=\"${uid}\"] nav, [data-tiptap-toc=\"${uid}\"] ul { margin: 0; padding: 0; }\n[data-tiptap-toc=\"${uid}\"] ul { list-style: none; }\n[data-tiptap-toc=\"${uid}\"] ul ul { padding-inline-start: ${indent}px; margin-block-start: ${gap}px; }\n[data-tiptap-toc=\"${uid}\"] li + li { margin-block-start: ${gap}px; }\n[data-tiptap-toc=\"${uid}\"] a { display: block; box-sizing: border-box; color: ${normalColor}; font: inherit; line-height: 1.35; padding: 0.35em 0.5em; border-inline-start: ${activeIndicatorWidth}px solid transparent; border-radius: 4px; text-decoration: none; cursor: pointer; }\n[data-tiptap-toc=\"${uid}\"] a[data-scrolled-over=\"true\"] { color: ${scrolledOverColor}; }\n[data-tiptap-toc=\"${uid}\"] a[data-active=\"true\"] { color: ${activeColor}; background: ${activeBackground}; border-inline-start-color: currentColor; font-weight: ${activeFontWeight}; }\n[data-tiptap-toc=\"${uid}\"] a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }\n`;\n\n    instance.data.tocOptions = {\n        autoScroll: properties.auto_scroll !== false,\n        behavior: [\"smooth\", \"auto\"].includes(properties.scroll_behavior) ? properties.scroll_behavior : \"smooth\",\n        block: [\"start\", \"center\", \"end\", \"nearest\"].includes(properties.scroll_block) ? properties.scroll_block : \"start\",\n    };\n\n    let items;\n    try {\n        items = parseItems(properties.contents_json);\n    } catch (error) {\n        root.replaceChildren();\n        instance.data.tocItems = [];\n        instance.data.tocAnchors = new Map();\n        instance.data.tocStructureSignature = \"\";\n        reportError(error.message, context);\n        return;\n    }\n\n    clearError();\n    const currentIds = new Set(items.map((item) => item.id));\n    const clickedId = instance.data.tocClickedHeadingId || \"\";\n    if (clickedId && !currentIds.has(clickedId)) {\n        instance.data.tocClickedHeadingId = \"\";\n        instance.publishState(\"clicked_heading_id\", \"\");\n    }\n\n    if (items.length === 0) {\n        root.replaceChildren();\n        instance.data.tocItems = [];\n        instance.data.tocAnchors = new Map();\n        instance.data.tocStructureSignature = \"\";\n        return;\n    }\n\n    const structureSignature = JSON.stringify(items.map(({ id, textContent, level }) => [id, textContent, level]));\n    const label = typeof properties.accessible_label === \"string\" && properties.accessible_label.trim()\n        ? properties.accessible_label.trim()\n        : \"Table of contents\";\n    if (structureSignature !== instance.data.tocStructureSignature) {\n        const navigation = buildNavigation(items, label);\n        root.replaceChildren(navigation.nav);\n        instance.data.tocAnchors = navigation.anchors;\n        instance.data.tocStructureSignature = structureSignature;\n    } else {\n        root.querySelector(\"nav\")?.setAttribute(\"aria-label\", label);\n        items.forEach((item) => applyItemState(instance.data.tocAnchors.get(item.id), item));\n    }\n    instance.data.tocItems = items;\n};\n\ninstance.data.tocClickHandler = function (event) {\n    const anchor = event.target.closest?.(\"a[data-heading-id]\");\n    if (!anchor || !root.contains(anchor)) return;\n    event.preventDefault();\n    const headingId = anchor.dataset.headingId;\n    instance.data.tocClickedHeadingId = headingId;\n    instance.publishState(\"clicked_heading_id\", headingId);\n    instance.triggerEvent(\"heading_clicked\");\n    if (instance.data.tocOptions.autoScroll) {\n        document.getElementById(headingId)?.scrollIntoView({\n            behavior: instance.data.tocOptions.behavior,\n            block: instance.data.tocOptions.block,\n        });\n    }\n};\nroot.addEventListener(\"click\", instance.data.tocClickHandler);\n\n}"
+        },
+        "preview": {
+          "fn": "function(instance, properties) {\nconst canvas = instance.canvas[0] || instance.canvas.get?.(0);\ncanvas.replaceChildren();\nconst nav = document.createElement(\"nav\");\nnav.setAttribute(\"aria-label\", \"Table of contents preview\");\nnav.style.font = \"inherit\";\nnav.innerHTML = \"<ul style=\\\"list-style:none;margin:0;padding:0\\\"><li>Introduction</li><li style=\\\"padding-inline-start:16px;margin-top:6px\\\">Getting started</li><li style=\\\"padding-inline-start:16px;margin-top:6px;font-weight:600\\\">Configuration</li><li style=\\\"margin-top:6px\\\">Next steps</li></ul>\";\ncanvas.appendChild(nav);\n\n}"
+        },
+        "reset": {
+          "fn": "function(instance, context) {\nif (instance.data.tocRoot && instance.data.tocClickHandler) {\n    instance.data.tocRoot.removeEventListener(\"click\", instance.data.tocClickHandler);\n}\ninstance.data.tocRoot?.replaceChildren();\ninstance.data.tocStyle?.remove();\ninstance.data.tocRoot?.remove();\ninstance.data.tocItems = [];\ninstance.data.tocAnchors = new Map();\ninstance.data.tocStructureSignature = \"\";\ninstance.data.tocClickHandler = null;\ninstance.data.renderTableOfContents = null;\n\n}"
+        },
+        "update": {
+          "fn": "function(instance, properties, context) {\ninstance.data.renderTableOfContents(properties, context);\n\n}"
+        }
+      },
+      "default_dim": {
+        "height": 240,
+        "width": 280
+      },
+      "display": "Tiptap Table of Contents",
+      "events": {
+        "heading_clicked": {
+          "caption": "Heading clicked",
+          "name": "heading_clicked"
+        }
+      },
+      "fields": {
+        "accessible_label": {
+          "caption": "Accessible label",
+          "default_val": "Table of contents",
+          "editor": "DynamicValue",
+          "name": "accessible_label",
+          "rank": 1,
+          "value": "text"
+        },
+        "active_background": {
+          "caption": "Active heading background",
+          "default_val": "rgba(79,70,229,0.12)",
+          "editor": "Color",
+          "in_style": true,
+          "name": "active_background",
+          "rank": 10
+        },
+        "active_color": {
+          "caption": "Active heading color",
+          "default_val": "rgba(79,70,229,1)",
+          "editor": "Color",
+          "in_style": true,
+          "name": "active_color",
+          "rank": 9
+        },
+        "active_font_weight": {
+          "caption": "Active heading weight",
+          "default_val": "600",
+          "editor": "Dropdown",
+          "in_style": true,
+          "name": "active_font_weight",
+          "options": "400,500,600,700,800,900",
+          "rank": 11
+        },
+        "active_indicator_width": {
+          "caption": "Active indicator width",
+          "default_val": 3,
+          "editor": "StaticNumber",
+          "in_style": true,
+          "name": "active_indicator_width",
+          "rank": 12
+        },
+        "auto_scroll": {
+          "caption": "Automatically scroll to headings",
+          "default_val": true,
+          "doc": "When enabled, clicking an item scrolls to the matching heading ID. The Heading clicked event always fires.",
+          "editor": "Checkbox",
+          "name": "auto_scroll",
+          "rank": 2,
+          "value": "boolean"
+        },
+        "contents_json": {
+          "caption": "Table of contents JSON",
+          "default_val": "[]",
+          "doc": "Bind this to a Tiptap element's Table of contents (JSON) state.",
+          "editor": "DynamicValue",
+          "long_text": true,
+          "name": "contents_json",
+          "rank": 0,
+          "value": "text"
+        },
+        "indent_px": {
+          "caption": "Level indentation",
+          "default_val": 16,
+          "editor": "StaticNumber",
+          "in_style": true,
+          "name": "indent_px",
+          "rank": 5
+        },
+        "item_gap_px": {
+          "caption": "Item spacing",
+          "default_val": 4,
+          "editor": "StaticNumber",
+          "in_style": true,
+          "name": "item_gap_px",
+          "rank": 6
+        },
+        "normal_color": {
+          "caption": "Heading color",
+          "default_val": "rgba(15,23,42,1)",
+          "editor": "Color",
+          "in_style": true,
+          "name": "normal_color",
+          "rank": 7
+        },
+        "scroll_behavior": {
+          "caption": "Scroll behavior",
+          "default_val": "smooth",
+          "editor": "Dropdown",
+          "name": "scroll_behavior",
+          "options": "smooth,auto",
+          "rank": 3
+        },
+        "scroll_block": {
+          "caption": "Vertical alignment",
+          "default_val": "start",
+          "editor": "Dropdown",
+          "name": "scroll_block",
+          "options": "start,center,end,nearest",
+          "rank": 4
+        },
+        "scrolled_over_color": {
+          "caption": "Scrolled-over heading color",
+          "default_val": "rgba(100,116,139,1)",
+          "editor": "Color",
+          "in_style": true,
+          "name": "scrolled_over_color",
+          "rank": 8
+        }
+      },
+      "has_reset_fn": true,
+      "icon": "ion-navicon-round",
+      "platform_type": "web",
+      "property_applications": {
+        "Background": true,
+        "Border": true,
+        "BoxShadow": true,
+        "Font": true,
+        "MinWidth": true,
+        "Padding": true,
+        "resizable": true
+      },
+      "states": {
+        "clicked_heading_id": {
+          "caption": "Clicked heading ID",
+          "initialization_code": {
+            "fn": "function(properties, context) {}"
+          },
+          "name": "clicked_heading_id",
+          "value": "text"
+        }
+      }
     }
   },
   "published_bv": 33,
