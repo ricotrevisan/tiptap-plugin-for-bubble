@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "build": "esbuild index.js --bundle --minify --outfile=dist.js",
-        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/find-and-replace.mjs && node tests/table-of-contents.mjs"
+        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/find-and-replace.mjs && node tests/table-of-contents.mjs && node tests/table-of-contents-element.mjs"
     },
     "keywords": [],
     "author": "Rico Trevisan",
