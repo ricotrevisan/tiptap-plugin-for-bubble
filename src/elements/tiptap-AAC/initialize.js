@@ -1528,8 +1528,24 @@ instance.data.setupEditor = function (properties, context) {
         extensions.push(FindAndReplace.configure({ searchDebounceMs: 0 }));
     }
     if (properties.ext_table_of_contents) {
+        const canvas = instance.canvas[0] || instance.canvas.get?.(0);
+        let tableOfContentsScrollParent = window;
+        if (canvas && !properties.bubble.fit_height()) {
+            tableOfContentsScrollParent = canvas;
+        } else {
+            for (let element = canvas?.parentElement; element; element = element.parentElement) {
+                if (element === document.body || element === document.documentElement) {
+                    break;
+                }
+                const overflowY = window.getComputedStyle(element).overflowY;
+                if (/^(auto|scroll|overlay)$/.test(overflowY)) {
+                    tableOfContentsScrollParent = element;
+                    break;
+                }
+            }
+        }
         extensions.push(TableOfContents.configure({
-            scrollParent: () => instance.canvas[0] || instance.canvas.get?.(0) || window,
+            scrollParent: () => tableOfContentsScrollParent,
             onUpdate: (anchors) => instance.data.publishTableOfContentsState(instance.data.editor, anchors),
         }));
     }
