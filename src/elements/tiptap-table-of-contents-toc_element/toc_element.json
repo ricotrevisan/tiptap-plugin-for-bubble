@@ -1,0 +1,150 @@
+{
+  "actions": {},
+  "add_is_visible": true,
+  "can_fit_height": true,
+  "can_fit_width": true,
+  "category": "visual elements",
+  "default_dim": {
+    "height": 240,
+    "width": 280
+  },
+  "display": "Tiptap Table of Contents",
+  "events": {
+    "heading_clicked": {
+      "caption": "Heading clicked",
+      "name": "heading_clicked"
+    }
+  },
+  "fields": {
+    "accessible_label": {
+      "caption": "Accessible label",
+      "default_val": "Table of contents",
+      "editor": "DynamicValue",
+      "name": "accessible_label",
+      "rank": 1,
+      "value": "text"
+    },
+    "active_background": {
+      "caption": "Active heading background",
+      "default_val": "rgba(79,70,229,0.12)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "active_background",
+      "rank": 10
+    },
+    "active_color": {
+      "caption": "Active heading color",
+      "default_val": "rgba(79,70,229,1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "active_color",
+      "rank": 9
+    },
+    "active_font_weight": {
+      "caption": "Active heading weight",
+      "default_val": "600",
+      "editor": "Dropdown",
+      "in_style": true,
+      "name": "active_font_weight",
+      "options": "400,500,600,700,800,900",
+      "rank": 11
+    },
+    "active_indicator_width": {
+      "caption": "Active indicator width",
+      "default_val": 3,
+      "editor": "StaticNumber",
+      "in_style": true,
+      "name": "active_indicator_width",
+      "rank": 12
+    },
+    "auto_scroll": {
+      "caption": "Automatically scroll to headings",
+      "default_val": true,
+      "doc": "When enabled, clicking an item scrolls to the matching heading ID. The Heading clicked event always fires.",
+      "editor": "Checkbox",
+      "name": "auto_scroll",
+      "rank": 2,
+      "value": "boolean"
+    },
+    "contents_json": {
+      "caption": "Table of contents JSON",
+      "default_val": "[]",
+      "doc": "Bind this to a Tiptap element's Table of contents (JSON) state.",
+      "editor": "DynamicValue",
+      "long_text": true,
+      "name": "contents_json",
+      "rank": 0,
+      "value": "text"
+    },
+    "indent_px": {
+      "caption": "Level indentation",
+      "default_val": 16,
+      "editor": "StaticNumber",
+      "in_style": true,
+      "name": "indent_px",
+      "rank": 5
+    },
+    "item_gap_px": {
+      "caption": "Item spacing",
+      "default_val": 4,
+      "editor": "StaticNumber",
+      "in_style": true,
+      "name": "item_gap_px",
+      "rank": 6
+    },
+    "normal_color": {
+      "caption": "Heading color",
+      "default_val": "rgba(15,23,42,1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "normal_color",
+      "rank": 7
+    },
+    "scroll_behavior": {
+      "caption": "Scroll behavior",
+      "default_val": "smooth",
+      "editor": "Dropdown",
+      "name": "scroll_behavior",
+      "options": "smooth,auto",
+      "rank": 3
+    },
+    "scroll_block": {
+      "caption": "Vertical alignment",
+      "default_val": "start",
+      "editor": "Dropdown",
+      "name": "scroll_block",
+      "options": "start,center,end,nearest",
+      "rank": 4
+    },
+    "scrolled_over_color": {
+      "caption": "Scrolled-over heading color",
+      "default_val": "rgba(100,116,139,1)",
+      "editor": "Color",
+      "in_style": true,
+      "name": "scrolled_over_color",
+      "rank": 8
+    }
+  },
+  "has_reset_fn": true,
+  "icon": "ion-navicon-round",
+  "platform_type": "web",
+  "property_applications": {
+    "Background": true,
+    "Border": true,
+    "BoxShadow": true,
+    "Font": true,
+    "MinWidth": true,
+    "Padding": true,
+    "resizable": true
+  },
+  "states": {
+    "clicked_heading_id": {
+      "caption": "Clicked heading ID",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "clicked_heading_id",
+      "value": "text"
+    }
+  }
+}

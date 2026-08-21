@@ -52,9 +52,27 @@
     "ABI": {
       "caption": "Outdent item"
     },
+    "AIC": {
+      "caption": "Unset line height",
+      "doc": "Removes the line height from the current selection, reverting to the default."
+    },
     "ABH": {
       "caption": "Indent item",
       "doc": "sink list item"
+    },
+    "replace_all": {
+      "caption": "Replace all",
+      "doc": "Replaces every current find result.",
+      "fields": {
+        "replace_all_replacement": {
+          "caption": "Replacement",
+          "editor": "DynamicValue",
+          "name": "replacement",
+          "optional": true,
+          "rank": 0,
+          "value": "text"
+        }
+      }
     },
     "AHa": {
       "caption": "Subscript",
@@ -132,8 +150,85 @@
         }
       }
     },
+    "find": {
+      "caption": "Find",
+      "doc": "Searches and highlights all matches. Repeating the action navigates to the next or previous match and wraps at the document ends.",
+      "fields": {
+        "find_case_sensitive": {
+          "caption": "Case sensitive?",
+          "default_val": false,
+          "editor": "DynamicValue",
+          "name": "case_sensitive",
+          "rank": 2,
+          "value": "boolean"
+        },
+        "find_direction": {
+          "caption": "Direction",
+          "default_val": "next",
+          "editor": "Dropdown",
+          "name": "direction",
+          "options": "next,previous",
+          "rank": 1
+        },
+        "find_search_term": {
+          "caption": "Search term",
+          "editor": "DynamicValue",
+          "name": "search_term",
+          "rank": 0,
+          "value": "text"
+        },
+        "find_use_regex": {
+          "caption": "Use regular expression?",
+          "default_val": false,
+          "doc": "Uses RE2-compatible regular expressions. Lookarounds and backreferences are not supported.",
+          "editor": "DynamicValue",
+          "name": "use_regex",
+          "rank": 3,
+          "value": "boolean"
+        },
+        "find_whole_word": {
+          "caption": "Whole word only?",
+          "default_val": false,
+          "doc": "Ignored when regular expression mode is enabled.",
+          "editor": "DynamicValue",
+          "name": "whole_word",
+          "rank": 4,
+          "value": "boolean"
+        }
+      }
+    },
     "ABA": {
       "caption": "H6"
+    },
+    "scroll_to_heading": {
+      "caption": "Scroll to heading",
+      "doc": "Scrolls the editor to a heading from the Table of Contents state.",
+      "fields": {
+        "scroll_to_heading_behavior": {
+          "caption": "Scroll behavior",
+          "default_val": "smooth",
+          "editor": "Dropdown",
+          "name": "behavior",
+          "options": "smooth,auto",
+          "rank": 1
+        },
+        "scroll_to_heading_block": {
+          "caption": "Vertical alignment",
+          "default_val": "start",
+          "editor": "Dropdown",
+          "name": "block",
+          "options": "start,center,end,nearest",
+          "rank": 2
+        },
+        "scroll_to_heading_id": {
+          "caption": "Heading ID",
+          "doc": "The id from an item in the table_of_contents JSON state.",
+          "editor": "DynamicValue",
+          "name": "heading_id",
+          "rank": 0,
+          "value": "text"
+        }
+      }
     },
     "AGU": {
       "caption": "Unset all marks"
@@ -273,6 +368,20 @@
     "ACx": {
       "caption": "Table delete column"
     },
+    "replace": {
+      "caption": "Replace",
+      "doc": "Replaces the current find result and advances to the next match.",
+      "fields": {
+        "replace_replacement": {
+          "caption": "Replacement",
+          "editor": "DynamicValue",
+          "name": "replacement",
+          "optional": true,
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
     "AAh": {
       "caption": "Bold",
       "doc": "Applies bold to current selection. Ctrl + B / Opt + B"
@@ -289,6 +398,19 @@
     "toggle_invisible_characters": {
       "caption": "Toggle Invisible Characters",
       "doc": "Toggles the visibility of invisible characters (paragraph marks, spaces, hard breaks)."
+    },
+    "AID": {
+      "caption": "Set background color",
+      "doc": "Sets the text background color on the current selection, applied as an inline style. Distinct from text color and the highlight mark.",
+      "fields": {
+        "AIE": {
+          "caption": "Background color",
+          "default_val": "rgba(255, 204, 0, 1)",
+          "editor": "Color",
+          "name": "background_color",
+          "rank": 0
+        }
+      }
     },
     "AAy": {
       "caption": "H4"
@@ -362,6 +484,25 @@
     "AAp": {
       "caption": "H1"
     },
+    "AIA": {
+      "caption": "Set line height",
+      "doc": "Sets the line height on the current selection, applied as an inline style. Values can be a unitless number (e.g. \"1.5\") or a CSS length (e.g. \"24px\").",
+      "fields": {
+        "AIB": {
+          "caption": "Line height",
+          "default_val": "1.5",
+          "doc": "CSS line-height value, e.g. \"1.5\", \"24px\", \"1.2rem\".",
+          "editor": "DynamicValue",
+          "name": "line_height",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
+    "AIF": {
+      "caption": "Unset background color",
+      "doc": "Removes the text background color from the current selection."
+    },
     "ACu": {
       "caption": "Table add row after"
     },
@@ -425,42 +566,6 @@
     "ABK": {
       "caption": "Blockquote",
       "doc": ""
-    },
-    "AIA": {
-      "caption": "Set line height",
-      "doc": "Sets the line height on the current selection, applied as an inline style. Values can be a unitless number (e.g. \"1.5\") or a CSS length (e.g. \"24px\").",
-      "fields": {
-        "AIB": {
-          "caption": "Line height",
-          "default_val": "1.5",
-          "doc": "CSS line-height value, e.g. \"1.5\", \"24px\", \"1.2rem\".",
-          "editor": "DynamicValue",
-          "name": "line_height",
-          "rank": 0,
-          "value": "text"
-        }
-      }
-    },
-    "AIC": {
-      "caption": "Unset line height",
-      "doc": "Removes the line height from the current selection, reverting to the default."
-    },
-    "AID": {
-      "caption": "Set background color",
-      "doc": "Sets the text background color on the current selection, applied as an inline style. Distinct from text color and the highlight mark.",
-      "fields": {
-        "AIE": {
-          "caption": "Background color",
-          "default_val": "rgba(255, 204, 0, 1)",
-          "editor": "Color",
-          "name": "background_color",
-          "rank": 0
-        }
-      }
-    },
-    "AIF": {
-      "caption": "Unset background color",
-      "doc": "Removes the text background color from the current selection."
     }
   },
   "add_hover_pressed": true,
@@ -511,6 +616,10 @@
     "collab_synced": {
       "caption": "Collaboration synced",
       "name": "collab_synced"
+    },
+    "table_of_contents_updated": {
+      "caption": "Table of contents updated",
+      "name": "table_of_contents_updated"
     }
   },
   "fields": {
@@ -521,7 +630,7 @@
       "editor": "DynamicValue",
       "name": "extension_uniqueid_types",
       "optional": true,
-      "rank": 188,
+      "rank": 191,
       "value": "text"
     },
     "dropcursor_width": {
@@ -584,7 +693,7 @@
       "long_text": false,
       "name": "collab_cursor_css",
       "optional": true,
-      "rank": 211,
+      "rank": 214,
       "value": "text"
     },
     "ADQ": {
@@ -616,6 +725,15 @@
       "optional": true,
       "rank": 63,
       "value": "text"
+    },
+    "ext_backgroundcolor": {
+      "caption": "Background Color",
+      "default_val": false,
+      "doc": "Allows setting the text background color on selections. Use the \"Set background color\" action to apply a color. Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_backgroundcolor",
+      "rank": 27,
+      "value": "boolean"
     },
     "ADP": {
       "caption": "Bubble menu theme",
@@ -683,7 +801,7 @@
       "doc": "Keep <details> blocks open/closed state. When enabled, the open/closed state of each block is preserved in the document and will be restored when the editor is re-created.",
       "editor": "DynamicValue",
       "name": "details_persist",
-      "rank": 196,
+      "rank": 199,
       "value": "boolean"
     },
     "ADm": {
@@ -722,7 +840,7 @@
       "doc": "Enables Shift+Enter line breaks (hard breaks) within a paragraph. Off by default — when off, Shift+Enter does nothing.",
       "editor": "DynamicValue",
       "name": "ext_hardbreak",
-      "rank": 174,
+      "rank": 177,
       "value": "boolean"
     },
     "list_keepAttributes": {
@@ -762,7 +880,7 @@
       "is_list": true,
       "name": "mention_list",
       "optional": "true",
-      "rank": 180,
+      "rank": 183,
       "value": "_any_thing"
     },
     "codeblock_exitOnTripleEnter": {
@@ -790,7 +908,7 @@
       "editor": "StaticText",
       "name": "liveblocksPublicApiKey",
       "optional": true,
-      "rank": 208
+      "rank": 211
     },
     "AEN": {
       "caption": "JWT key",
@@ -798,7 +916,7 @@
       "editor": "DynamicValue",
       "name": "collab_jwt",
       "optional": true,
-      "rank": 207,
+      "rank": 210,
       "value": "text"
     },
     "AFK": {
@@ -843,7 +961,7 @@
       "editor": "Color",
       "name": "collab_cursor_color",
       "optional": true,
-      "rank": 210,
+      "rank": 213,
       "value": "text"
     },
     "h3_margin": {
@@ -945,13 +1063,13 @@
       "doc": "Shows a drag handle next to blocks, allowing users to reorder content by dragging.",
       "editor": "Label",
       "name": "ext_draghandle_label",
-      "rank": 169
+      "rank": 172
     },
     "ext_details_label": {
       "caption": "----- Details / Accordion -----",
       "editor": "Label",
       "name": "ext_details_label",
-      "rank": 194
+      "rank": 197
     },
     "mention_triggerChar": {
       "caption": "Trigger character",
@@ -960,7 +1078,7 @@
       "editor": "DynamicValue",
       "name": "mention_triggerChar",
       "optional": true,
-      "rank": 178,
+      "rank": 181,
       "value": "text"
     },
     "ext_subscript": {
@@ -995,7 +1113,7 @@
       "doc": "When enabled, the editor preserves class, style, id, and data-* attributes on HTML elements when parsing and rendering content. This is useful when your content comes from an external source and you want to keep its original styling and structure intact. Applies to block nodes (paragraphs, headings, blockquotes, tables, etc.) and inline marks (bold, italic, strike, code, links).",
       "editor": "DynamicValue",
       "name": "preserve_attributes",
-      "rank": 191,
+      "rank": 194,
       "value": "boolean"
     },
     "ext_table_label": {
@@ -1032,7 +1150,7 @@
       "caption": "to use the collaboration function you first need an account with one of the providers: 𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
       "editor": "Label",
       "name": "collab_info_sub",
-      "rank": 200
+      "rank": 203
     },
     "AEy": {
       "caption": "Label",
@@ -1040,7 +1158,7 @@
       "field_type_restriction": "text_image_file",
       "name": "mention_field_label",
       "optional": true,
-      "rank": 182
+      "rank": 185
     },
     "ext_mention": {
       "caption": "Mention",
@@ -1048,7 +1166,7 @@
       "doc": "Enables @mentions. When a user types @ followed by a query, a suggestion list appears. Configure the data source and fields below.",
       "editor": "DynamicValue",
       "name": "ext_mention",
-      "rank": 177,
+      "rank": 180,
       "value": "boolean"
     },
     "AFy": {
@@ -1106,7 +1224,7 @@
       "doc": "Color of the border around the mention on the text",
       "editor": "Color",
       "name": "mention_border_color",
-      "rank": 184
+      "rank": 187
     },
     "ext_trailingnode": {
       "caption": "Trailing Node",
@@ -1114,7 +1232,7 @@
       "doc": "Automatically inserts an empty paragraph at the end of the document when the last node is a block element (table, image, code block, etc.). Prevents users from getting trapped with no way to continue typing below block elements. Recommended to keep enabled.",
       "editor": "DynamicValue",
       "name": "ext_trailingnode",
-      "rank": 158,
+      "rank": 159,
       "value": "boolean"
     },
     "h2_font_weight": {
@@ -1131,7 +1249,7 @@
       "caption": "----- Hard Break -----",
       "editor": "Label",
       "name": "ext_hardbreak_label",
-      "rank": 173
+      "rank": 176
     },
     "table_allowNodeSelection": {
       "caption": "Allow table node selection",
@@ -1158,7 +1276,7 @@
       "name": "ext_focus_mode",
       "optional": true,
       "options": "deepest,shallowest,all",
-      "rank": 160
+      "rank": 161
     },
     "AGP": {
       "caption": "Debug mode",
@@ -1166,7 +1284,7 @@
       "doc": "When enabled, logs detailed information to the browser console. Useful for troubleshooting. Look for messages prefixed with [Tiptap].",
       "editor": "Checkbox",
       "name": "debug_mode",
-      "rank": 212
+      "rank": 215
     },
     "ADq": {
       "caption": "YouTube CSS override",
@@ -1221,7 +1339,7 @@
       "doc": "When enabled (and \"Preserve HTML attributes\" is also on), the editor will recognize <div> elements in your HTML content instead of stripping them. Useful when your content contains custom layouts or structures wrapped in divs. Without this, any <div> tags in the input HTML would be ignored.",
       "editor": "DynamicValue",
       "name": "preserve_unknown_tags",
-      "rank": 193,
+      "rank": 196,
       "value": "boolean"
     },
     "h5_color": {
@@ -1255,7 +1373,7 @@
       "long_text": false,
       "name": "details_adv",
       "optional": true,
-      "rank": 197,
+      "rank": 200,
       "value": "text"
     },
     "ext_heading": {
@@ -1285,22 +1403,13 @@
       "rank": 102,
       "value": "boolean"
     },
-    "ext_ai_toolkit": {
-      "caption": "AI Toolkit",
-      "default_val": false,
-      "doc": "Enables Tiptap's AI Toolkit (ServerAiToolkit) so block ids used by Tiptap's server-side AI API (api.tiptap.dev/v4/ai/toolkit) survive editing. Requires a paid Tiptap account — without one, the API calls will fail server-side.",
-      "editor": "DynamicValue",
-      "name": "ext_ai_toolkit",
-      "rank": 213,
-      "value": "boolean"
-    },
     "ext_gapcursor": {
       "caption": "Gapcursor",
       "default_val": true,
       "doc": "Allows placing the cursor in gaps that would normally be inaccessible — for example, before or after a table or image.",
       "editor": "DynamicValue",
       "name": "ext_gapcursor",
-      "rank": 157,
+      "rank": 158,
       "value": "boolean"
     },
     "AEh": {
@@ -1348,7 +1457,16 @@
       "doc": "Adds unique IDs to specified node types (e.g. paragraphs, headings). Useful for deep-linking to specific parts of the document.",
       "editor": "DynamicValue",
       "name": "ext_uniqueid",
-      "rank": 187,
+      "rank": 190,
+      "value": "boolean"
+    },
+    "ext_find_replace": {
+      "caption": "Find & Replace",
+      "default_val": false,
+      "doc": "Search, highlight, navigate, and replace text through workflow actions. Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_find_replace",
+      "rank": 170,
       "value": "boolean"
     },
     "h6_color": {
@@ -1365,7 +1483,7 @@
       "doc": "Shows which HTML attributes are preserved when the setting above is enabled. Currently hardcoded to: class, style, id, and data-* attributes. This field is informational — the preserved attributes are defined in the extension code.",
       "editor": "DynamicValue",
       "name": "preserved_attributes",
-      "rank": 192,
+      "rank": 195,
       "value": "text"
     },
     "ext_color": {
@@ -1384,13 +1502,13 @@
       "editor": "StaticText",
       "name": "collab_app_id",
       "optional": true,
-      "rank": 206
+      "rank": 209
     },
     "ext_preserve_label": {
       "caption": "----- Preserve Attributes -----",
       "editor": "Label",
       "name": "ext_preserve_label",
-      "rank": 190
+      "rank": 193
     },
     "ext_youtube": {
       "caption": "YouTube",
@@ -1459,7 +1577,7 @@
       "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced",
       "editor": "Label",
       "name": "collab_status_docs",
-      "rank": 201
+      "rank": 204
     },
     "ADk": {
       "caption": "Link color hover",
@@ -1494,7 +1612,7 @@
       "doc": "When enabled, the drag handle also appears for nested content — e.g. individual list items inside bullet/ordered lists, paragraphs inside blockquotes, etc. When disabled, only top-level blocks show a drag handle.",
       "editor": "Checkbox",
       "name": "draghandle_nested",
-      "rank": 171
+      "rank": 174
     },
     "ext_history": {
       "caption": "History (Undo/Redo)",
@@ -1502,7 +1620,7 @@
       "doc": "Enables undo/redo (Ctrl/⌘+Z / Ctrl/⌘+Shift+Z). Automatically disabled when collaboration is active (collab has its own history).",
       "editor": "DynamicValue",
       "name": "ext_history",
-      "rank": 168,
+      "rank": 169,
       "value": "boolean"
     },
     "ADc": {
@@ -1531,6 +1649,15 @@
       "rank": 97,
       "value": "boolean"
     },
+    "ext_table_of_contents": {
+      "caption": "Table of Contents",
+      "default_val": false,
+      "doc": "Builds a live JSON outline from headings and enables the Scroll to heading action. Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_table_of_contents",
+      "rank": 171,
+      "value": "boolean"
+    },
     "ADz": {
       "caption": "H6 CSS override",
       "doc": "Inject custom CSS properties for H6 elements. This CSS is placed after the size, color, margin, and font-weight declarations, so any property you set here will override those values. Example: font-style: italic; letter-spacing: 0.05em; — Tip: use an 'arbitrary text' value for more room to write CSS.",
@@ -1547,7 +1674,7 @@
       "doc": "Shows invisible characters like paragraph marks (¶), spaces (·), and hard breaks. Useful for power users and content editors who need to see whitespace formatting.",
       "editor": "DynamicValue",
       "name": "ext_invisiblecharacters",
-      "rank": 165,
+      "rank": 166,
       "value": "boolean"
     },
     "link_defaultProtocol": {
@@ -1574,7 +1701,7 @@
       "doc": "Paste the collab URL here to enable collaborative editing. Leave empty to disable.",
       "editor": "StaticText",
       "name": "collab_url",
-      "rank": 205
+      "rank": 208
     },
     "h6_info": {
       "caption": "     ----- H6 styling -----",
@@ -1588,7 +1715,7 @@
       "doc": "Adds a CSS class to the currently focused node in the editor. Use this to style the active block — e.g., add a background or left border to the paragraph/heading the cursor is in. The class name is `has-focus`. Style it via the Base div CSS override or your app's stylesheets. See the Focus Mode option below to control which node gets the class.",
       "editor": "DynamicValue",
       "name": "ext_focus",
-      "rank": 159,
+      "rank": 160,
       "value": "boolean"
     },
     "h4_info": {
@@ -1639,7 +1766,7 @@
       "doc": "Enables the Drag Handle extension. When active, a small grip icon appears to the left of blocks (paragraphs, headings, lists, etc.) on hover. Users can click and drag it to reorder blocks in the editor.",
       "editor": "Checkbox",
       "name": "ext_draghandle",
-      "rank": 170
+      "rank": 173
     },
     "h6_margin": {
       "caption": "H6 margin",
@@ -1656,19 +1783,19 @@
       "doc": "Enable real-time collaborative editing via a Y.js-based provider (Tiptap Cloud, Custom Hocuspocus, or Liveblocks). When collaboration is active, the shared Y.js document is the single source of truth. Note: auto-binding is automatically ignored while collaboration is active — the collaborative document takes priority to prevent conflicts.",
       "editor": "Checkbox",
       "name": "collab_active",
-      "rank": 202
+      "rank": 205
     },
     "AEB": {
       "caption": "𝗖𝗢𝗟𝗟𝗔𝗕𝗢𝗥𝗔𝗧𝗜𝗢𝗡",
       "editor": "Label",
       "name": "collab_info",
-      "rank": 199
+      "rank": 202
     },
     "ext_highlight_label": {
       "caption": "----- Highlight -----",
       "editor": "Label",
       "name": "ext_highlight_label",
-      "rank": 27
+      "rank": 28
     },
     "h4_font_weight": {
       "caption": "H4 font-weight",
@@ -1688,7 +1815,7 @@
       "name": "collabProvider",
       "optional": true,
       "options": "tiptap,liveblocks,custom",
-      "rank": 204
+      "rank": 207
     },
     "table_lastColumnResizable": {
       "caption": "Last column resizable",
@@ -1697,6 +1824,15 @@
       "editor": "Checkbox",
       "name": "table_lastColumnResizable",
       "rank": 135
+    },
+    "ext_ai_toolkit": {
+      "caption": "AI Toolkit",
+      "default_val": false,
+      "doc": "Enables Tiptap's AI Toolkit (ServerAiToolkit) so block ids used by Tiptap's server-side AI API (api.tiptap.dev/v4/ai/toolkit) survive editing. Requires a paid Tiptap account — without one, the API calls will fail server-side.",
+      "editor": "DynamicValue",
+      "name": "ext_ai_toolkit",
+      "rank": 157,
+      "value": "boolean"
     },
     "link_linkOnPaste": {
       "caption": "Link on paste",
@@ -1723,7 +1859,7 @@
       "doc": "Decides if to keep a mark after a hardbreak. When checked, and you're typing in bold, when you hit Shift+Enter, the next line will continue with bold. If unchecked, it will revert to normal text.",
       "editor": "Checkbox",
       "name": "hardBreakKeepMarks",
-      "rank": 175,
+      "rank": 178,
       "value": "boolean"
     },
     "AEz": {
@@ -1732,7 +1868,7 @@
       "field_type_restriction": "text_image_file",
       "name": "mention_field_id",
       "optional": true,
-      "rank": 183
+      "rank": 186
     },
     "h6_font_weight": {
       "caption": "H6 font-weight",
@@ -1773,7 +1909,7 @@
       "doc": "Color of the background of the mention.",
       "editor": "Color",
       "name": "mention_background_color",
-      "rank": 185
+      "rank": 188
     },
     "h2_margin": {
       "caption": "H2 margin",
@@ -1842,7 +1978,7 @@
       "editor": "DynamicValue",
       "name": "collab_doc_id",
       "optional": true,
-      "rank": 203,
+      "rank": 206,
       "value": "text"
     },
     "ext_selection": {
@@ -1851,7 +1987,7 @@
       "doc": "Keeps the text selection visually highlighted when the editor loses focus. By default, browsers hide the selection highlight when focus moves to another element (e.g., clicking a toolbar button outside the editor). Enable this to maintain a visible selection. The highlight uses the CSS class `selection` — a default blue style is provided automatically.",
       "editor": "DynamicValue",
       "name": "ext_selection",
-      "rank": 161,
+      "rank": 162,
       "value": "boolean"
     },
     "ABs": {
@@ -1873,11 +2009,20 @@
       "rank": 79,
       "value": "text"
     },
+    "ext_lineheight": {
+      "caption": "Line Height",
+      "default_val": false,
+      "doc": "Allows setting the line height on text selections. Use the \"Set line height\" action to apply a value (e.g. \"1.5\", \"24px\"). Off by default.",
+      "editor": "DynamicValue",
+      "name": "ext_lineheight",
+      "rank": 27,
+      "value": "boolean"
+    },
     "ext_uniqueid_label": {
       "caption": "----- Unique ID -----",
       "editor": "Label",
       "name": "ext_uniqueid_label",
-      "rank": 186
+      "rank": 189
     },
     "ADZ": {
       "caption": "Cell padding",
@@ -1987,7 +2132,7 @@
       "long_text": false,
       "name": "invisiblecharacters_adv",
       "optional": true,
-      "rank": 167,
+      "rank": 168,
       "value": "text"
     },
     "ext_typography": {
@@ -1996,7 +2141,7 @@
       "doc": "Automatically replaces common text patterns with proper typographic characters as you type. Examples: -- → —, ... → …, (c) → ©, != → ≠, << → «, 1/2 → ½, and smart quotes. A nice polish for content-heavy editors.",
       "editor": "DynamicValue",
       "name": "ext_typography",
-      "rank": 163,
+      "rank": 164,
       "value": "boolean"
     },
     "placeholder_showOnlyWhenEditable": {
@@ -2026,7 +2171,7 @@
       "doc": "Improves keyboard behavior in lists. Pressing Backspace at the start of a list item properly lifts it out of the list instead of merging with the previous item. Recommended to keep enabled.",
       "editor": "DynamicValue",
       "name": "ext_listkeymap",
-      "rank": 164,
+      "rank": 165,
       "value": "boolean"
     },
     "AEx": {
@@ -2036,7 +2181,7 @@
       "is_list": true,
       "name": "mention_list_type",
       "optional": "false",
-      "rank": 179,
+      "rank": 182,
       "value": "_any_thing_bindable"
     },
     "ADT": {
@@ -2069,7 +2214,7 @@
       "editor": "DynamicValue",
       "name": "mention_base_url",
       "optional": true,
-      "rank": 181,
+      "rank": 184,
       "value": "text"
     },
     "placeholder_includeChildren": {
@@ -2088,7 +2233,7 @@
       "editor": "DynamicValue",
       "name": "extension_uniqueid_attrName",
       "optional": true,
-      "rank": 189,
+      "rank": 192,
       "value": "text"
     },
     "h5_margin": {
@@ -2140,7 +2285,7 @@
       "caption": "----- Mention -----",
       "editor": "Label",
       "name": "ext_mention_label",
-      "rank": 176
+      "rank": 179
     },
     "details_summary_adv": {
       "caption": "Details summary CSS override",
@@ -2149,7 +2294,7 @@
       "long_text": false,
       "name": "details_summary_adv",
       "optional": true,
-      "rank": 198,
+      "rank": 201,
       "value": "text"
     },
     "table_handleWidth": {
@@ -2173,7 +2318,7 @@
       "editor": "DynamicValue",
       "name": "draghandle_adv",
       "optional": true,
-      "rank": 172,
+      "rank": 175,
       "value": "text"
     },
     "h4_size": {
@@ -2218,7 +2363,7 @@
       "long_text": false,
       "name": "ext_selection_css",
       "optional": true,
-      "rank": 162,
+      "rank": 163,
       "value": "text"
     },
     "ext_formatting_label": {
@@ -2251,7 +2396,7 @@
       "doc": "Whether invisible characters are visible when the extension loads. Can be toggled at runtime with the \"Toggle Invisible Characters\" action.",
       "editor": "DynamicValue",
       "name": "invisiblecharacters_visible",
-      "rank": 166,
+      "rank": 167,
       "value": "boolean"
     },
     "youtube_addPasteHandler": {
@@ -2269,7 +2414,7 @@
       "doc": "Adds collapsible <details>/<summary> blocks. Useful for FAQs, toggleable sections, and accordion-style content. Users can type a summary line and expand/collapse the body.",
       "editor": "DynamicValue",
       "name": "ext_details",
-      "rank": 195,
+      "rank": 198,
       "value": "boolean"
     },
     "codeblock_exitOnArrowDown": {
@@ -2368,26 +2513,8 @@
       "editor": "DynamicValue",
       "name": "collab_user_name",
       "optional": true,
-      "rank": 209,
+      "rank": 212,
       "value": "text"
-    },
-    "ext_lineheight": {
-      "caption": "Line Height",
-      "default_val": false,
-      "doc": "Allows setting the line height on text selections. Use the \"Set line height\" action to apply a value (e.g. \"1.5\", \"24px\"). Off by default.",
-      "editor": "DynamicValue",
-      "name": "ext_lineheight",
-      "rank": 27,
-      "value": "boolean"
-    },
-    "ext_backgroundcolor": {
-      "caption": "Background Color",
-      "default_val": false,
-      "doc": "Allows setting the text background color on selections. Use the \"Set background color\" action to apply a color. Off by default.",
-      "editor": "DynamicValue",
-      "name": "ext_backgroundcolor",
-      "rank": 28,
-      "value": "boolean"
     }
   },
   "has_reset_fn": false,
@@ -2444,6 +2571,24 @@
       },
       "name": "taskItem",
       "value": "boolean"
+    },
+    "find_replace_state": {
+      "caption": "Find & Replace state (JSON)",
+      "doc": "JSON containing searchTerm, replaceTerm, currentMatch (1-based; 0 when none), matchCount, caseSensitive, useRegex, and wholeWord.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "find_replace_state",
+      "value": "text"
+    },
+    "AIH": {
+      "caption": "Background color",
+      "doc": "The text background color of the current selection, if set via the Background Color extension.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "background_color",
+      "value": "text"
     },
     "ACB": {
       "caption": "Character count",
@@ -2554,15 +2699,6 @@
       "name": "contentJSON",
       "value": "text"
     },
-    "ai_editor_context": {
-      "caption": "AI editor context (JSON)",
-      "doc": "The editor context required by Tiptap AI Toolkit REST calls, generated from this editor's active extension configuration when AI Toolkit is enabled.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "ai_editor_context",
-      "value": "text"
-    },
     "ACa": {
       "caption": "Is ready",
       "initialization_code": {
@@ -2578,6 +2714,15 @@
       },
       "name": "align_center",
       "value": "boolean"
+    },
+    "ai_editor_context": {
+      "caption": "AI editor context (JSON)",
+      "doc": "The editor context required by Tiptap AI Toolkit REST calls, generated from this editor's active extension configuration when AI Toolkit is enabled.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "ai_editor_context",
+      "value": "text"
     },
     "AFw": {
       "caption": "File upload progress",
@@ -2744,6 +2889,15 @@
       "name": "to",
       "value": "number"
     },
+    "table_of_contents": {
+      "caption": "Table of contents (JSON)",
+      "doc": "A JSON array of headings with id, textContent, level, originalLevel, itemIndex, pos, isActive, and isScrolledOver.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "table_of_contents",
+      "value": "text"
+    },
     "AAu": {
       "caption": "paragraph is a h6",
       "initialization_code": {
@@ -2775,6 +2929,15 @@
         "fn": "function(properties, context) {}"
       },
       "name": "selected_text",
+      "value": "text"
+    },
+    "AIG": {
+      "caption": "Line height",
+      "doc": "The line height of the current selection, if set via the Line Height extension.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "name": "line_height",
       "value": "text"
     },
     "can_undo": {
@@ -2896,24 +3059,6 @@
       },
       "name": "h1",
       "value": "boolean"
-    },
-    "AIG": {
-      "caption": "Line height",
-      "doc": "The line height of the current selection, if set via the Line Height extension.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "line_height",
-      "value": "text"
-    },
-    "AIH": {
-      "caption": "Background color",
-      "doc": "The text background color of the current selection, if set via the Background Color extension.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "name": "background_color",
-      "value": "text"
     }
   },
   "support_autobinding": true
