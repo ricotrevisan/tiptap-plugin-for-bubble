@@ -2004,6 +2004,24 @@ instance.data.setupEditor = function (properties, context) {
     function hideMenuElement(el) {
         el.style.visibility = "hidden";
         el.style.opacity = "0";
+        el.style.pointerEvents = "none";
+    }
+
+    // Floating UI repositioning (debounced resize/scroll) can flip an extension-hidden
+    // menu back to visibility:visible while it is still logically hidden, leaving a
+    // transparent but click-intercepting hit box. Upstream FloatingMenu lacks the
+    // isVisible guards BubbleMenu has (see GitHub issue #20), so we keep hidden menu
+    // elements pointer-events:none and only restore interactivity from the
+    // extension's onShow/onHide callbacks.
+    function menuInteractionGuards(el) {
+        return {
+            onShow() {
+                el.style.pointerEvents = "";
+            },
+            onHide() {
+                el.style.pointerEvents = "none";
+            },
+        };
     }
 
     if (bubbleMenu && properties.ext_bubblemenu) {
@@ -2022,6 +2040,7 @@ instance.data.setupEditor = function (properties, context) {
                 BubbleMenu.configure({
                     element: bubbleMenuElements[0],
                     appendTo: () => document.body,
+                    options: menuInteractionGuards(bubbleMenuElements[0]),
                 }),
             );
         } else if (bubbleMenuElements.length >= 2) {
@@ -2035,6 +2054,7 @@ instance.data.setupEditor = function (properties, context) {
                 BubbleMenu.configure({
                     element: bubbleMenuDiv,
                     appendTo: () => document.body,
+                    options: menuInteractionGuards(bubbleMenuDiv),
                 }),
             );
         }
@@ -2056,6 +2076,7 @@ instance.data.setupEditor = function (properties, context) {
                 FloatingMenu.configure({
                     element: floatingMenuElements[0],
                     appendTo: () => document.body,
+                    options: menuInteractionGuards(floatingMenuElements[0]),
                 }),
             );
         } else if (floatingMenuElements.length >= 2) {
@@ -2069,6 +2090,7 @@ instance.data.setupEditor = function (properties, context) {
                 FloatingMenu.configure({
                     element: floatingMenuDiv,
                     appendTo: () => document.body,
+                    options: menuInteractionGuards(floatingMenuDiv),
                 }),
             );
         }
