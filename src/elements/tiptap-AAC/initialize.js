@@ -2133,12 +2133,27 @@ instance.data.setupEditor = function (properties, context) {
     // elements pointer-events:none and only restore interactivity from the
     // extension's onShow/onHide callbacks.
     function menuInteractionGuards(el) {
+        const originalZIndex = el.style.zIndex;
+
         return {
             onShow() {
+                // Bubble renders its page and floating groups as top-level stacking
+                // contexts. Once Tiptap appends a menu to <body>, the menu can be
+                // logically visible and interactive but still paint underneath the
+                // editor. Put it just above the highest current body child instead of
+                // using a permanent global maximum that would cover later popups.
+                const highestBodyZIndex = Array.from(document.body.children)
+                    .filter((child) => child !== el)
+                    .map((child) => Number.parseInt(window.getComputedStyle(child).zIndex, 10))
+                    .filter(Number.isFinite)
+                    .reduce((highest, zIndex) => Math.max(highest, zIndex), 0);
+
+                el.style.zIndex = String(Math.min(highestBodyZIndex + 1, 2147483647));
                 el.style.pointerEvents = "";
             },
             onHide() {
                 el.style.pointerEvents = "none";
+                el.style.zIndex = originalZIndex;
             },
         };
     }
