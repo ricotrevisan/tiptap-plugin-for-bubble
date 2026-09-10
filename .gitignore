@@ -9,3 +9,6 @@ dist*
 .claude/*local*
 plans
 .claude/
+
+lib/test-results/
+lib/playwright-report/

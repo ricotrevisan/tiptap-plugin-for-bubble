@@ -37,3 +37,14 @@ jobs:
         run: npm run test:validator
       - name: Build and run regression tests
         run: npm test
+      - name: Install browser engines
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Test built runtime through Bubble adapters in real browsers
+        run: npx playwright test
+      - name: Upload browser failure traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-traces
+          path: lib/test-results
+          retention-days: 7

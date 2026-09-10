@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Tiptap Bubble adapter</title>
+<style>.host { width:600px; height:300px; border:1px solid #ccc } .tiptap { min-height:180px; padding:12px; }</style>
+<div id="first" class="host"></div><div id="second" class="host"></div>
+<script src="/lib/node_modules/jquery/dist/jquery.js"></script>
+<script src="/lib/dist.js"></script>
+<script type="module">
+import { loadCallbacks, createHarness, bubbleList, bubbleThing } from '/lib/node_modules/@rico/bubble-element-test-harness/src/index.js';
+const base = '/src/elements/tiptap-AAC/';
+const callbacks = await loadCallbacks({
+  initialize: base + 'initialize.js', update: base + 'update.js', reset: base + 'reset.js',
+  actions: { setContent: base + 'actions/set-content-ACW.js' },
+});
+window.debuggerMessages = [];
+window.makeHarness = (id, overrides = {}) => {
+  const properties = {
+    initialContent: '<h1>Alpha</h1><p>One</p>', content_is_json: false,
+    isEditable: true, collab_active: false,
+    ext_heading: true, headings: '1,2,3', ext_history: true,
+    ext_table_of_contents: true, ext_mention: true,
+    mention_triggerChar: '@', mention_field_label: 'name', mention_field_id: 'id',
+    mention_list: bubbleList([bubbleThing({ name: 'Ada Lovelace', id: 'ada' }), bubbleThing({ name: 'Grace Hopper', id: 'grace' })]),
+    bubble: { auto_binding: () => false, fit_height: () => false, font_size: () => 16, font_color: () => '#111111', font_face: () => 'Arial:400' },
+    ...overrides,
+  };
+  // Observe adapter output only; this does not simulate Bubble persistence.
+  const autobindings = [];
+  const h = createHarness({ callbacks, canvas: window.jQuery(document.getElementById(id)), methods: { publishAutobinding: value => autobindings.push(value) }, context: {
+    reportDebugger: message => debuggerMessages.push(String(message)),
+    reportToDebugger: message => debuggerMessages.push(String(message)),
+  } });
+  h.initialize(); h.update(properties);
+  return { h, properties, autobindings };
+};
+window.first = makeHarness('first');
+window.ready = true;
+</script></html>
