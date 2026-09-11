@@ -1,0 +1,41 @@
+{
+  "publications": [
+    {
+      "index": 1,
+      "timeMs": 246272,
+      "length": 205
+    },
+    {
+      "index": 2,
+      "timeMs": 246313,
+      "length": 217
+    },
+    {
+      "index": 3,
+      "timeMs": 246381,
+      "length": 239
+    }
+  ],
+  "responses": [
+    {
+      "index": 2,
+      "timeMs": 246613,
+      "status": 200
+    },
+    {
+      "index": 3,
+      "timeMs": 246904,
+      "status": 200
+    },
+    {
+      "index": 1,
+      "timeMs": 247142,
+      "status": 200
+    }
+  ],
+  "editorLength": 239,
+  "boundLength": 205,
+  "boundEqualsOldestPublication": true,
+  "lastPublicationEqualsEditor": true,
+  "pendingSave": null
+}

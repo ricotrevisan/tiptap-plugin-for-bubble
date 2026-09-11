@@ -1,5 +1,7 @@
 # WTF-260: autobinding regression
 
+**2026-09-11: the fix is incomplete.** A real typing test reproduced final database data loss from out-of-order saves. See the [follow-up investigation](investigation-2026-09-11.md). The results below cover the original patch and do not establish save convergence.
+
 The editor now ignores echoes of its own saves, cancels pending callbacks when the bound record changes, and loads incoming content without saving it back. Blur submits one dirty edit; clean blur does not write. Record changes also prevent Undo or a simultaneous extension rebuild from restoring the previous document.
 
 ## Configure SPA editors
