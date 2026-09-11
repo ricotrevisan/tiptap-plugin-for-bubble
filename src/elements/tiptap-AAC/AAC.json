@@ -625,6 +625,16 @@
     }
   },
   "fields": {
+      "autobinding_save_delay": {
+        "caption": "Autobinding save delay",
+        "name": "autobinding_save_delay",
+        "editor": "DynamicValue",
+        "value": "number",
+        "optional": true,
+        "default_val": 2200,
+        "rank": 4.6,
+        "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding."
+      },
     "autobinding_record_id": {
       "caption": "Autobinding record ID",
       "name": "autobinding_record_id",
@@ -662,7 +672,7 @@
     "AFF": {
       "caption": "Update delay",
       "default_val": 300,
-      "doc": "After the user stops typing, how long should it wait until it emits a \"Content updated\" event and -- if autobinding is on -- saves the document.",
+      "doc": "Milliseconds to wait after typing stops before firing Content updated when autobinding is off. With autobinding enabled, Autobinding save delay controls both saving and this event. Editor states update immediately in either mode.",
       "editor": "DynamicValue",
       "name": "update_delay",
       "rank": 4,

@@ -1,0 +1,189 @@
+{
+  "date": "2026-09-11",
+  "bubbleBranch": "wtf-260-autobinding",
+  "bubbleVersion": "33jpy",
+  "bundleSha256": "c545e655110724b92f2481250dab6878d83bf819977d5caabd0e5dd2729a074b",
+  "typing": [
+    {
+      "saveDelay": 0,
+      "rounds": [
+        {
+          "trial": 0,
+          "saveDelay": 0,
+          "databaseMatches": true,
+          "htmlLength": 226,
+          "requests": 46
+        },
+        {
+          "trial": 1,
+          "saveDelay": 0,
+          "databaseMatches": true,
+          "htmlLength": 328,
+          "requests": 84
+        },
+        {
+          "trial": 2,
+          "saveDelay": 0,
+          "databaseMatches": true,
+          "htmlLength": 430,
+          "requests": 112
+        },
+        {
+          "trial": 3,
+          "saveDelay": 0,
+          "databaseMatches": true,
+          "htmlLength": 532,
+          "requests": 143
+        },
+        {
+          "trial": 4,
+          "saveDelay": 0,
+          "databaseMatches": true,
+          "htmlLength": 634,
+          "requests": 159
+        }
+      ],
+      "reloadPreservedText": true
+    },
+    {
+      "saveDelay": 300,
+      "rounds": [
+        {
+          "trial": 0,
+          "saveDelay": 300,
+          "databaseMatches": true,
+          "htmlLength": 743,
+          "requests": 1
+        },
+        {
+          "trial": 1,
+          "saveDelay": 300,
+          "databaseMatches": true,
+          "htmlLength": 845,
+          "requests": 2
+        },
+        {
+          "trial": 2,
+          "saveDelay": 300,
+          "databaseMatches": true,
+          "htmlLength": 947,
+          "requests": 3
+        },
+        {
+          "trial": 3,
+          "saveDelay": 300,
+          "databaseMatches": true,
+          "htmlLength": 1049,
+          "requests": 4
+        },
+        {
+          "trial": 4,
+          "saveDelay": 300,
+          "databaseMatches": true,
+          "htmlLength": 1151,
+          "requests": 5
+        }
+      ],
+      "reloadPreservedText": true
+    },
+    {
+      "saveDelay": 2200,
+      "rounds": [
+        {
+          "trial": 0,
+          "saveDelay": 2200,
+          "databaseMatches": true,
+          "htmlLength": 1260,
+          "requests": 1
+        },
+        {
+          "trial": 1,
+          "saveDelay": 2200,
+          "databaseMatches": true,
+          "htmlLength": 1362,
+          "requests": 2
+        },
+        {
+          "trial": 2,
+          "saveDelay": 2200,
+          "databaseMatches": true,
+          "htmlLength": 1464,
+          "requests": 3
+        },
+        {
+          "trial": 3,
+          "saveDelay": 2200,
+          "databaseMatches": true,
+          "htmlLength": 1566,
+          "requests": 4
+        },
+        {
+          "trial": 4,
+          "saveDelay": 2200,
+          "databaseMatches": true,
+          "htmlLength": 1668,
+          "requests": 5
+        }
+      ],
+      "reloadPreservedText": true
+    }
+  ],
+  "delayedWrite": {
+    "databaseMatches": true,
+    "reloadPreservedText": true,
+    "responseOrder": [
+      1,
+      0,
+      2
+    ],
+    "requests": 3
+  },
+  "pendingNavigation": {
+    "pendingBeforeSwitch": true,
+    "pendingAEditCancelled": true,
+    "recordBUnchangedByA": true,
+    "hideSwitchShow": true,
+    "recreatedEditor": true,
+    "recordBEditPersisted": true
+  },
+  "inflightNavigation": {
+    "inflightAStayedOnA": true,
+    "recordBPersisted": true,
+    "reloadPreservedText": true,
+    "responseOrder": [
+      1,
+      0
+    ]
+  },
+  "staleEchoReplay": [
+    {
+      "url": "https://tiptap-plugin.bubbleapps.io/version-33jpy/wtf-260-autobinding",
+      "delay": 0,
+      "htmlLength": 1740,
+      "selectionPreserved": true,
+      "preserved": true,
+      "databaseMatches": true,
+      "reloadPreservedText": true
+    },
+    {
+      "url": "https://tiptap-plugin.bubbleapps.io/version-33jpy/wtf-260-autobinding",
+      "delay": 300,
+      "htmlLength": 1760,
+      "selectionPreserved": true,
+      "preserved": true,
+      "databaseMatches": true,
+      "reloadPreservedText": true
+    }
+  ],
+  "automatedValidation": {
+    "autobindingScenarios": 27,
+    "pluginFunctionBodies": 73,
+    "validatorTests": 11,
+    "fullBuildAndLifecycleSuitePassed": true
+  },
+  "notes": [
+    "XHR instrumentation changes timing only; production controller is unmodified in these browser checks.",
+    "Database equality was checked through Buildprint data fetch after requests and pending work settled.",
+    "Reload checks wait for the requested bound record ID; a fixed 500 ms wait was insufficient for one Bubble data load."
+  ]
+}

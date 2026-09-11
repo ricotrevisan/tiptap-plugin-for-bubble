@@ -27,19 +27,19 @@ if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || ta
     // Rebuilding must not reset an unsaved local document back to the element's
     // initialContent property. Record the prior initialContent too so a
     // simultaneous property change is still applied after the rebuild.
-    const boundDocumentChanged = properties.bubble.auto_binding() && (
-        (properties.autobinding_record_id || "") !== instance.data._boundRecordId ||
-        (properties.autobinding !== instance.data._lastBoundContent &&
-            !instance.data._autobindingEchoes.has(instance.data.contentFingerprint(properties.autobinding)))
-    );
+    const bindingChange = instance.data._autobindingSave.classify(properties.autobinding_record_id, properties.autobinding);
+    const boundDocumentChanged = properties.bubble.auto_binding() &&
+        (bindingChange === "record" || bindingChange === "external");
     if (!properties.collab_active && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
         instance.data._pendingRebuildContent = instance.data.editor.getJSON();
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
+        instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
     } else if (boundDocumentChanged) {
         // A simultaneous extension toggle must not carry A's local document
         // into the editor being rebuilt for B.
         delete instance.data._pendingRebuildContent;
         delete instance.data._pendingRebuildInitialContent;
+        delete instance.data._pendingRebuildSave;
     }
     instance.data.teardownEditor(rebuildReason);
 }
@@ -157,18 +157,13 @@ if (instance.data.editor_is_ready && instance.data.delay !== properties.update_d
 
 if (instance.data.editor_is_ready && properties.bubble.auto_binding() && !properties.collab_active) {
     const recordId = properties.autobinding_record_id || "";
-    const recordChanged = recordId !== instance.data._boundRecordId;
-    const valueChanged = properties.autobinding !== instance.data._lastBoundContent;
-    const ownEcho = instance.data._autobindingEchoes.has(instance.data.contentFingerprint(properties.autobinding));
+    const change = instance.data._autobindingSave.receive(recordId, properties.autobinding);
+    const recordChanged = change === "record";
     instance.data._lastBoundContent = properties.autobinding;
 
-    // A distinct record is authoritative even if its HTML is identical to a
-    // previous save. Without a record ID, changed non-echo content is the only
-    // available signal that Bubble has supplied a different document.
-    if (recordChanged || (valueChanged && !ownEcho)) {
+    if (recordChanged || change === "external") {
         instance.data.cancelPendingContent();
         instance.data._boundRecordId = recordId;
-        if (recordChanged) instance.data._autobindingEchoes.clear();
         const editor = instance.data.editor;
         const { from, to } = editor.state.selection;
         instance.data.isProgrammaticUpdate = true;

@@ -1,6 +1,6 @@
 # Follow-up: saves finish out of order
 
-**Status: WTF-260 is not fixed. PR #37 must remain a draft.** The previous implementation protects the visible editor from known stale echoes but does not ensure that the database retains the newest submitted value.
+**Historical investigation at `c3ed01e`, before the replacement save controller.** This records why the first patch was rejected. See [the current implementation and verification](README.md) for the subsequent replacement. The previous implementation protected the visible editor from known stale echoes but did not ensure that the database retained the newest submitted value.
 
 ## Recording and reproduction
 
@@ -14,7 +14,7 @@ Run on the configured/authenticated `wtf260` browser session:
 python3 lib/tests/browser/reproduce-autobinding-convergence.py
 ```
 
-This intentionally failing manual regression exercises the exact branch below. It saves the pre-test editor state and failure detail under `/tmp`, appends to disposable Record A, and leaves the editor open on failure. Network timing varies, so it repeats up to five rounds. Two initial runs and the instrumented minimized run failed without any artificial network delay.
+At the investigated commit, this intentionally failing manual regression exercised the exact branch below. The script has since been updated to assert database convergence and reload preservation against the replacement controller. It saves the pre-test editor state and failure detail under `/tmp`, appends to disposable Record A, and leaves the editor open on failure. Network timing varies, so it repeats up to five rounds. Two initial runs and the instrumented minimized run failed without any artificial network delay.
 
 ## Ranked hypotheses and results
 
@@ -52,7 +52,7 @@ A temporary browser-only wrapper changed the trailing save interval to 2200 ms. 
 - Five ordinary typing rounds passed, with one actual save per round and matching final editor/bound values.
 - To test the limit, the first modify request was deliberately held for five seconds before dispatch. A second edit was made after the first debounce had fired. The newer request saved first; the older request saved afterward. Even with 2200 ms debounce, the final bound value lost the newer 19 characters (786 editor versus 767 stored).
 
-The standalone fault-injection probe is `python3 lib/tests/browser/probe-autobinding-delayed-write.py`; reload the preview afterward to remove its temporary wrappers. It is a manual experiment, not a production patch or CI test.
+The standalone fault-injection probe is `python3 lib/tests/browser/probe-autobinding-delayed-write.py`. Its current version retains only the network delay and verifies the replacement controller; it no longer patches the save interval. It reloads the preview after success to remove its temporary wrappers. It is a manual integration test, not production code or a CI test.
 
 This fault injection changes request dispatch timing only. It demonstrates why increasing the timer is a useful mitigation but not an ordering guarantee. It is not a claim that the same injected latency occurred in the user's recording.
 
@@ -64,7 +64,7 @@ This fault injection changes request dispatch timing only. It demonstrates why i
 4. Retain record/generation isolation, but evaluate whether canceling a final pending edit on navigation meets the product requirement. Correct record association and final-edit preservation should be tested separately.
 5. Require final database equality after quiescence and reload, alongside editor/selection assertions. Repeat typing during an outstanding write, out-of-order dispatch/completion, blur, A/B switching, and hide/recreate.
 
-No new runtime algorithm has been shipped by this investigation. The existing PR's 15 tests still describe its original scope and must not be used to claim this newly reproduced failure is resolved.
+At the end of this investigation, no new runtime algorithm had been shipped. The PR's original 15 tests described its earlier scope and could not establish that this newly reproduced failure was resolved. The subsequent replacement and expanded tests are documented in the README.
 
 ## Environment
 

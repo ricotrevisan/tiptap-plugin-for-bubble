@@ -1,11 +1,14 @@
 """Replay a delayed save echo through Bubble's reactive cache after real typing.
 Run only against the disposable WTF-260 fixture. This mutates its test record.
-Requires agent-browser session wtf260 already open on the fixture on the fixture.
+Requires agent-browser session wtf260 already open on the fixture.
 """
 import argparse, json, subprocess, time
+from autobinding_test_support import begin, network_probe, wait_settled, reload_and_verify
 parser = argparse.ArgumentParser()
 parser.add_argument("--delay", type=int, choices=[0, 300], default=0)
 args = parser.parse_args()
+backup = begin(args.delay)
+network_probe()
 BASE = ['agent-browser', '--session', 'wtf260', '--json']
 def browser(*args):
     r = subprocess.run(BASE + list(args), capture_output=True, text=True)
@@ -36,8 +39,11 @@ evaluate('document.querySelector("#wtf260-editor").bubble_data.bubble_instance.p
 time.sleep(.5)
 after = evaluate('document.querySelector(".ProseMirror").editor.getHTML()')
 assert evaluate('document.querySelector(".ProseMirror").editor.state.selection.from') == selection
-print(json.dumps({'url':url, 'delay':args.delay, 'before':before, 'after':after, 'preserved':after==before}, indent=2))
+print(json.dumps({'url':url, 'delay':args.delay, 'htmlLength':len(before), 'selectionPreserved':True, 'preserved':after==before}, indent=2))
 assert after == before, 'A delayed Bubble save echo removed newer real keystrokes'
 
-# Restore the client cache to the newer value after the replay.
-evaluate("document.querySelector(\"#wtf260-editor\").bubble_data.bubble_instance.parent().state(\"group_data\").child(\"html_text\").set(" + json.dumps(before) + ")")
+# The controller must reconcile the stale cache itself and retain the text in
+# the real database. Do not manually restore the optimistic property here.
+wait_settled(before)
+reload_and_verify(before)
+print(json.dumps({'databaseMatches': True, 'reloadPreservedText': True, 'backup': str(backup)}))
