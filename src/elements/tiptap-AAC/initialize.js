@@ -464,13 +464,78 @@ try {
         };
     };
 
+    // A Bubble save targets the currently bound Thing, not the Thing that was
+    // bound when a debounce started. Invalidate callbacks before replacing data.
+    instance.data._contentGeneration = 0;
+    instance.data._pendingContent = null;
+    instance.data._boundRecordId = undefined;
+    instance.data._lastBoundContent = undefined;
     instance.data.isDebouncingDone = true;
-    instance.data.updateContent = instance.data.debounce((content) => {
-        instance.data.debug("debounce done, updating content");
-        instance.publishAutobinding(content);
-        instance.triggerEvent("contentUpdated");
+
+    instance.data.cancelPendingContent = function () {
+        clearTimeout(instance.data.debounceTimeout);
+        instance.data.debounceTimeout = null;
+        instance.data._pendingContent = null;
+        instance.data._contentGeneration++;
+        instance.data._autobindingSave.cancel();
         instance.data.isDebouncingDone = true;
-    }, instance.data.delay);
+    };
+
+    instance.data.publishBoundContent = content => instance.publishAutobinding(content);
+    instance.data._autobindingSave = window.tiptap.createAutobindingSaveController({
+        getContent: () => instance.data.editor.getHTML(),
+        getDelay: () => instance.data._lastProperties?.autobinding_save_delay ?? 2200,
+        isActive: () => instance.data.editor_is_ready && !instance.data.editor?.isDestroyed &&
+            instance.canvas[0]?.isConnected !== false && !instance.data._lastProperties?.collab_active &&
+            !!instance.data._lastProperties?.bubble.auto_binding() &&
+            (instance.data._lastProperties?.autobinding_record_id || "") === instance.data._autobindingSave.bindingId,
+        publish: content => instance.data.publishBoundContent(content),
+        notify: () => {
+            instance.data.isDebouncingDone = true;
+            instance.triggerEvent("contentUpdated");
+        },
+        setTimer: (callback, delay) => setTimeout(callback, delay),
+        clearTimer: timer => clearTimeout(timer),
+    });
+    instance.data.hasPendingContent = () => !!instance.data._pendingContent || instance.data._autobindingSave.pending;
+
+    instance.data.flushPendingContent = function () {
+        if (instance.data._lastProperties?.bubble.auto_binding() && !instance.data._lastProperties?.collab_active) {
+            instance.data._autobindingSave.flush();
+            return;
+        }
+        const pending = instance.data._pendingContent;
+        if (!pending || pending.generation !== instance.data._contentGeneration ||
+            !instance.data.editor_is_ready || instance.data.editor?.isDestroyed ||
+            instance.canvas[0]?.isConnected === false) {
+            instance.data.cancelPendingContent();
+            return;
+        }
+        clearTimeout(instance.data.debounceTimeout);
+        instance.data.debounceTimeout = null;
+        instance.data._pendingContent = null;
+        instance.data.isDebouncingDone = true;
+        const current = instance.data._lastProperties;
+        if (current?.collab_active) return;
+        // Settle state before triggering a workflow: it may switch records or
+        // queue another edit synchronously.
+        instance.triggerEvent("contentUpdated");
+    };
+
+    instance.data.updateContent = function (content) {
+        if (instance.data._lastProperties?.bubble.auto_binding() && !instance.data._lastProperties?.collab_active) {
+            instance.data.isDebouncingDone = false;
+            instance.data._autobindingSave.edit();
+            return;
+        }
+        clearTimeout(instance.data.debounceTimeout);
+        instance.data._pendingContent = { content, generation: instance.data._contentGeneration };
+        instance.data.isDebouncingDone = false;
+        const generation = instance.data._contentGeneration;
+        instance.data.debounceTimeout = setTimeout(() => {
+            if (generation === instance.data._contentGeneration) instance.data.flushPendingContent();
+        }, instance.data.delay);
+    };
 
     // throttle function: to take it easy on the autobinding.
     // 1. writes to autobinding
@@ -569,11 +634,7 @@ try {
             instance.data._collabRetryTimer = null;
         }
 
-        // Clear debounce timeout
-        if (instance.data.debounceTimeout) {
-            clearTimeout(instance.data.debounceTimeout);
-            instance.data.debounceTimeout = null;
-        }
+        instance.data.cancelPendingContent();
 
         // Tear down provider (if in collab mode)
         if (instance.data.provider) {
@@ -1335,6 +1396,11 @@ instance.data.getSelection = getSelection;
 instance.data.setupEditor = function (properties, context) {
     instance.data.debug("starting editor setup");
 
+    instance.data._lastProperties = properties;
+    instance.data.delay = properties.update_delay ?? 300;
+    instance.data._boundRecordId = properties.autobinding_record_id || "";
+    instance.data._lastBoundContent = properties.autobinding;
+    instance.data._autobindingSave.receive(instance.data._boundRecordId, properties.autobinding);
     let initialContent = properties.bubble.auto_binding() ? properties.autobinding : properties.initialContent;
 
     // A runtime AI Toolkit toggle tears down the editor and rebuilds it with a
@@ -2036,6 +2102,8 @@ instance.data.setupEditor = function (properties, context) {
         onCreate({ editor }) {
             instance.data.debug("editor created and ready");
             instance.data.editor_is_ready = true;
+            instance.data._autobindingSave.resume(instance.data._pendingRebuildSave);
+            delete instance.data._pendingRebuildSave;
             instance.triggerEvent("is_ready");
             instance.publishState("is_ready", true);
 
@@ -2106,6 +2174,7 @@ instance.data.setupEditor = function (properties, context) {
             }
         },
         onUpdate({ editor }) {
+            if (editor !== instance.data.editor || editor.isDestroyed) return;
             const contentHTML = editor.getHTML();
             instance.publishState("contentHTML", contentHTML);
             instance.publishState("contentText", editor.getText());
@@ -2122,7 +2191,6 @@ instance.data.setupEditor = function (properties, context) {
                 } else {
                     instance.triggerEvent("contentUpdated");
                 }
-                instance.data.isDebouncingDone = false;
             }
         },
         onFocus({ editor, event }) {
@@ -2132,13 +2200,13 @@ instance.data.setupEditor = function (properties, context) {
             instance.data.is_focused = true;
         },
         onBlur({ editor, event }) {
+            // Submit while the old Thing is still bound; blur workflows may
+            // immediately replace the parent record.
+            if (!instance.data._lastProperties?.collab_active) instance.data.flushPendingContent();
             instance.data.debug("editor blurred");
             instance.triggerEvent("isntFocused");
             instance.publishState("isFocused", false);
             instance.data.is_focused = false;
-            if (!properties.collab_active) {
-                instance.publishAutobinding(editor.getHTML());
-            }
         },
         onTransaction({ editor, transaction }) {
             instance.data.getSelection(editor);

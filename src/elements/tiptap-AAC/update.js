@@ -27,9 +27,19 @@ if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || ta
     // Rebuilding must not reset an unsaved local document back to the element's
     // initialContent property. Record the prior initialContent too so a
     // simultaneous property change is still applied after the rebuild.
-    if (!properties.collab_active && instance.data.editor_is_ready && instance.data.editor) {
+    const bindingChange = instance.data._autobindingSave.classify(properties.autobinding_record_id, properties.autobinding);
+    const boundDocumentChanged = properties.bubble.auto_binding() &&
+        (bindingChange === "record" || bindingChange === "external");
+    if (!properties.collab_active && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
         instance.data._pendingRebuildContent = instance.data.editor.getJSON();
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
+        instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
+    } else if (boundDocumentChanged) {
+        // A simultaneous extension toggle must not carry A's local document
+        // into the editor being rebuilt for B.
+        delete instance.data._pendingRebuildContent;
+        delete instance.data._pendingRebuildInitialContent;
+        delete instance.data._pendingRebuildSave;
     }
     instance.data.teardownEditor(rebuildReason);
 }
@@ -122,7 +132,7 @@ if (
         let content = properties.content_is_json ? JSON.parse(instance.data.initialContent) : instance.data.initialContent;
 
         // Clear any pending debounce timeout before programmatic update
-        clearTimeout(instance.data.debounceTimeout);
+        instance.data.cancelPendingContent();
 
         // Save cursor position before setContent
         const { from, to } = instance.data.editor.state.selection;
@@ -145,36 +155,30 @@ if (instance.data.editor_is_ready && instance.data.delay !== properties.update_d
     instance.data.delay = properties.update_delay;
 }
 
-if (
-    instance.data.editor_is_ready &&
-    properties.bubble.auto_binding() &&
-    !properties.collab_active &&
-    instance.data.isDebouncingDone &&
-    properties.autobinding !== instance.data.editor.getHTML()
-) {
-    // Clear any pending debounce timeout before programmatic update
-    clearTimeout(instance.data.debounceTimeout);
-    let editor = instance.data.editor;
+if (instance.data.editor_is_ready && properties.bubble.auto_binding() && !properties.collab_active) {
+    const recordId = properties.autobinding_record_id || "";
+    const change = instance.data._autobindingSave.receive(recordId, properties.autobinding);
+    const recordChanged = change === "record";
+    instance.data._lastBoundContent = properties.autobinding;
 
-    // Save cursor position before setContent
-    const { from, to } = editor.state.selection;
-
-    editor.commands.setContent(properties.autobinding, { emitUpdate: true });
-
-    // Restore cursor position (clamped to document bounds)
-    const docSize = editor.state.doc.content.size;
-    const newFrom = Math.min(from, Math.max(1, docSize - 1));
-    const newTo = Math.min(to, Math.max(1, docSize - 1));
-    editor.commands.setTextSelection({ from: newFrom, to: newTo });
-
-    const contentHTML = editor.getHTML();
-    instance.publishState("contentHTML", contentHTML);
-    instance.publishState("contentText", editor.getText());
-    instance.publishState("contentJSON", JSON.stringify(editor.getJSON()));
-    instance.publishState("isEditable", editor.isEditable);
-    instance.publishState("characterCount", editor.storage.characterCount.characters());
-    instance.publishState("wordCount", editor.storage.characterCount.words());
-    instance.data.refreshTableOfContents();
+    if (recordChanged || change === "external") {
+        instance.data.cancelPendingContent();
+        instance.data._boundRecordId = recordId;
+        const editor = instance.data.editor;
+        const { from, to } = editor.state.selection;
+        instance.data.isProgrammaticUpdate = true;
+        try {
+            editor.chain().setMeta("addToHistory", false)
+                .setContent(properties.autobinding || "", { emitUpdate: true }).run();
+            const maxPosition = Math.max(1, editor.state.doc.content.size - 1);
+            editor.commands.setTextSelection(recordChanged ? 1 : {
+                from: Math.min(from, maxPosition), to: Math.min(to, maxPosition),
+            });
+        } finally {
+            instance.data.isProgrammaticUpdate = false;
+        }
+        instance.data.refreshTableOfContents();
+    }
 }
 
 if (!!instance.data.editor_is_ready) {

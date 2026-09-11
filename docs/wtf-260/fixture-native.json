@@ -1,0 +1,730 @@
+{
+  "pages": {
+    "wtf_260_autobinding": {
+      "id": "bpmsmqwc",
+      "name": "wtf-260-autobinding",
+      "custom_states": {
+        "save_delay": {
+          "display": "Save delay",
+          "value": "number",
+          "rank": 1,
+          "default_val": 2200,
+          "make_static": true
+        },
+        "selected_record": {
+          "display": "Selected record",
+          "value": "text",
+          "rank": 0,
+          "default_val": "A",
+          "make_static": true
+        }
+      },
+      "elements": {
+        "title": {
+          "id": "bpmsmqwd",
+          "type": "Text",
+          "name": "Title",
+          "properties": {
+            "text": "WTF-260 \u2014 typing and record switching",
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "background_style": "none",
+            "border_style": "none",
+            "order": 1,
+            "opacity": 100,
+            "fit_height": true,
+            "margin_top": 0,
+            "margin_left": 0,
+            "padding_top": 0,
+            "margin_right": 0,
+            "padding_left": 0,
+            "single_width": false,
+            "margin_bottom": 0,
+            "padding_right": 0,
+            "single_height": false,
+            "padding_bottom": 0,
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "collapse_when_hidden": true
+          }
+        },
+        "cnHym0": {
+          "id": "cnHyk0",
+          "type": "Group",
+          "default_name": "Group A",
+          "elements": {
+            "cnHyr0": {
+              "id": "bpmsmqwe",
+              "type": "Button",
+              "name": "Record A",
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Record A"
+                  },
+                  "type": "TextExpression"
+                },
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 1,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "cnHys0": {
+              "id": "bpmsmqwf",
+              "type": "Button",
+              "name": "Record B",
+              "properties": {
+                "text": "Record B",
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "cnHyw0": {
+              "id": "bpbniaqu",
+              "type": "Button",
+              "name": "Delayed switch",
+              "properties": {
+                "text": "Switch to B in 1 second",
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 3,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "cnHyx0": {
+              "id": "bphidenv",
+              "type": "Button",
+              "name": "Hide editor",
+              "properties": {
+                "text": "Hide editor",
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 4,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "cnHyy0": {
+              "id": "bpshowev",
+              "type": "Button",
+              "name": "Show editor",
+              "properties": {
+                "text": "Show editor",
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 5,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "cnHzC0": {
+              "id": "bpdelayz",
+              "type": "Button",
+              "name": "Delay 0",
+              "properties": {
+                "text": "Delay 0",
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 7,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "cnHzD0": {
+              "id": "bpdelayd",
+              "type": "Button",
+              "name": "Delay 300",
+              "properties": {
+                "text": "Delay 300",
+                "left": -32,
+                "top": -62,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "var(--color_text_default)",
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "order": 8,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "margin_right": 0,
+                "padding_left": 12,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 12,
+                "single_height": false,
+                "padding_bottom": 12,
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "bpoqycad": {
+              "id": "bpsavedd",
+              "type": "Button",
+              "name": "Delay 2200",
+              "properties": {
+                "background_style": "bgcolor",
+                "bgcolor": "var(--color_primary_contrast_default)",
+                "border_style": "none",
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "boxshadow_enable": false,
+                "elevation_level": "none",
+                "opacity": 100,
+                "collapse_when_hidden": true,
+                "single_height": false,
+                "margin_top": 0,
+                "margin_right": 0,
+                "margin_bottom": 0,
+                "margin_left": 0,
+                "padding_top": 12,
+                "padding_right": 12,
+                "padding_bottom": 12,
+                "padding_left": 12,
+                "fit_width": true,
+                "single_width": false,
+                "font_color": "var(--color_text_default)",
+                "text": "Delay 2200",
+                "order": 6
+              }
+            }
+          },
+          "properties": {
+            "height": 0,
+            "left": 32,
+            "top": 62,
+            "width": 0,
+            "zindex": 2,
+            "border_roundness": 6,
+            "background_style": "bgcolor",
+            "bgcolor": "var(--color_bTHCR_default)",
+            "order": 2,
+            "row_gap": 8,
+            "use_gap": true,
+            "fit_width": false,
+            "column_gap": 8,
+            "fit_height": true,
+            "padding_top": 8,
+            "padding_left": 8,
+            "single_width": false,
+            "min_width_css": "40px",
+            "padding_right": 8,
+            "single_height": false,
+            "min_height_css": "40px",
+            "padding_bottom": 8,
+            "horiz_alignment": "flex-start",
+            "container_layout": "row",
+            "collapse_when_hidden": true
+          },
+          "style": "Group_default_group_"
+        },
+        "bound_record": {
+          "id": "bpmsmqwg",
+          "type": "Group",
+          "name": "Bound record",
+          "elements": {
+            "stored_html": {
+              "id": "bpmsmqwj",
+              "type": "Text",
+              "name": "Stored HTML",
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Stored HTML: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "html_text"
+                      },
+                      "type": "ElementParent"
+                    }
+                  },
+                  "type": "TextExpression"
+                },
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "background_style": "none",
+                "border_style": "none",
+                "order": 4,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 0,
+                "margin_right": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "elevation_level": "none",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "current_record": {
+              "id": "bpmsmqwh",
+              "type": "Text",
+              "name": "Current record",
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": {
+                      "next": {
+                        "type": "Message",
+                        "name": "title_text"
+                      },
+                      "type": "ElementParent"
+                    }
+                  },
+                  "type": "TextExpression"
+                },
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "background_style": "none",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "margin_top": 0,
+                "margin_left": 0,
+                "padding_top": 0,
+                "margin_right": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "margin_bottom": 0,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "elevation_level": "none",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              }
+            },
+            "autobound_editor": {
+              "id": "bpmsmqwi",
+              "type": "1670612027178x122079323974008830_current-AAC",
+              "name": "Autobound editor",
+              "properties": {
+                "ABs": true,
+                "AEC": false,
+                "AEx": "custom.doc",
+                "AFF": {
+                  "next": {
+                    "type": "Message",
+                    "name": "custom.save_delay"
+                  },
+                  "properties": {
+                    "element_id": "bpmsmqwc"
+                  },
+                  "type": "GetElement"
+                },
+                "order": 1,
+                "unique_id": {
+                  "entries": {
+                    "0": "wtf260-editor"
+                  },
+                  "type": "TextExpression"
+                },
+                "bind_field": "html_text",
+                "fit_height": true,
+                "ext_mention": false,
+                "auto_binding": true,
+                "single_width": false,
+                "single_height": false,
+                "min_height_css": "240px",
+                "horiz_alignment": "stretch",
+                "autobinding_record_id": {
+                  "entries": {
+                    "0": {
+                      "next": {
+                        "type": "Message",
+                        "name": "_id"
+                      },
+                      "type": "ElementParent"
+                    }
+                  },
+                  "type": "TextExpression"
+                },
+                "file_upload_condition": false,
+                "autobinding_save_delay": {
+                  "type": "GetElement",
+                  "properties": {
+                    "element_id": "bpmsmqwc"
+                  },
+                  "next": {
+                    "type": "Message",
+                    "name": "custom.save_delay"
+                  }
+                }
+              },
+              "style": "1670612027178x122079323974008830_current-AAC_standard_border_"
+            }
+          },
+          "properties": {
+            "data_source": {
+              "next": {
+                "type": "Message",
+                "name": "first_element"
+              },
+              "properties": {
+                "constraints": {
+                  "0": {
+                    "key": "title_text",
+                    "value": {
+                      "entries": {
+                        "0": "WTF-260 ",
+                        "1": {
+                          "next": {
+                            "type": "Message",
+                            "name": "custom.selected_record"
+                          },
+                          "properties": {
+                            "element_id": "bpmsmqwc"
+                          },
+                          "type": "GetElement"
+                        }
+                      },
+                      "type": "TextExpression"
+                    },
+                    "constraint_type": "equals"
+                  }
+                },
+                "type_to_find": "custom.doc"
+              },
+              "type": "Search"
+            },
+            "group_type": "custom.doc",
+            "order": 10,
+            "padding_top": 8,
+            "padding_left": 8,
+            "padding_right": 8,
+            "padding_bottom": 8,
+            "container_layout": "column",
+            "container_vert_alignment": "flex-start",
+            "container_horiz_alignment": "flex-start"
+          }
+        }
+      },
+      "workflows": {
+        "delay_0_clicked": {
+          "properties": {
+            "element_id": "bpdelayz"
+          },
+          "type": "ButtonClicked",
+          "id": "bppziwrh",
+          "actions": {
+            "0": {
+              "properties": {
+                "value": 0,
+                "element_id": "bpmsmqwc",
+                "custom_state": "custom.save_delay"
+              },
+              "type": "SetCustomState",
+              "id": "bpikimdu"
+            }
+          }
+        },
+        "record_a_clicked": {
+          "properties": {
+            "element_id": "bpmsmqwe"
+          },
+          "type": "ButtonClicked",
+          "id": "bpgmfrvh",
+          "actions": {
+            "0": {
+              "properties": {
+                "value": "A",
+                "element_id": "bpmsmqwc",
+                "custom_state": "custom.selected_record"
+              },
+              "type": "SetCustomState",
+              "id": "bpskloyh"
+            }
+          }
+        },
+        "record_b_clicked": {
+          "properties": {
+            "element_id": "bpmsmqwf"
+          },
+          "type": "ButtonClicked",
+          "id": "bpekyzhi",
+          "actions": {
+            "0": {
+              "properties": {
+                "value": "B",
+                "element_id": "bpmsmqwc",
+                "custom_state": "custom.selected_record"
+              },
+              "type": "SetCustomState",
+              "id": "bpkfxobp"
+            }
+          }
+        },
+        "delay_300_clicked": {
+          "properties": {
+            "element_id": "bpdelayd"
+          },
+          "type": "ButtonClicked",
+          "id": "bpknljot",
+          "actions": {
+            "0": {
+              "properties": {
+                "value": 300,
+                "element_id": "bpmsmqwc",
+                "custom_state": "custom.save_delay"
+              },
+              "type": "SetCustomState",
+              "id": "bplneoww"
+            }
+          }
+        },
+        "hide_editor_clicked": {
+          "properties": {
+            "element_id": "bphidenv"
+          },
+          "type": "ButtonClicked",
+          "id": "bpcvjihu",
+          "actions": {
+            "0": {
+              "properties": {
+                "element_id": "bpmsmqwg"
+              },
+              "type": "HideElement",
+              "id": "bpufsrpy"
+            }
+          }
+        },
+        "show_editor_clicked": {
+          "properties": {
+            "element_id": "bpshowev"
+          },
+          "type": "ButtonClicked",
+          "id": "bpjlgwer",
+          "actions": {
+            "0": {
+              "properties": {
+                "element_id": "bpmsmqwg"
+              },
+              "type": "ShowElement",
+              "id": "bpvsynnu"
+            }
+          }
+        },
+        "delayed_switch_clicked": {
+          "properties": {
+            "element_id": "bpbniaqu"
+          },
+          "type": "ButtonClicked",
+          "id": "bpiwtfgn",
+          "actions": {
+            "0": {
+              "properties": {
+                "length": 1000
+              },
+              "type": "PauseWFClient",
+              "id": "bphmocmk"
+            },
+            "1": {
+              "properties": {
+                "value": "B",
+                "element_id": "bpmsmqwc",
+                "custom_state": "custom.selected_record"
+              },
+              "type": "SetCustomState",
+              "id": "bplzjzbv"
+            }
+          }
+        },
+        "bpauvqvw": {
+          "type": "ButtonClicked",
+          "actions": {
+            "0": {
+              "id": "bpurogci",
+              "type": "SetCustomState",
+              "properties": {
+                "element_id": "bpmsmqwc",
+                "custom_state": "custom.save_delay",
+                "value": 2200
+              }
+            }
+          },
+          "properties": {
+            "element_id": "bpsavedd"
+          },
+          "id": "bpsntqur"
+        }
+      },
+      "properties": {
+        "width": 1200,
+        "border_roundness": 0,
+        "title": {
+          "entries": {
+            "0": "WTF-260 autobinding regression"
+          },
+          "type": "TextExpression"
+        },
+        "border_style": "none",
+        "opacity": 100,
+        "row_gap": 16,
+        "use_gap": true,
+        "fit_width": false,
+        "fit_height": false,
+        "padding_top": 32,
+        "padding_left": 32,
+        "single_width": false,
+        "padding_right": 32,
+        "single_height": false,
+        "new_responsive": true,
+        "padding_bottom": 32,
+        "element_version": 5,
+        "container_layout": "column",
+        "responsive_version": 1,
+        "container_vert_alignment": "flex-start"
+      },
+      "type": "Page"
+    }
+  }
+}
