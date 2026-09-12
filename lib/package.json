@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "build": "esbuild index.js --bundle --minify --outfile=dist.js",
-        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/undo-redo-history-guard.mjs && node tests/webhook-html-node18-compatibility.mjs && node tests/image-alignment-action.mjs && node tests/resizable-lifecycle.mjs && node tests/table-of-contents-content-switch.mjs && node tests/table-of-contents-visual-lifecycle.mjs && node tests/floating-menu-hidden-guard.mjs && node tests/autobinding-record-lifecycle.mjs",
+        "test": "npm run build && node tests/ai-editor-context-lifecycle.mjs && node tests/text-style-lineheight-backgroundcolor.mjs && node tests/undo-redo-history-guard.mjs && node tests/webhook-html-node18-compatibility.mjs && node tests/image-alignment-action.mjs && node tests/resizable-lifecycle.mjs && node tests/table-of-contents-content-switch.mjs && node tests/table-of-contents-visual-lifecycle.mjs && node tests/floating-menu-hidden-guard.mjs && node tests/menu-ownership-lifecycle.mjs && node tests/autobinding-record-lifecycle.mjs",
         "validate:plugin": "node scripts/validate-plugin.mjs",
         "test:validator": "node --test tests/plugin-validation.mjs"
     },
