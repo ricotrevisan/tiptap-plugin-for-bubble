@@ -434,21 +434,91 @@ try {
 `;
     };
 
-    // function to find the nearest parent.
-    // useful when Tiptap is used inside a repeating group
-    function findElement(elementID) {
-        let $parent = instance.canvas.parent();
-        while ($parent.length > 0) {
-            var $foundMenu = $parent.find("#" + elementID);
+    // Shared across Bubble instances, including separately initialized reusables.
+    const menuOwnersKey = Symbol.for("tiptap.bubble.menuOwners");
+    const menuOwners = window[menuOwnersKey] || (window[menuOwnersKey] = new WeakMap());
+    instance.data._menuLeases = [];
 
-            if ($foundMenu.length > 0) {
-                return $foundMenu[0];
-            }
-
-            $parent = $parent.parent();
+    instance.data.resolveMenu = function (id) {
+        if (!id) return null;
+        const candidates = Array.from(document.querySelectorAll("#" + window.CSS.escape(id)));
+        // Portalled nodes remain candidates, but a lease whose Bubble parent
+        // disappeared must not beat a replacement rendered in the new reusable.
+        const currentCandidates = candidates.filter((node) => {
+            const lease = menuOwners.get(node);
+            return !lease || lease.parent.isConnected;
+        });
+        let parent = instance.canvas[0]?.parentElement;
+        while (parent) {
+            const nearest = currentCandidates.find((node) => {
+                const lease = menuOwners.get(node);
+                return parent.contains(lease ? lease.placeholder : node);
+            });
+            if (nearest) return nearest;
+            parent = parent.parentElement;
         }
-    }
-    instance.data.findElement = findElement;
+        return currentCandidates[0] || null;
+    };
+
+    instance.data.menuConfiguration = function (properties) {
+        return [
+            properties.bubbleMenu || "", !!properties.ext_bubblemenu,
+            properties.ext_bubblemenu ? instance.data.resolveMenu(properties.bubbleMenu) : null,
+            properties.floatingMenu || "", !!properties.ext_floatingmenu,
+            properties.ext_floatingmenu ? instance.data.resolveMenu(properties.floatingMenu) : null,
+        ];
+    };
+
+    instance.data.acquireMenu = function (node) {
+        if (!node || !node.parentNode || menuOwners.has(node)) return null;
+        const lease = {
+            node,
+            parent: node.parentNode,
+            nextSibling: node.nextSibling,
+            placeholder: document.createComment("Tiptap menu position"),
+            wrapper: document.createElement("div"),
+            style: node.getAttribute("style"),
+            tabindex: node.getAttribute("tabindex"),
+            active: true,
+        };
+        lease.parent.insertBefore(lease.placeholder, node);
+        // Floating UI promises may finish after destroy. Only this disposable
+        // wrapper is handed to Tiptap, so late writes cannot touch Bubble's node.
+        lease.parent.insertBefore(lease.wrapper, node);
+        lease.wrapper.appendChild(node);
+        lease.wrapper.style.position = "absolute";
+        node.style.position = "relative";
+        node.style.left = "0";
+        node.style.top = "0";
+        menuOwners.set(node, lease);
+        lease.restorePosition = function (element = lease.wrapper) {
+            if (!lease.active || menuOwners.get(node) !== lease || !lease.parent.isConnected || lease.stale) return;
+            const anchor = lease.placeholder.parentNode === lease.parent
+                ? lease.placeholder
+                : lease.nextSibling?.parentNode === lease.parent ? lease.nextSibling : null;
+            lease.parent.insertBefore(element, anchor);
+        };
+        lease.release = function () {
+            if (!lease.active || menuOwners.get(node) !== lease) return;
+            lease.restorePosition(node);
+            // A removed Bubble parent must not leave its old menu portalled in body.
+            if (!lease.parent.isConnected || lease.stale) node.remove();
+            for (const [name, value] of [["style", lease.style], ["tabindex", lease.tabindex]]) {
+                if (value === null) node.removeAttribute(name);
+                else node.setAttribute(name, value);
+            }
+            lease.wrapper.remove();
+            lease.placeholder.remove();
+            lease.active = false;
+            menuOwners.delete(node);
+        };
+        instance.data._menuLeases.push(lease);
+        return lease;
+    };
+    instance.data.releaseMenus = function () {
+        instance.data._menuLeases.forEach((lease) => lease.release());
+        instance.data._menuLeases = [];
+    };
 
     instance.data.isProgrammaticUpdate = false;
     instance.data.delay = 300;
@@ -646,6 +716,12 @@ try {
             instance.data.provider = null;
         }
 
+        // Bubble may already have replaced a Group. Do not resurrect it from
+        // an extension destroy callback during this generation's teardown.
+        instance.data._menuLeases.forEach((lease) => {
+            lease.stale = !lease.node.isConnected || !lease.parent.isConnected;
+        });
+
         // Tear down editor
         if (instance.data.editor) {
             try {
@@ -655,6 +731,8 @@ try {
             }
             instance.data.editor = null;
         }
+
+        instance.data.releaseMenus();
 
         // Remove the editor DOM element so setupEditor can recreate it
         const editorEl = document.getElementById(instance.data.tiptapEditorID);
@@ -2242,111 +2320,69 @@ instance.data.setupEditor = function (properties, context) {
     // isVisible guards BubbleMenu has (see GitHub issue #20), so we keep hidden menu
     // elements pointer-events:none and only restore interactivity from the
     // extension's onShow/onHide callbacks.
-    function menuInteractionGuards(el) {
+    function menuInteractionGuards(el, lease) {
         const originalZIndex = el.style.zIndex;
 
         return {
             onShow() {
+                if (!lease.active) return;
                 // Bubble renders its page and floating groups as top-level stacking
                 // contexts. Once Tiptap appends a menu to <body>, the menu can be
                 // logically visible and interactive but still paint underneath the
                 // editor. Put it just above the highest current body child instead of
                 // using a permanent global maximum that would cover later popups.
                 const highestBodyZIndex = Array.from(document.body.children)
-                    .filter((child) => child !== el)
+                    .filter((child) => child !== lease.wrapper)
                     .map((child) => Number.parseInt(window.getComputedStyle(child).zIndex, 10))
                     .filter(Number.isFinite)
                     .reduce((highest, zIndex) => Math.max(highest, zIndex), 0);
 
-                el.style.zIndex = String(Math.min(highestBodyZIndex + 1, 2147483647));
+                lease.wrapper.style.zIndex = String(Math.min(highestBodyZIndex + 1, 2147483647));
+                el.style.zIndex = lease.wrapper.style.zIndex;
+                el.style.visibility = "visible";
+                el.style.opacity = "1";
+                lease.wrapper.style.pointerEvents = "";
                 el.style.pointerEvents = "";
             },
             onHide() {
-                el.style.pointerEvents = "none";
+                if (!lease.active) return;
+                hideMenuElement(el);
+                lease.wrapper.style.pointerEvents = "none";
                 el.style.zIndex = originalZIndex;
+                lease.restorePosition();
             },
         };
     }
 
-    if (bubbleMenu && properties.ext_bubblemenu) {
-        // Find all elements with the id matching properties.bubbleMenu
-        let bubbleMenuElements = document.querySelectorAll(`#${bubbleMenu}`);
-
-        // If no elements found, log an error
-        if (bubbleMenuElements.length === 0) {
-            const errorMessage = "BubbleMenu" + menuErrorMessage;
-            context.reportDebugger(errorMessage);
-            instance.data.debug(errorMessage);
-        } else if (bubbleMenuElements.length === 1) {
-            // If only one element is found, make that the bubble menu.
-            hideMenuElement(bubbleMenuElements[0]);
-            options.extensions.push(
-                BubbleMenu.configure({
-                    element: bubbleMenuElements[0],
-                    appendTo: () => document.body,
-                    options: menuInteractionGuards(bubbleMenuElements[0]),
-                }),
-            );
-        } else if (bubbleMenuElements.length >= 2) {
-            // If multiple elements found, try to find the closest and warn the developer
-            const errorMessage = `Bubble Menu: found multiple elements with the same ID ${bubbleMenu}. Assuming that the closest one is the correct one. However, the developer should update the code to ensure that the IDs are unique. Tiptap ID: ${instance.data.randomId}.`;
-            context.reportDebugger(errorMessage);
-            instance.data.debug(errorMessage);
-            let bubbleMenuDiv = instance.data.findElement(bubbleMenu);
-            hideMenuElement(bubbleMenuDiv);
-            options.extensions.push(
-                BubbleMenu.configure({
-                    element: bubbleMenuDiv,
-                    appendTo: () => document.body,
-                    options: menuInteractionGuards(bubbleMenuDiv),
-                }),
-            );
+    instance.data._currentMenuConfiguration = instance.data.menuConfiguration(properties);
+    for (const [id, enabled, extension, label] of [
+        [bubbleMenu, properties.ext_bubblemenu, BubbleMenu, "BubbleMenu"],
+        [floatingMenu, properties.ext_floatingmenu, FloatingMenu, "FloatingMenu"],
+    ]) {
+        if (!id || !enabled) continue;
+        const node = instance.data.resolveMenu(id);
+        const lease = instance.data.acquireMenu(node);
+        if (!lease) {
+            const message = node
+                ? `${label}: Group "${id}" is already owned by another editor or menu.`
+                : label + menuErrorMessage;
+            context.reportDebugger(message);
+            instance.data.debug(message);
+            continue;
         }
+        hideMenuElement(node);
+        hideMenuElement(lease.wrapper);
+        options.extensions.push(extension.configure({
+            element: lease.wrapper,
+            appendTo: () => document.body,
+            options: menuInteractionGuards(node, lease),
+        }));
     }
 
-    if (floatingMenu && properties.ext_floatingmenu) {
-        // Find all elements with the id matching properties.floatingMenu
-        let floatingMenuElements = document.querySelectorAll(`#${floatingMenu}`);
-
-        // If no elements found, log an error
-        if (floatingMenuElements.length === 0) {
-            const errorMessage = "FloatingMenu" + menuErrorMessage;
-            context.reportDebugger(errorMessage);
-            instance.data.debug(errorMessage);
-        } else if (floatingMenuElements.length === 1) {
-            // If only one element is found, make that the floating menu.
-            hideMenuElement(floatingMenuElements[0]);
-            options.extensions.push(
-                FloatingMenu.configure({
-                    element: floatingMenuElements[0],
-                    appendTo: () => document.body,
-                    options: menuInteractionGuards(floatingMenuElements[0]),
-                }),
-            );
-        } else if (floatingMenuElements.length >= 2) {
-            // If multiple elements found, try to find the closest and warn the developer
-            const errorMessage = `Floating Menu: found multiple elements with the same ID ${floatingMenu}. Assuming that the closest one is the correct one. However, the developer should update the code to ensure that the IDs are unique. Tiptap ID: ${instance.data.randomId}.`;
-            context.reportDebugger(errorMessage);
-            instance.data.debug(errorMessage);
-            let floatingMenuDiv = instance.data.findElement(floatingMenu);
-            hideMenuElement(floatingMenuDiv);
-            options.extensions.push(
-                FloatingMenu.configure({
-                    element: floatingMenuDiv,
-                    appendTo: () => document.body,
-                    options: menuInteractionGuards(floatingMenuDiv),
-                }),
-            );
-        }
-    }
-
-    // ── Collaboration ────────────────────────────────────────
-
-    instance.data.maybeSetupCollaboration(instance, properties, options, extensions);
-
-    // ── Create the editor ────────────────────────────────────
-
+    // Both collaboration and editor construction can fail after menu acquisition.
     try {
+        instance.data.maybeSetupCollaboration(instance, properties, options, extensions);
+
         instance.data.editor = new Editor(options);
         instance.data.isEditorSetup = true;
         instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
@@ -2355,6 +2391,7 @@ instance.data.setupEditor = function (properties, context) {
         instance.data._currentCollabDocId = properties.collab_doc_id;
         instance.data.debug("editor instance created, waiting for onCreate");
     } catch (error) {
+        instance.data.teardownEditor("editor construction failed");
         console.error("[Tiptap] failed trying to create the Editor:", error);
     }
 };
