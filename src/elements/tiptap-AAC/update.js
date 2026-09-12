@@ -16,8 +16,11 @@ const findReplaceChanged =
     instance.data._currentFindReplaceEnabled !== !!properties.ext_find_replace;
 const tableOfContentsChanged =
     instance.data._currentTableOfContentsEnabled !== !!properties.ext_table_of_contents;
-if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || tableOfContentsChanged)) {
+const menuConfiguration = instance.data.menuConfiguration(properties);
+const menusChanged = instance.data._currentMenuConfiguration?.some((value, index) => value !== menuConfiguration[index]);
+if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || menusChanged)) {
     const changedExtensions = [];
+    if (menusChanged) changedExtensions.push("Menus");
     if (aiToolkitChanged) changedExtensions.push("AI Toolkit");
     if (findReplaceChanged) changedExtensions.push("Find & Replace");
     if (tableOfContentsChanged) changedExtensions.push("Table of Contents");
