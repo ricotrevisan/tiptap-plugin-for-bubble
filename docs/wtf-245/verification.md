@@ -49,7 +49,20 @@ button workflows, but is not a deployed-plugin or state-publication check.
 - Both rebuilds reacquired the same Group nodes.
 - Reloaded the page afterward, removing the local override.
 
-The shared development plugin has not been pushed. After approval, run
-`pled status`, inspect the source diff, `pled push`, and repeat the browser check
-without a local override. No runtime bundle changes or CDN upload are needed.
-Bubble reset remains disabled.
+## Deployed verification (2026-09-13)
+
+After user approval, pushed commit `feee21e` to the shared development plugin.
+`pled status` reported **In sync**. No runtime bundle or CDN change was needed.
+The checkout was already on `fix/wtf-245-menu-ownership`; no branch recovery
+was required. Existing untracked evidence was preserved.
+
+Reloaded the same exact preview above and verified the deployed implementation
+without a source override or adapter. Both menu leases used disposable wrappers;
+the actual Bubble editor was ready and File uploads enabled was explicitly false.
+Real keyboard/pointer interactions showed both menus and ran their Bold/H1
+Bubble workflows. Explicit teardown/rebuild of that real instance restored exact
+parents/style/tabindex and reacquired the same nodes, including a hidden/inert
+rebuild. The final editor was ready. Results are captured in
+`deployed-verification.json`. Reloaded the page after verification.
+
+Bubble reset remains disabled. The PR has not been merged.

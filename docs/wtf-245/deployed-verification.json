@@ -1,0 +1,13 @@
+{
+  "preview": "https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo",
+  "ready": true,
+  "results": {
+    "boldWorkflow": true,
+    "floatingRebuild": true,
+    "floatingShown": true,
+    "headingWorkflow": true,
+    "hiddenRebuild": true,
+    "visibleBubbleRebuild": true
+  },
+  "source": "deployed Bubble plugin; no local source override"
+}
