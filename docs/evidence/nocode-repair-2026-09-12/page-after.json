@@ -1,0 +1,2851 @@
+{
+  "elements": {
+    "cmUNA96": {
+      "properties": {
+        "height": 250,
+        "left": 0,
+        "top": 0,
+        "width": 400,
+        "border_roundness": 0,
+        "boxshadow_style": "none",
+        "background_style": "none",
+        "border_style": "none",
+        "order": 1,
+        "opacity": 100,
+        "row_gap": 28,
+        "use_gap": true,
+        "fit_width": false,
+        "fit_height": true,
+        "single_width": false,
+        "max_width_css": "960px",
+        "single_height": false,
+        "vert_alignment": "center",
+        "elevation_level": "none",
+        "horiz_alignment": "center",
+        "boxshadow_enable": false,
+        "container_layout": "column",
+        "collapse_when_hidden": true
+      },
+      "type": "Group",
+      "id": "cmUMP96",
+      "current_parent": "cmUMJ95",
+      "default_name": "Group A",
+      "elements": {
+        "hero": {
+          "properties": {
+            "height": 250,
+            "left": 0,
+            "top": 0,
+            "width": 400,
+            "border_color": "#1E293B",
+            "border_roundness": 28,
+            "boxshadow_style": "none",
+            "border_width": 1,
+            "background_style": "bgcolor",
+            "bgcolor": "#0F172A",
+            "border_style": "solid",
+            "order": 1,
+            "opacity": 100,
+            "row_gap": 16,
+            "use_gap": true,
+            "fit_width": false,
+            "fit_height": true,
+            "padding_top": 44,
+            "padding_left": 40,
+            "single_width": false,
+            "padding_right": 40,
+            "single_height": false,
+            "padding_bottom": 44,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "container_layout": "column",
+            "collapse_when_hidden": true
+          },
+          "type": "Group",
+          "id": "cmUMR96",
+          "default_name": "Group A",
+          "elements": {
+            "hero_proof": {
+              "properties": {
+                "text": "55+ actions  •  HTML / JSON / text  •  Autobinding  •  Tables & images  •  Live collab",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#93C5FD",
+                "font_size": 14,
+                "line_height": 1.4,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 4,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "600",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUMV96",
+              "default_name": "Text A",
+              "name": "Hero proof points"
+            },
+            "hero_title": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "The most flexible and complete Rich Text Editor for Bubble."
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#F8FAFC",
+                "font_size": 44,
+                "line_height": 1.2,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "tag_type": "h1",
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "800",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUMW96",
+              "default_name": "Text A",
+              "name": "Hero title"
+            },
+            "hero_eyebrow": {
+              "properties": {
+                "text": "TIPTAP FOR BUBBLE",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#60A5FA",
+                "font_size": 12,
+                "line_height": 1.2,
+                "letter_spacing": 1.4,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 1,
+                "opacity": 100,
+                "tag_type": "h1",
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "700",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUMX96",
+              "default_name": "Text A",
+              "name": "Hero eyebrow"
+            },
+            "hero_description": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "From a simple input field to a fully fledged Google Docs or Notions type of experience. This plugin can do it all."
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#CBD5E1",
+                "font_size": 18,
+                "line_height": 1.55,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 3,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUMb96",
+              "default_name": "Text A",
+              "name": "Hero description"
+            }
+          },
+          "name": "Hero"
+        },
+        "callout": {
+          "properties": {
+            "height": 250,
+            "left": 0,
+            "top": 0,
+            "width": 400,
+            "border_color": "#2563EB",
+            "border_roundness": 24,
+            "boxshadow_style": "none",
+            "border_width": 1,
+            "background_style": "bgcolor",
+            "bgcolor": "#1D4ED8",
+            "border_style": "solid",
+            "order": 11,
+            "opacity": 100,
+            "row_gap": 12,
+            "use_gap": true,
+            "fit_width": false,
+            "fit_height": true,
+            "padding_top": 40,
+            "padding_left": 40,
+            "single_width": false,
+            "padding_right": 40,
+            "single_height": false,
+            "padding_bottom": 40,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "container_layout": "column",
+            "collapse_when_hidden": true
+          },
+          "type": "Group",
+          "id": "cmUMc96",
+          "default_name": "Group A",
+          "elements": {
+            "callout_heading": {
+              "properties": {
+                "text": "Install it. Wire it like any other Bubble input.",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#FFFFFF",
+                "font_size": 32,
+                "line_height": 1.2,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 1,
+                "opacity": 100,
+                "tag_type": "h2",
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "800",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUMd96",
+              "default_name": "Text A",
+              "name": "Final callout heading"
+            },
+            "callout_description": {
+              "properties": {
+                "text": "Search the marketplace for 🤌 Rich text editor (Tiptap.dev). Need collaboration, mentions, or a sticky issue? The forum thread is the place.",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#DBEAFE",
+                "font_size": 16,
+                "line_height": 1.55,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUMh96",
+              "default_name": "Text A",
+              "name": "Final callout description"
+            }
+          },
+          "name": "Final callout"
+        },
+        "bprhhyud": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpldbrbo",
+            "order": 3,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMi96",
+          "default_name": "Custom Element A",
+          "name": "demo-table-of-contents",
+          "custom_definition_name": "demo-table-of-contents"
+        },
+        "demo_docs": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpmmvrxj",
+            "order": 4,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMj96",
+          "default_name": "Custom Element A",
+          "name": "demo-docs",
+          "custom_definition_name": "demo-docs"
+        },
+        "demo_popup": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bptqswqv",
+            "order": 8,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMn96",
+          "default_name": "Custom Element A",
+          "name": "demo-popup",
+          "custom_definition_name": "demo-popup"
+        },
+        "demo_basics": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpbgyadx",
+            "order": 2,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMo96",
+          "default_name": "Custom Element A",
+          "name": "demo-basics",
+          "custom_definition_name": "demo-basics"
+        },
+        "demo_notion": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpnegqvw",
+            "order": 5,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMp96",
+          "default_name": "Custom Element A",
+          "name": "demo-notion",
+          "custom_definition_name": "demo-notion"
+        },
+        "demo_outputs": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpolitqf",
+            "order": 10,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMt96",
+          "default_name": "Custom Element A",
+          "name": "demo-outputs",
+          "custom_definition_name": "demo-outputs"
+        },
+        "demo_mentions": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpkxusdf",
+            "order": 6,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMu96",
+          "default_name": "Custom Element A",
+          "name": "demo-mentions",
+          "custom_definition_name": "demo-mentions"
+        },
+        "demo_overflow": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bpqznroq",
+            "order": 9,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMv96",
+          "default_name": "Custom Element A",
+          "name": "demo-overflow",
+          "custom_definition_name": "demo-overflow"
+        },
+        "demo_isolation": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "custom_id": "bphfndtm",
+            "order": 7,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "horiz_alignment": "stretch"
+          },
+          "type": "CustomElement",
+          "id": "cmUMz96",
+          "default_name": "Custom Element A",
+          "name": "demo-isolation",
+          "custom_definition_name": "demo-isolation"
+        }
+      },
+      "name": "Tiptap demo content",
+      "color_tokens": {
+        "default": {
+          "bTHCQ": {
+            "description": "inactive menu",
+            "name": "slate-400",
+            "deleted": false,
+            "rgba": "rgba(203,213,225,1)",
+            "order": 0
+          },
+          "bTHCR": {
+            "description": "hover background",
+            "name": "slate-50",
+            "deleted": false,
+            "rgba": "rgba(248,250,252,1)",
+            "order": 1
+          },
+          "bTHzP": {
+            "description": "slate-500",
+            "name": "slate-500",
+            "deleted": false,
+            "rgba": "rgba(100, 116, 139, 1)",
+            "order": 3
+          },
+          "bTHzT": {
+            "description": "slate-600",
+            "name": "slate-600",
+            "deleted": false,
+            "rgba": "rgba(71,85,105,1)",
+            "order": 4
+          },
+          "bTHzU": {
+            "description": "slate-800",
+            "name": "slate-800",
+            "deleted": false,
+            "rgba": "rgba(30,41,59,1)",
+            "order": 5
+          },
+          "bTIyJ": {
+            "description": "slate-100",
+            "name": "slate-100",
+            "deleted": false,
+            "rgba": "rgba(241,245,249,1)",
+            "order": 6
+          },
+          "bTLFV": {
+            "description": "slate-200 #e2e8f0",
+            "name": "slate-200",
+            "deleted": false,
+            "rgba": "rgba(226,232,240,1)",
+            "order": 7
+          },
+          "bTLFW": {
+            "description": "#cbd5e1",
+            "name": "slate 300",
+            "deleted": false,
+            "rgba": "rgba(203,213,225,1)",
+            "order": 8
+          },
+          "bTHKm0": {
+            "description": "unselected text",
+            "name": "slate-700",
+            "deleted": false,
+            "rgba": "rgba(51,65,85,1)",
+            "order": 2
+          }
+        }
+      }
+    },
+    "cmUOC104": {
+      "properties": {
+        "height": 250,
+        "left": 0,
+        "top": 0,
+        "width": 400,
+        "border_color": "#E2E8F0",
+        "border_roundness": 24,
+        "boxshadow_style": "none",
+        "border_width": 1,
+        "background_style": "bgcolor",
+        "bgcolor": "#FFFFFF",
+        "border_style": "solid",
+        "order": 2,
+        "opacity": 100,
+        "row_gap": 14,
+        "use_gap": true,
+        "fit_width": false,
+        "fit_height": true,
+        "padding_top": 32,
+        "padding_left": 32,
+        "single_width": false,
+        "padding_right": 32,
+        "single_height": false,
+        "padding_bottom": 32,
+        "vert_alignment": "center",
+        "elevation_level": "none",
+        "horiz_alignment": "center",
+        "boxshadow_enable": false,
+        "container_layout": "column",
+        "collapse_when_hidden": true,
+        "max_width_css": "960px"
+      },
+      "type": "Group",
+      "id": "cmUNF104",
+      "current_parent": "cmUMJ95",
+      "default_name": "Group B",
+      "elements": {
+        "bpjolazu": {
+          "properties": {
+            "height": 250,
+            "left": 0,
+            "top": 0,
+            "width": 400,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "border_width": 0,
+            "background_style": "none",
+            "border_style": "none",
+            "order": 6,
+            "opacity": 100,
+            "row_gap": 12,
+            "use_gap": true,
+            "fit_width": false,
+            "fit_height": true,
+            "padding_top": 24,
+            "padding_left": 0,
+            "single_width": false,
+            "padding_right": 0,
+            "single_height": false,
+            "padding_bottom": 0,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "container_layout": "column",
+            "collapse_when_hidden": true
+          },
+          "type": "Group",
+          "id": "cmUNH104",
+          "default_name": "Group B",
+          "elements": {
+            "bpuolzky": {
+              "properties": {
+                "text": "How you would wire this in your app.",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#0F172A",
+                "font_size": 28,
+                "line_height": 1.3,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 1,
+                "opacity": 100,
+                "tag_type": "h2",
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "800",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNL104",
+              "default_name": "Text B",
+              "name": "How-to heading"
+            },
+            "bpzgxvtv": {
+              "properties": {
+                "text": "1. Drop a Tiptap element on the page.\n2. Give it initial content — HTML or plain text.\n3. Save This Tiptap's Content (HTML) to a Thing, or turn on autobinding.\n4. Build your own toolbar with element actions. The buttons above are Bold, Italic, H2, Bullet list, and Highlight.\n\nMarkdown shortcuts work without extra wiring: # for H1, - for a bullet list, [] for a task.",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 16,
+                "line_height": 1.6,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNM104",
+              "default_name": "Text B",
+              "name": "How-to body"
+            }
+          },
+          "name": "How to wire it"
+        },
+        "bplukaes": {
+          "properties": {
+            "text": "Select some text, then click the buttons. Those are ordinary Bubble workflows calling Tiptap element actions. The readout is ordinary Bubble states — the same ones you would save to a Thing.",
+            "height": 36,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "font_color": "#475569",
+            "font_size": 16,
+            "line_height": 1.55,
+            "background_style": "none",
+            "border_style": "none",
+            "order": 2,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "font_family": "var(--font_default)",
+            "padding_top": 0,
+            "padding_left": 0,
+            "single_width": false,
+            "padding_right": 0,
+            "single_height": false,
+            "padding_bottom": 0,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "collapse_when_hidden": true
+          },
+          "type": "Text",
+          "id": "cmUNN104",
+          "default_name": "Text B",
+          "name": "Playground description"
+        },
+        "bpncwwjf": {
+          "properties": {
+            "height": 250,
+            "left": 0,
+            "top": 0,
+            "width": 400,
+            "border_color": "#E2E8F0",
+            "border_roundness": 14,
+            "boxshadow_style": "none",
+            "border_width": 1,
+            "background_style": "bgcolor",
+            "bgcolor": "#F8FAFC",
+            "border_style": "solid",
+            "order": 5,
+            "opacity": 100,
+            "row_gap": 6,
+            "use_gap": true,
+            "fit_width": false,
+            "fit_height": true,
+            "padding_top": 14,
+            "padding_left": 14,
+            "single_width": false,
+            "padding_right": 14,
+            "single_height": false,
+            "padding_bottom": 14,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "container_layout": "column",
+            "collapse_when_hidden": true
+          },
+          "type": "Group",
+          "id": "cmUNR104",
+          "default_name": "Group B",
+          "elements": {
+            "bpcffqcj": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Character count: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_ACB"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNS104",
+              "default_name": "Text B",
+              "name": "Character count"
+            },
+            "bpibgfrr": {
+              "properties": {
+                "text": "BUBBLE STATES",
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#64748B",
+                "font_size": 13,
+                "line_height": 1.3,
+                "letter_spacing": 0.6,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 1,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "700",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNT104",
+              "default_name": "Text B",
+              "name": "States heading"
+            },
+            "bplxrroq": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Can undo: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_can_undo"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 6,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNX104",
+              "default_name": "Text B",
+              "name": "Can undo"
+            },
+            "bpmhqdye": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Is focused: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_ABn"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 4,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNY104",
+              "default_name": "Text B",
+              "name": "Is focused"
+            },
+            "bpmvcdws": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Word count: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_ACC"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 3,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNZ104",
+              "default_name": "Text B",
+              "name": "Word count"
+            },
+            "bpprjeab": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Selected text: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_ACc"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 10,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNd104",
+              "default_name": "Text B",
+              "name": "Selected text"
+            },
+            "bprmpdvb": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Is empty: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_is_empty"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 5,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNe104",
+              "default_name": "Text B",
+              "name": "Is empty"
+            },
+            "bprxdqie": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Selection is bold: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_AAS"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 8,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNf104",
+              "default_name": "Text B",
+              "name": "Selection is bold"
+            },
+            "bpzvfpto": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Can redo: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_can_redo"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 7,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNj104",
+              "default_name": "Text B",
+              "name": "Can redo"
+            },
+            "bpzxrtlj": {
+              "properties": {
+                "text": {
+                  "entries": {
+                    "0": "Selection is italic: ",
+                    "1": {
+                      "next": {
+                        "type": "Message",
+                        "name": "get_AAk"
+                      },
+                      "properties": {
+                        "element_id": "cmUNp104"
+                      },
+                      "type": "GetElement"
+                    },
+                    "2": ""
+                  },
+                  "type": "TextExpression"
+                },
+                "height": 36,
+                "left": 0,
+                "top": 0,
+                "width": 100,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 14,
+                "line_height": 1.45,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 9,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUNk104",
+              "default_name": "Text B",
+              "name": "Selection is italic"
+            }
+          },
+          "name": "Live Bubble state readout"
+        },
+        "bppuicdt": {
+          "properties": {
+            "text": "Type, format, and watch Bubble states.",
+            "height": 36,
+            "left": 0,
+            "top": 0,
+            "width": 100,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "font_color": "#0F172A",
+            "font_size": 36,
+            "line_height": 1.2,
+            "background_style": "none",
+            "border_style": "none",
+            "order": 1,
+            "opacity": 100,
+            "tag_type": "h1",
+            "fit_width": true,
+            "fit_height": true,
+            "font_family": "var(--font_default)",
+            "font_weight": "800",
+            "padding_top": 0,
+            "padding_left": 0,
+            "single_width": false,
+            "padding_right": 0,
+            "single_height": false,
+            "padding_bottom": 0,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "boxshadow_enable": false,
+            "collapse_when_hidden": true
+          },
+          "type": "Text",
+          "id": "cmUNl104",
+          "default_name": "Text B",
+          "name": "Playground heading"
+        },
+        "bpsazhaw": {
+          "properties": {
+            "height": 100,
+            "left": 0,
+            "top": 0,
+            "width": 600,
+            "border_color": "#E2E8F0",
+            "border_roundness": 12,
+            "boxshadow_style": "none",
+            "border_width": 1,
+            "AAK": {
+              "entries": {
+                "0": "<h1>Welcome to Tiptap</h1>\n<p>This is a real Tiptap editor on a Bubble page. Select this sentence and click <strong>Bold</strong> — that button is an ordinary Bubble workflow calling a Tiptap element action.</p>\n<h2>What you can type</h2>\n<ul>\n<li>Headings, lists, and checklists</li>\n<li>Tables you can tab through</li>\n<li>Images you drop onto the page</li>\n</ul>\n<blockquote><p>Markdown shortcuts work too. Type # then space for a heading, or - then space for a bullet list.</p></blockquote>\n<h2>A small table</h2>\n<table>\n<thead><tr><th>State</th><th>What you do with it</th></tr></thead>\n<tbody>\n<tr><td>Content (HTML)</td><td>Save it to a Thing</td></tr>\n<tr><td>Character count</td><td>Show a limit</td></tr>\n<tr><td>Is focused</td><td>Style a wrapper</td></tr>\n</tbody>\n</table>\n<p>The readout below is the same Bubble states you would use in your own app.</p>"
+              },
+              "type": "TextExpression"
+            },
+            "ABs": true,
+            "ACA": {
+              "entries": {
+                "0": "Start writing. Type # then space for a heading."
+              },
+              "type": "TextExpression"
+            },
+            "ADR": "2rem",
+            "ADT": "0 0 0.75rem 0",
+            "AGH": {
+              "entries": {
+                "0": "heading"
+              },
+              "type": "TextExpression"
+            },
+            "AGT": true,
+            "background_style": "bgcolor",
+            "bgcolor": "#FFFFFF",
+            "border_style": "solid",
+            "order": 4,
+            "h2_size": "1.5rem",
+            "h3_size": "1.25rem",
+            "opacity": 100,
+            "h2_margin": "1.5rem 0 0.5rem 0",
+            "fit_height": true,
+            "ext_uniqueid": true,
+            "single_width": false,
+            "min_width_css": "0px",
+            "single_height": false,
+            "min_height_css": "320px",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "collapse_when_hidden": true,
+            "ext_table_of_contents": true,
+            "file_upload_condition": true
+          },
+          "type": "1670612027178x122079323974008830-AAC",
+          "id": "cmUNp104",
+          "default_name": "Tiptap(testing) A",
+          "name": "Demo editor"
+        },
+        "bpsvomnd": {
+          "properties": {
+            "height": 250,
+            "left": 0,
+            "top": 0,
+            "width": 400,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "background_style": "none",
+            "border_style": "none",
+            "order": 3,
+            "opacity": 100,
+            "use_gap": true,
+            "fit_width": false,
+            "column_gap": 8,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "container_layout": "row",
+            "collapse_when_hidden": true,
+            "container_vert_alignment": "center"
+          },
+          "type": "Group",
+          "id": "cmUNq104",
+          "default_name": "Group B",
+          "elements": {
+            "bpgiojgg": {
+              "properties": {
+                "text": "Bold",
+                "height": 44,
+                "left": 0,
+                "top": 0,
+                "width": 150,
+                "border_color": "#CBD5E1",
+                "border_roundness": 10,
+                "boxshadow_style": "none",
+                "border_width": 1,
+                "font_color": "#0F172A",
+                "font_size": 14,
+                "line_height": 1.2,
+                "background_style": "bgcolor",
+                "bgcolor": "#FFFFFF",
+                "border_style": "solid",
+                "order": 1,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "600",
+                "padding_top": 10,
+                "padding_left": 14,
+                "single_width": false,
+                "padding_right": 14,
+                "single_height": false,
+                "padding_bottom": 10,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "states": {
+                "hover": {
+                  "condition": {
+                    "next": {
+                      "type": "Message",
+                      "name": "is_hovered"
+                    },
+                    "type": "ThisElement"
+                  },
+                  "properties": {
+                    "border_color": "#94A3B8",
+                    "bgcolor": "#F8FAFC"
+                  },
+                  "type": "State"
+                }
+              },
+              "type": "Button",
+              "id": "cmUNr104",
+              "default_name": "Button A",
+              "name": "Bold button"
+            },
+            "bpipyolh": {
+              "properties": {
+                "text": "Highlight",
+                "height": 44,
+                "left": 0,
+                "top": 0,
+                "width": 150,
+                "border_color": "#CBD5E1",
+                "border_roundness": 10,
+                "boxshadow_style": "none",
+                "border_width": 1,
+                "font_color": "#0F172A",
+                "font_size": 14,
+                "line_height": 1.2,
+                "background_style": "bgcolor",
+                "bgcolor": "#FFFFFF",
+                "border_style": "solid",
+                "order": 5,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "600",
+                "padding_top": 10,
+                "padding_left": 14,
+                "single_width": false,
+                "padding_right": 14,
+                "single_height": false,
+                "padding_bottom": 10,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "states": {
+                "hover": {
+                  "condition": {
+                    "next": {
+                      "type": "Message",
+                      "name": "is_hovered"
+                    },
+                    "type": "ThisElement"
+                  },
+                  "properties": {
+                    "border_color": "#94A3B8",
+                    "bgcolor": "#F8FAFC"
+                  },
+                  "type": "State"
+                }
+              },
+              "type": "Button",
+              "id": "cmUNv104",
+              "default_name": "Button A",
+              "name": "Highlight button"
+            },
+            "bplaibjo": {
+              "properties": {
+                "text": "H2",
+                "height": 44,
+                "left": 0,
+                "top": 0,
+                "width": 150,
+                "border_color": "#CBD5E1",
+                "border_roundness": 10,
+                "boxshadow_style": "none",
+                "border_width": 1,
+                "font_color": "#0F172A",
+                "font_size": 14,
+                "line_height": 1.2,
+                "background_style": "bgcolor",
+                "bgcolor": "#FFFFFF",
+                "border_style": "solid",
+                "order": 3,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "600",
+                "padding_top": 10,
+                "padding_left": 14,
+                "single_width": false,
+                "padding_right": 14,
+                "single_height": false,
+                "padding_bottom": 10,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "states": {
+                "hover": {
+                  "condition": {
+                    "next": {
+                      "type": "Message",
+                      "name": "is_hovered"
+                    },
+                    "type": "ThisElement"
+                  },
+                  "properties": {
+                    "border_color": "#94A3B8",
+                    "bgcolor": "#F8FAFC"
+                  },
+                  "type": "State"
+                }
+              },
+              "type": "Button",
+              "id": "cmUNw104",
+              "default_name": "Button A",
+              "name": "H2 button"
+            },
+            "bplnzdyi": {
+              "properties": {
+                "text": "Italic",
+                "height": 44,
+                "left": 0,
+                "top": 0,
+                "width": 150,
+                "border_color": "#CBD5E1",
+                "border_roundness": 10,
+                "boxshadow_style": "none",
+                "border_width": 1,
+                "font_color": "#0F172A",
+                "font_size": 14,
+                "line_height": 1.2,
+                "background_style": "bgcolor",
+                "bgcolor": "#FFFFFF",
+                "border_style": "solid",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "600",
+                "padding_top": 10,
+                "padding_left": 14,
+                "single_width": false,
+                "padding_right": 14,
+                "single_height": false,
+                "padding_bottom": 10,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "states": {
+                "hover": {
+                  "condition": {
+                    "next": {
+                      "type": "Message",
+                      "name": "is_hovered"
+                    },
+                    "type": "ThisElement"
+                  },
+                  "properties": {
+                    "border_color": "#94A3B8",
+                    "bgcolor": "#F8FAFC"
+                  },
+                  "type": "State"
+                }
+              },
+              "type": "Button",
+              "id": "cmUNx104",
+              "default_name": "Button A",
+              "name": "Italic button"
+            },
+            "bppaquzm": {
+              "properties": {
+                "text": "Bullet list",
+                "height": 44,
+                "left": 0,
+                "top": 0,
+                "width": 150,
+                "border_color": "#CBD5E1",
+                "border_roundness": 10,
+                "boxshadow_style": "none",
+                "border_width": 1,
+                "font_color": "#0F172A",
+                "font_size": 14,
+                "line_height": 1.2,
+                "background_style": "bgcolor",
+                "bgcolor": "#FFFFFF",
+                "border_style": "solid",
+                "order": 4,
+                "opacity": 100,
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "600",
+                "padding_top": 10,
+                "padding_left": 14,
+                "single_width": false,
+                "padding_right": 14,
+                "single_height": false,
+                "padding_bottom": 10,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "flex-start",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "states": {
+                "hover": {
+                  "condition": {
+                    "next": {
+                      "type": "Message",
+                      "name": "is_hovered"
+                    },
+                    "type": "ThisElement"
+                  },
+                  "properties": {
+                    "border_color": "#94A3B8",
+                    "bgcolor": "#F8FAFC"
+                  },
+                  "type": "State"
+                }
+              },
+              "type": "Button",
+              "id": "cmUOB104",
+              "default_name": "Button A",
+              "name": "Bullet list button"
+            }
+          },
+          "name": "Toolbar"
+        }
+      },
+      "name": "Interactive playground",
+      "color_tokens": {
+        "default": {
+          "bTHCQ": {
+            "description": "inactive menu",
+            "name": "slate-400",
+            "deleted": false,
+            "rgba": "rgba(203,213,225,1)",
+            "order": 0
+          },
+          "bTHCR": {
+            "description": "hover background",
+            "name": "slate-50",
+            "deleted": false,
+            "rgba": "rgba(248,250,252,1)",
+            "order": 1
+          },
+          "bTHzP": {
+            "description": "slate-500",
+            "name": "slate-500",
+            "deleted": false,
+            "rgba": "rgba(100, 116, 139, 1)",
+            "order": 3
+          },
+          "bTHzT": {
+            "description": "slate-600",
+            "name": "slate-600",
+            "deleted": false,
+            "rgba": "rgba(71,85,105,1)",
+            "order": 4
+          },
+          "bTHzU": {
+            "description": "slate-800",
+            "name": "slate-800",
+            "deleted": false,
+            "rgba": "rgba(30,41,59,1)",
+            "order": 5
+          },
+          "bTIyJ": {
+            "description": "slate-100",
+            "name": "slate-100",
+            "deleted": false,
+            "rgba": "rgba(241,245,249,1)",
+            "order": 6
+          },
+          "bTLFV": {
+            "description": "slate-200 #e2e8f0",
+            "name": "slate-200",
+            "deleted": false,
+            "rgba": "rgba(226,232,240,1)",
+            "order": 7
+          },
+          "bTLFW": {
+            "description": "#cbd5e1",
+            "name": "slate 300",
+            "deleted": false,
+            "rgba": "rgba(203,213,225,1)",
+            "order": 8
+          },
+          "bTHKm0": {
+            "description": "unselected text",
+            "name": "slate-700",
+            "deleted": false,
+            "rgba": "rgba(51,65,85,1)",
+            "order": 2
+          }
+        }
+      }
+    },
+    "cmUOt106": {
+      "properties": {
+        "left": 0,
+        "top": 0,
+        "border_color": "#E2E8F0",
+        "border_roundness": 24,
+        "boxshadow_style": "none",
+        "border_width": 1,
+        "background_style": "bgcolor",
+        "bgcolor": "#FFFFFF",
+        "border_style": "solid",
+        "order": 3,
+        "opacity": 100,
+        "row_gap": 14,
+        "use_gap": true,
+        "fit_width": false,
+        "fit_height": true,
+        "padding_top": 32,
+        "padding_left": 32,
+        "single_width": false,
+        "padding_right": 32,
+        "single_height": false,
+        "padding_bottom": 32,
+        "vert_alignment": "center",
+        "elevation_level": "none",
+        "horiz_alignment": "center",
+        "boxshadow_enable": false,
+        "container_layout": "column",
+        "collapse_when_hidden": true,
+        "max_width_css": "960px"
+      },
+      "type": "Group",
+      "id": "cmUOH106",
+      "current_parent": "cmUMJ95",
+      "default_name": "Group C",
+      "elements": {
+        "cnHyG": {
+          "properties": {
+            "height": 0,
+            "left": 32,
+            "top": 152.7890625,
+            "width": 0,
+            "zindex": 4,
+            "order": 3,
+            "row_gap": 8,
+            "use_gap": true,
+            "fit_width": false,
+            "column_gap": 8,
+            "fit_height": true,
+            "single_width": false,
+            "single_height": false,
+            "horiz_alignment": "stretch",
+            "container_layout": "row",
+            "collapse_when_hidden": true
+          },
+          "type": "Group",
+          "id": "cmUOJ106",
+          "default_name": "Group C",
+          "elements": {
+            "cnHyI": {
+              "properties": {
+                "height": 0,
+                "left": -32,
+                "top": -152.7890625,
+                "width": 0,
+                "zindex": 3,
+                "order": 1,
+                "fit_width": false,
+                "fit_height": true,
+                "single_width": false,
+                "min_width_css": "40px",
+                "single_height": false,
+                "min_height_css": "40px",
+                "horiz_alignment": "stretch",
+                "container_layout": "column",
+                "collapse_when_hidden": true
+              },
+              "type": "Group",
+              "id": "cmUON106",
+              "default_name": "Group C",
+              "elements": {
+                "cnHxw": {
+                  "properties": {
+                    "left": -32,
+                    "top": -152.7890625,
+                    "border_roundness": 0,
+                    "boxshadow_style": "none",
+                    "is_visible": false,
+                    "background_style": "none",
+                    "border_style": "none",
+                    "order": 1,
+                    "opacity": 100,
+                    "use_gap": true,
+                    "fit_width": false,
+                    "column_gap": 8,
+                    "fit_height": true,
+                    "single_width": false,
+                    "single_height": false,
+                    "vert_alignment": "center",
+                    "elevation_level": "none",
+                    "horiz_alignment": "stretch",
+                    "boxshadow_enable": false,
+                    "container_layout": "row",
+                    "collapse_when_hidden": true,
+                    "container_vert_alignment": "center"
+                  },
+                  "type": "Group",
+                  "id": "cmUOO106",
+                  "default_name": "Group C",
+                  "elements": {
+                    "bpktaxub": {
+                      "properties": {
+                        "text": "H2",
+                        "left": 0,
+                        "top": 0,
+                        "border_color": "#CBD5E1",
+                        "border_roundness": 10,
+                        "boxshadow_style": "none",
+                        "border_width": 1,
+                        "font_color": "#0F172A",
+                        "font_size": 14,
+                        "line_height": 1.2,
+                        "background_style": "bgcolor",
+                        "bgcolor": "#FFFFFF",
+                        "border_style": "solid",
+                        "order": 3,
+                        "opacity": 100,
+                        "fit_width": true,
+                        "fit_height": true,
+                        "font_family": "var(--font_default)",
+                        "font_weight": "600",
+                        "padding_top": 10,
+                        "padding_left": 14,
+                        "single_width": false,
+                        "padding_right": 14,
+                        "single_height": false,
+                        "padding_bottom": 10,
+                        "vert_alignment": "center",
+                        "elevation_level": "none",
+                        "horiz_alignment": "flex-start",
+                        "boxshadow_enable": false,
+                        "collapse_when_hidden": true
+                      },
+                      "states": {
+                        "hover": {
+                          "condition": {
+                            "next": {
+                              "type": "Message",
+                              "name": "is_hovered"
+                            },
+                            "type": "ThisElement"
+                          },
+                          "properties": {
+                            "border_color": "#94A3B8",
+                            "bgcolor": "#F8FAFC"
+                          },
+                          "type": "State"
+                        }
+                      },
+                      "type": "Button",
+                      "id": "cmUOP106",
+                      "default_name": "Button B",
+                      "name": "H2 button"
+                    },
+                    "bpncpyzw": {
+                      "properties": {
+                        "text": {
+                          "entries": {
+                            "0": "Bullet list"
+                          },
+                          "type": "TextExpression"
+                        },
+                        "left": 0,
+                        "top": 0,
+                        "border_color": "#CBD5E1",
+                        "border_roundness": 10,
+                        "boxshadow_style": "none",
+                        "border_width": 1,
+                        "font_color": "#0F172A",
+                        "font_size": 14,
+                        "line_height": 1.2,
+                        "background_style": "bgcolor",
+                        "bgcolor": "#FFFFFF",
+                        "border_style": "solid",
+                        "order": 4,
+                        "opacity": 100,
+                        "fit_width": true,
+                        "fit_height": true,
+                        "font_family": "var(--font_default)",
+                        "font_weight": "600",
+                        "padding_top": 10,
+                        "padding_left": 14,
+                        "single_width": false,
+                        "padding_right": 14,
+                        "single_height": false,
+                        "padding_bottom": 10,
+                        "vert_alignment": "center",
+                        "elevation_level": "none",
+                        "horiz_alignment": "flex-start",
+                        "boxshadow_enable": false,
+                        "collapse_when_hidden": true
+                      },
+                      "states": {
+                        "hover": {
+                          "condition": {
+                            "next": {
+                              "type": "Message",
+                              "name": "is_hovered"
+                            },
+                            "type": "ThisElement"
+                          },
+                          "properties": {
+                            "border_color": "#94A3B8",
+                            "bgcolor": "#F8FAFC"
+                          },
+                          "type": "State"
+                        }
+                      },
+                      "type": "Button",
+                      "id": "cmUOT106",
+                      "default_name": "Button B",
+                      "name": "Bullet list button"
+                    },
+                    "bptdhojk": {
+                      "properties": {
+                        "text": "Italic",
+                        "left": 0,
+                        "top": 0,
+                        "border_color": "#CBD5E1",
+                        "border_roundness": 10,
+                        "boxshadow_style": "none",
+                        "border_width": 1,
+                        "font_color": "#0F172A",
+                        "font_size": 14,
+                        "line_height": 1.2,
+                        "background_style": "bgcolor",
+                        "bgcolor": "#FFFFFF",
+                        "border_style": "solid",
+                        "order": 2,
+                        "opacity": 100,
+                        "fit_width": true,
+                        "fit_height": true,
+                        "font_family": "var(--font_default)",
+                        "font_weight": "600",
+                        "padding_top": 10,
+                        "padding_left": 14,
+                        "single_width": false,
+                        "padding_right": 14,
+                        "single_height": false,
+                        "padding_bottom": 10,
+                        "vert_alignment": "center",
+                        "elevation_level": "none",
+                        "horiz_alignment": "flex-start",
+                        "boxshadow_enable": false,
+                        "collapse_when_hidden": true
+                      },
+                      "states": {
+                        "hover": {
+                          "condition": {
+                            "next": {
+                              "type": "Message",
+                              "name": "is_hovered"
+                            },
+                            "type": "ThisElement"
+                          },
+                          "properties": {
+                            "border_color": "#94A3B8",
+                            "bgcolor": "#F8FAFC"
+                          },
+                          "type": "State"
+                        }
+                      },
+                      "type": "Button",
+                      "id": "cmUOU106",
+                      "default_name": "Button B",
+                      "name": "Italic button"
+                    },
+                    "bptrsjjx": {
+                      "properties": {
+                        "text": "Highlight",
+                        "left": 0,
+                        "top": 0,
+                        "border_color": "#CBD5E1",
+                        "border_roundness": 10,
+                        "boxshadow_style": "none",
+                        "border_width": 1,
+                        "font_color": "#0F172A",
+                        "font_size": 14,
+                        "line_height": 1.2,
+                        "background_style": "bgcolor",
+                        "bgcolor": "#FFFFFF",
+                        "border_style": "solid",
+                        "order": 5,
+                        "opacity": 100,
+                        "fit_width": true,
+                        "fit_height": true,
+                        "font_family": "var(--font_default)",
+                        "font_weight": "600",
+                        "padding_top": 10,
+                        "padding_left": 14,
+                        "single_width": false,
+                        "padding_right": 14,
+                        "single_height": false,
+                        "padding_bottom": 10,
+                        "vert_alignment": "center",
+                        "elevation_level": "none",
+                        "horiz_alignment": "flex-start",
+                        "boxshadow_enable": false,
+                        "collapse_when_hidden": true
+                      },
+                      "states": {
+                        "hover": {
+                          "condition": {
+                            "next": {
+                              "type": "Message",
+                              "name": "is_hovered"
+                            },
+                            "type": "ThisElement"
+                          },
+                          "properties": {
+                            "border_color": "#94A3B8",
+                            "bgcolor": "#F8FAFC"
+                          },
+                          "type": "State"
+                        }
+                      },
+                      "type": "Button",
+                      "id": "cmUOV106",
+                      "default_name": "Button B",
+                      "name": "Highlight button"
+                    },
+                    "bpwescvj": {
+                      "properties": {
+                        "text": "Bold",
+                        "left": 0,
+                        "top": 0,
+                        "border_color": "#CBD5E1",
+                        "border_roundness": 10,
+                        "boxshadow_style": "none",
+                        "border_width": 1,
+                        "font_color": "#0F172A",
+                        "font_size": 14,
+                        "line_height": 1.2,
+                        "background_style": "bgcolor",
+                        "bgcolor": "#FFFFFF",
+                        "border_style": "solid",
+                        "order": 1,
+                        "opacity": 100,
+                        "fit_width": true,
+                        "fit_height": true,
+                        "font_family": "var(--font_default)",
+                        "font_weight": "600",
+                        "padding_top": 10,
+                        "padding_left": 14,
+                        "single_width": false,
+                        "padding_right": 14,
+                        "single_height": false,
+                        "padding_bottom": 10,
+                        "vert_alignment": "center",
+                        "elevation_level": "none",
+                        "horiz_alignment": "flex-start",
+                        "boxshadow_enable": false,
+                        "collapse_when_hidden": true
+                      },
+                      "states": {
+                        "hover": {
+                          "condition": {
+                            "next": {
+                              "type": "Message",
+                              "name": "is_hovered"
+                            },
+                            "type": "ThisElement"
+                          },
+                          "properties": {
+                            "border_color": "#94A3B8",
+                            "bgcolor": "#F8FAFC"
+                          },
+                          "type": "State"
+                        }
+                      },
+                      "type": "Button",
+                      "id": "cmUOZ106",
+                      "default_name": "Button B",
+                      "name": "Bold button"
+                    }
+                  },
+                  "name": "Toolbar"
+                },
+                "cnHyA": {
+                  "properties": {
+                    "height": 420,
+                    "left": -32,
+                    "top": -152.7890625,
+                    "border_color": "#E2E8F0",
+                    "border_roundness": 12,
+                    "boxshadow_style": "none",
+                    "border_width": 1,
+                    "background_style": "bgcolor",
+                    "bgcolor": "#FFFFFF",
+                    "border_style": "solid",
+                    "order": 2,
+                    "opacity": 100,
+                    "use_gap": false,
+                    "fit_width": false,
+                    "fit_height": false,
+                    "single_width": false,
+                    "single_height": true,
+                    "min_height_css": "420px",
+                    "vert_alignment": "center",
+                    "elevation_level": "none",
+                    "horiz_alignment": "stretch",
+                    "overflow_scroll": true,
+                    "boxshadow_enable": false,
+                    "container_layout": "column",
+                    "collapse_when_hidden": true
+                  },
+                  "type": "Group",
+                  "id": "cmUOa106",
+                  "default_name": "Group C",
+                  "elements": {
+                    "bpogtdhg": {
+                      "properties": {
+                        "left": 0,
+                        "top": 0,
+                        "border_color": "#E2E8F0",
+                        "border_roundness": 0,
+                        "boxshadow_style": "none",
+                        "border_width": 0,
+                        "AAK": {
+                          "entries": {
+                            "0": "<h2>Product guide</h2>\n<p>Scroll inside this editor and watch the active item in the outline below. This document starts at H2 on purpose, so an H1 is not required.</p>\n<p>The content is long enough to show how the outline follows a real article, help center page, or internal document.</p>\n<h3>Plan the document</h3>\n<p>Start with the questions your reader needs answered. Group related details into sections that are easy to scan.</p>\n<p>Use headings for structure rather than appearance. A clear outline helps readers understand where they are and what comes next.</p>\n<p>Keep the most important sections near the top, then move supporting detail into smaller subsections.</p>\n<h4>Name sections clearly</h4>\n<p>Prefer short labels that describe the outcome, such as Configure the editor or Publish the article.</p>\n<p>The same labels appear in the table of contents, so they should still make sense without the paragraphs around them.</p>\n<h3>Configure the editor</h3>\n<p>Add the Tiptap editor to a Group with a fixed height. Turn on overflow scrolling for that Group when the document should stay inside a compact panel.</p>\n<p>The editor can also grow with the page. Choose the layout that matches the reading experience in your app.</p>\n<p>Initial content can come from plain text, HTML, Tiptap JSON, or a field on a Bubble Thing.</p>\n<h4>Enable the outline</h4>\n<p>Turn on the Table of contents extension and Unique ID. The editor then publishes its Table of contents (JSON) state.</p>\n<p>Headings can begin at H2, H3, or another level. The visual outline normalizes them into a readable hierarchy.</p>\n<h3>Bind the live outline</h3>\n<p>Add the Tiptap Table of Contents visual element outside the editor’s scroll frame.</p>\n<p>Set its Table of contents JSON field to this editor’s Table of contents (JSON) state. No custom JavaScript is required.</p>\n<p>As the reader scrolls, the active and scrolled-over states update automatically.</p>\n<h4>Style active sections</h4>\n<p>Choose normal, scrolled-over, and active colors. You can also control indentation, item spacing, font weight, and the active indicator.</p>\n<p>Use enough contrast to make the current section clear without distracting from the document.</p>\n<h3>Replace content safely</h3>\n<p>You can load another Thing through Initial content, auto-binding, or the Set Content action.</p>\n<p>The editor republishes the outline when the document changes, and the visual element replaces stale headings.</p>\n<p>This makes the same editor and outline reusable across articles, records, and URL-driven pages.</p>\n<h3>Test the experience</h3>\n<p>Scroll from the first section to the last. Check that the active item follows the document and that clicking an outline item reaches the correct heading.</p>\n<p>Also test documents with no H1, skipped heading levels, and content that changes without a full page reload.</p>\n<p>On mobile, keep tap targets comfortable and confirm that the editor does not introduce horizontal overflow.</p>\n<h4>Ship an accessible navigation</h4>\n<p>Give the outline a useful accessible label such as On this page. The visual element renders semantic navigation and links.</p>\n<p>Readers can now scan, scroll, and jump through a long document without losing their place.</p>\n<br><br><br><br><br>"
+                          },
+                          "type": "TextExpression"
+                        },
+                        "ABs": true,
+                        "ACA": {
+                          "entries": {
+                            "0": "Start writing. Type # then space for a heading."
+                          },
+                          "type": "TextExpression"
+                        },
+                        "ADR": "2rem",
+                        "ADT": "0 0 0.75rem 0",
+                        "AGH": {
+                          "entries": {
+                            "0": "heading"
+                          },
+                          "type": "TextExpression"
+                        },
+                        "AGT": true,
+                        "background_style": "bgcolor",
+                        "bgcolor": "#FFFFFF",
+                        "border_style": "none",
+                        "order": 1,
+                        "h2_size": "1.5rem",
+                        "h3_size": "1.25rem",
+                        "opacity": 100,
+                        "h2_margin": "1.5rem 0 0.5rem 0",
+                        "fit_height": true,
+                        "ext_uniqueid": true,
+                        "single_width": false,
+                        "min_width_css": "0px",
+                        "single_height": false,
+                        "min_height_css": "80px",
+                        "elevation_level": "none",
+                        "horiz_alignment": "stretch",
+                        "boxshadow_enable": false,
+                        "collapse_when_hidden": true,
+                        "ext_table_of_contents": true,
+                        "file_upload_condition": false
+                      },
+                      "type": "1670612027178x122079323974008830-AAC",
+                      "id": "cmUOb106",
+                      "default_name": "Tiptap(testing) B",
+                      "name": "Demo editor"
+                    }
+                  },
+                  "name": "Scrollable editor frame"
+                }
+              },
+              "name": "g Editor",
+              "style": "Group_default_group_"
+            },
+            "cnHyM": {
+              "properties": {
+                "height": 0,
+                "left": -32,
+                "top": -152.7890625,
+                "width": 0,
+                "zindex": 2,
+                "order": 2,
+                "fit_width": false,
+                "fit_height": true,
+                "single_width": false,
+                "min_width_css": "40px",
+                "single_height": false,
+                "min_height_css": "40px",
+                "horiz_alignment": "stretch",
+                "container_layout": "column",
+                "collapse_when_hidden": true
+              },
+              "type": "Group",
+              "id": "cmUOf106",
+              "default_name": "Group C",
+              "elements": {
+                "cnHxk": {
+                  "properties": {
+                    "left": -32,
+                    "top": -639.5859375,
+                    "boxshadow_style": "none",
+                    "background_style": "none",
+                    "border_style": "none",
+                    "order": 2,
+                    "opacity": 100,
+                    "indent_px": 16,
+                    "fit_height": true,
+                    "auto_scroll": true,
+                    "item_gap_px": 4,
+                    "active_color": "rgba(79,70,229,1)",
+                    "normal_color": "rgba(15,23,42,1)",
+                    "scroll_block": "start",
+                    "single_width": false,
+                    "contents_json": {
+                      "entries": {
+                        "0": {
+                          "next": {
+                            "type": "Message",
+                            "name": "get_table_of_contents"
+                          },
+                          "properties": {
+                            "element_id": "cmUOb106"
+                          },
+                          "type": "GetElement"
+                        }
+                      },
+                      "type": "TextExpression"
+                    },
+                    "min_width_css": "0px",
+                    "single_height": false,
+                    "min_height_css": "80px",
+                    "horiz_alignment": "stretch",
+                    "scroll_behavior": "smooth",
+                    "accessible_label": {
+                      "entries": {
+                        "0": "On this page"
+                      },
+                      "type": "TextExpression"
+                    },
+                    "boxshadow_enable": false,
+                    "active_background": "rgba(79,70,229,0.12)",
+                    "active_font_weight": "600",
+                    "scrolled_over_color": "rgba(100,116,139,1)",
+                    "collapse_when_hidden": true,
+                    "active_indicator_width": 3
+                  },
+                  "type": "1670612027178x122079323974008830-toc_element",
+                  "id": "cmUOg106",
+                  "default_name": "TiptapTableofContents(testing) A",
+                  "name": "Live table of contents"
+                },
+                "cnHxo": {
+                  "properties": {
+                    "text": {
+                      "entries": {
+                        "0": "LIVE TABLE OF CONTENTS"
+                      },
+                      "type": "TextExpression"
+                    },
+                    "left": -32,
+                    "top": -639.5859375,
+                    "border_roundness": 0,
+                    "boxshadow_style": "none",
+                    "font_color": "#64748B",
+                    "font_size": 13,
+                    "line_height": 1.3,
+                    "letter_spacing": 0.6,
+                    "background_style": "none",
+                    "border_style": "none",
+                    "order": 1,
+                    "opacity": 100,
+                    "fit_width": true,
+                    "fit_height": true,
+                    "font_family": "var(--font_default)",
+                    "font_weight": "700",
+                    "padding_top": 0,
+                    "padding_left": 0,
+                    "single_width": false,
+                    "padding_right": 0,
+                    "single_height": false,
+                    "padding_bottom": 0,
+                    "vert_alignment": "center",
+                    "elevation_level": "none",
+                    "boxshadow_enable": false,
+                    "collapse_when_hidden": true
+                  },
+                  "type": "Text",
+                  "id": "cmUOh106",
+                  "default_name": "Text C",
+                  "name": "TOC heading"
+                }
+              },
+              "name": "g ToC",
+              "style": "Group_default_group_"
+            }
+          },
+          "name": "g Main",
+          "style": "Group_default_group_"
+        },
+        "bpbrxwnh": {
+          "properties": {
+            "left": 0,
+            "top": 0,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "border_width": 0,
+            "background_style": "none",
+            "border_style": "none",
+            "order": 10,
+            "opacity": 100,
+            "row_gap": 12,
+            "use_gap": true,
+            "fit_width": false,
+            "fit_height": true,
+            "padding_top": 24,
+            "single_width": false,
+            "single_height": false,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "container_layout": "column",
+            "collapse_when_hidden": true
+          },
+          "type": "Group",
+          "id": "cmUOl106",
+          "default_name": "Group C",
+          "elements": {
+            "bpdvfpef": {
+              "properties": {
+                "text": "1. Turn on Table of contents in the Tiptap element.\n2. Add the Tiptap Table of Contents visual element.\n3. Set its Table of contents JSON field to the editor’s Table of contents (JSON) state.\n\nThe outline refreshes when headings are edited or the editor loads different content. Documents can start at H2–H6; they do not need an H1.",
+                "left": 0,
+                "top": 0,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#334155",
+                "font_size": 16,
+                "line_height": 1.6,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 2,
+                "opacity": 100,
+                "fit_width": false,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "horiz_alignment": "stretch",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUOm106",
+              "default_name": "Text C",
+              "name": "How-to body"
+            },
+            "bpgvwqov": {
+              "properties": {
+                "text": "How you would wire this in your app.",
+                "left": 0,
+                "top": 0,
+                "border_roundness": 0,
+                "boxshadow_style": "none",
+                "font_color": "#0F172A",
+                "font_size": 28,
+                "line_height": 1.3,
+                "background_style": "none",
+                "border_style": "none",
+                "order": 1,
+                "opacity": 100,
+                "tag_type": "h2",
+                "fit_width": true,
+                "fit_height": true,
+                "font_family": "var(--font_default)",
+                "font_weight": "800",
+                "padding_top": 0,
+                "padding_left": 0,
+                "single_width": false,
+                "padding_right": 0,
+                "single_height": false,
+                "padding_bottom": 0,
+                "vert_alignment": "center",
+                "elevation_level": "none",
+                "boxshadow_enable": false,
+                "collapse_when_hidden": true
+              },
+              "type": "Text",
+              "id": "cmUOn106",
+              "default_name": "Text C",
+              "name": "How-to heading"
+            }
+          },
+          "name": "How to wire it"
+        },
+        "bpdalobc": {
+          "properties": {
+            "text": "Scroll inside the editor and watch the active item move through the separate Table of Contents element. Edit any heading and the outline updates from the editor’s Bubble state.",
+            "left": 0,
+            "top": 0,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "font_color": "#475569",
+            "font_size": 16,
+            "line_height": 1.55,
+            "background_style": "none",
+            "border_style": "none",
+            "order": 2,
+            "opacity": 100,
+            "fit_width": false,
+            "fit_height": true,
+            "font_family": "var(--font_default)",
+            "padding_top": 0,
+            "padding_left": 0,
+            "single_width": false,
+            "padding_right": 0,
+            "single_height": false,
+            "padding_bottom": 0,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "horiz_alignment": "stretch",
+            "boxshadow_enable": false,
+            "collapse_when_hidden": true
+          },
+          "type": "Text",
+          "id": "cmUOr106",
+          "default_name": "Text C",
+          "name": "Playground description"
+        },
+        "bpnzgqch": {
+          "properties": {
+            "text": "A table of contents that follows your document.",
+            "left": 0,
+            "top": 0,
+            "border_roundness": 0,
+            "boxshadow_style": "none",
+            "font_color": "#0F172A",
+            "font_size": 36,
+            "line_height": 1.2,
+            "background_style": "none",
+            "border_style": "none",
+            "order": 1,
+            "opacity": 100,
+            "tag_type": "h1",
+            "fit_width": true,
+            "fit_height": true,
+            "font_family": "var(--font_default)",
+            "font_weight": "800",
+            "padding_top": 0,
+            "padding_left": 0,
+            "single_width": false,
+            "padding_right": 0,
+            "single_height": false,
+            "padding_bottom": 0,
+            "vert_alignment": "center",
+            "elevation_level": "none",
+            "boxshadow_enable": false,
+            "collapse_when_hidden": true
+          },
+          "type": "Text",
+          "id": "cmUOs106",
+          "default_name": "Text C",
+          "name": "Playground heading"
+        }
+      },
+      "name": "Interactive playground",
+      "color_tokens": {
+        "default": {
+          "bTHCQ": {
+            "description": "inactive menu",
+            "name": "slate-400",
+            "deleted": false,
+            "rgba": "rgba(203,213,225,1)",
+            "order": 0
+          },
+          "bTHCR": {
+            "description": "hover background",
+            "name": "slate-50",
+            "deleted": false,
+            "rgba": "rgba(248,250,252,1)",
+            "order": 1
+          },
+          "bTHzP": {
+            "description": "slate-500",
+            "name": "slate-500",
+            "deleted": false,
+            "rgba": "rgba(100, 116, 139, 1)",
+            "order": 3
+          },
+          "bTHzT": {
+            "description": "slate-600",
+            "name": "slate-600",
+            "deleted": false,
+            "rgba": "rgba(71,85,105,1)",
+            "order": 4
+          },
+          "bTHzU": {
+            "description": "slate-800",
+            "name": "slate-800",
+            "deleted": false,
+            "rgba": "rgba(30,41,59,1)",
+            "order": 5
+          },
+          "bTIyJ": {
+            "description": "slate-100",
+            "name": "slate-100",
+            "deleted": false,
+            "rgba": "rgba(241,245,249,1)",
+            "order": 6
+          },
+          "bTLFV": {
+            "description": "slate-200 #e2e8f0",
+            "name": "slate-200",
+            "deleted": false,
+            "rgba": "rgba(226,232,240,1)",
+            "order": 7
+          },
+          "bTLFW": {
+            "description": "#cbd5e1",
+            "name": "slate 300",
+            "deleted": false,
+            "rgba": "rgba(203,213,225,1)",
+            "order": 8
+          },
+          "bTHKm0": {
+            "description": "unselected text",
+            "name": "slate-700",
+            "deleted": false,
+            "rgba": "rgba(51,65,85,1)",
+            "order": 2
+          }
+        }
+      }
+    }
+  },
+  "workflows": {
+    "bprtipfix0001": {
+      "properties": {
+        "element_id": "cmUNw104"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0001",
+      "name": "H2",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUNp104"
+          },
+          "type": "1670612027178x122079323974008830-AAv",
+          "id": "bprtipfix0002"
+        }
+      }
+    },
+    "bprtipfix0003": {
+      "properties": {
+        "element_id": "cmUNv104"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0003",
+      "name": "Highlight",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUNp104"
+          },
+          "type": "1670612027178x122079323974008830-ACi",
+          "id": "bprtipfix0004"
+        }
+      }
+    },
+    "bprtipfix0005": {
+      "properties": {
+        "element_id": "cmUNx104"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0005",
+      "name": "Italic",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUNp104"
+          },
+          "type": "1670612027178x122079323974008830-AAj",
+          "id": "bprtipfix0006"
+        }
+      }
+    },
+    "bprtipfix0007": {
+      "properties": {
+        "element_id": "cmUOB104"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0007",
+      "name": "Bullet list",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUNp104"
+          },
+          "type": "1670612027178x122079323974008830-ABC",
+          "id": "bprtipfix0008"
+        }
+      }
+    },
+    "bprtipfix0009": {
+      "properties": {
+        "element_id": "cmUNr104"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0009",
+      "name": "Bold",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUNp104"
+          },
+          "type": "1670612027178x122079323974008830-AAh",
+          "id": "bprtipfix0010"
+        }
+      }
+    },
+    "bprtipfix0011": {
+      "properties": {
+        "element_id": "cmUOV106"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0011",
+      "name": "Highlight",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUOb106"
+          },
+          "type": "1670612027178x122079323974008830-ACi",
+          "id": "bprtipfix0012"
+        }
+      }
+    },
+    "bprtipfix0013": {
+      "properties": {
+        "element_id": "cmUOZ106"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0013",
+      "name": "Bold",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUOb106"
+          },
+          "type": "1670612027178x122079323974008830-AAh",
+          "id": "bprtipfix0014"
+        }
+      }
+    },
+    "bprtipfix0015": {
+      "properties": {
+        "element_id": "cmUOU106"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0015",
+      "name": "Italic",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUOb106"
+          },
+          "type": "1670612027178x122079323974008830-AAj",
+          "id": "bprtipfix0016"
+        }
+      }
+    },
+    "bprtipfix0017": {
+      "properties": {
+        "element_id": "cmUOP106"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0017",
+      "name": "H2",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUOb106"
+          },
+          "type": "1670612027178x122079323974008830-AAv",
+          "id": "bprtipfix0018"
+        }
+      }
+    },
+    "bprtipfix0019": {
+      "properties": {
+        "element_id": "cmUOT106"
+      },
+      "type": "ButtonClicked",
+      "id": "bprtipfix0019",
+      "name": "Bullet list",
+      "actions": {
+        "0": {
+          "properties": {
+            "element_id": "cmUOb106"
+          },
+          "type": "1670612027178x122079323974008830-ABC",
+          "id": "bprtipfix0020"
+        }
+      }
+    }
+  },
+  "properties": {
+    "height": 767,
+    "left": 0,
+    "top": 0,
+    "width": 1080,
+    "title": {
+      "entries": {
+        "0": "Your Bubble app"
+      },
+      "type": "TextExpression"
+    },
+    "fixed_width": false,
+    "min_width_px": 0,
+    "new_responsive": true,
+    "element_version": 5,
+    "responsive_version": 1,
+    "container_layout": "column",
+    "default_width": 1200,
+    "padding_left": 20,
+    "padding_right": 20,
+    "padding_top": 32,
+    "padding_bottom": 96,
+    "row_gap": 28,
+    "use_gap": true
+  },
+  "type": "Page",
+  "id": "cmUMJ95",
+  "name": "tiptap",
+  "is_mobile_view": null
+}
