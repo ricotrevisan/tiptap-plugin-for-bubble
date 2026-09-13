@@ -8,14 +8,14 @@
 import { loadCallbacks, createHarness, bubbleList, bubbleThing } from '/lib/node_modules/@rico/bubble-element-test-harness/src/index.js';
 const base = '/src/elements/tiptap-AAC/';
 const callbacks = await loadCallbacks({
-  initialize: base + 'initialize.js', update: base + 'update.js', reset: base + 'reset.js',
+  initialize: base + 'initialize.js', update: base + 'update.js',
   actions: { setContent: base + 'actions/set-content-ACW.js' },
 });
 window.debuggerMessages = [];
 window.makeHarness = (id, overrides = {}) => {
   const properties = {
     initialContent: '<h1>Alpha</h1><p>One</p>', content_is_json: false,
-    isEditable: true, collab_active: false,
+    isEditable: true, collab_active: false, file_upload_condition: false,
     ext_heading: true, headings: '1,2,3', ext_history: true,
     ext_table_of_contents: true, ext_mention: true,
     mention_triggerChar: '@', mention_field_label: 'name', mention_field_id: 'id',

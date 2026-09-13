@@ -8,16 +8,16 @@ From `lib/`, using the repository's `.node-version`:
 
 CI builds before running Playwright and uploads failure traces. The server binds to loopback only and serves this checkout. Playwright starts/stops it automatically; no Bubble account or app changes are required.
 
-The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/reset/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
+The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
 Four tests run in all three engines:
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
-- Extension rebuild preserves unsaved text; reset destroys the editor and update remounts it while a second instance remains independent.
+- Extension rebuild preserves unsaved text; the internal teardown destroys the editor and update remounts it while a second instance remains independent.
 - Keyboard mention selection exercises shared list `length/get` and Thing `get` through the actual adapter and runtime.
 
-`publishAutobinding` is an explicit fixture output recorder. Tiptap calls it after debounced edits and on blur even with inbound autobinding disabled. Tests observe its output without simulating persistence. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
+`publishAutobinding` is an explicit fixture output recorder. With autobinding disabled, typing must not call it. Tests observe adapter outputs without simulating persistence. Bubble reset remains disabled; the teardown test invokes the internal lifecycle function directly. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
 
 Real Bubble still must verify property resolution, scheduling, workflows, uploads, persistence, repeating-group lifecycle and app-specific layout. For actual Bubble verification set File uploads enabled explicitly as documented in AGENTS.md. No file-upload behavior is simulated here.
 
