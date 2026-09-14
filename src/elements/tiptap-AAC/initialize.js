@@ -2293,9 +2293,6 @@ instance.data.setupEditor = function (properties, context) {
                     color: current.collab_cursor_color || "#958DF1",
                 });
             }
-            // Bubble may only call update before this asynchronous callback.
-            // Enable native wheel scrolling before publishing readiness.
-            instance.canvas.css({ overflow: properties.bubble.fit_height() ? "auto" : "scroll" });
             instance.data._autobindingSave.resume(instance.data._pendingRebuildSave);
             delete instance.data._pendingRebuildSave;
             instance.triggerEvent("is_ready");
