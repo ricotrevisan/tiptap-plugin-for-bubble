@@ -685,12 +685,59 @@ try {
     // ── Collab auth-failure retry mechanism ──────────────────
     // When authentication fails (e.g. JWT not yet valid on server), tear down
     // the editor + provider and let the next update() cycle re-create everything.
+    // Only include settings used by the selected provider. Keep credentials out
+    // of logs; compare this normalized construction configuration in update().
+    instance.data.collaborationConfiguration = function (properties) {
+        if (!properties.collab_active) return { active: false };
+        const provider = properties.collabProvider || "";
+        return {
+            active: true,
+            provider,
+            document: properties.collab_doc_id || "",
+            url: provider === "custom" ? (properties.collab_url || "").replace(/\/+$/, "") : "",
+            app: provider === "liveblocks" ? "" : properties.collab_app_id || "",
+            credential: provider === "liveblocks" ? properties.liveblocksPublicApiKey || "" : properties.collab_jwt || "",
+        };
+    };
+    instance.data.collaborationReady = function (config) {
+        return !config.active || (!!config.document && !!config.credential &&
+            (config.provider === "liveblocks" ||
+             (config.provider === "tiptap" && !!config.app) ||
+             (config.provider === "custom" && !!config.url)));
+    };
+    instance.data.preserveCollabDocument = function () {
+        if (!instance.data._collabDocument) return;
+        // Liveblocks owns and destroys its Y.Doc. Copy CRDT state (including
+        // unsent operations), rather than reusing a provider-owned document.
+        if (instance.data.editor_is_ready && instance.data.editor) {
+            instance.data._pendingRebuildContent = instance.data.editor.getJSON();
+            instance.data._pendingRebuildInitialContent = instance.data.initialContent;
+        }
+        const { Y } = window.tiptap;
+        const document = new Y.Doc();
+        Y.applyUpdate(document, Y.encodeStateAsUpdate(instance.data._collabDocument));
+        instance.data._pendingCollabDocument?.destroy();
+        instance.data._pendingCollabDocument = document;
+    };
+    instance.data._collabGeneration = 0;
+    // Providers can deliver queued callbacks after destroy(). Invalidate them
+    // before disposing any resources, including synchronous destroy callbacks.
+    instance.data.guardCollabCallbacks = function (options) {
+        const generation = instance.data._collabGeneration;
+        return Object.fromEntries(Object.entries(options).map(([key, value]) => [key,
+            typeof value === "function" && key.startsWith("on")
+                ? (...args) => { if (generation === instance.data._collabGeneration) return value(...args); }
+                : value,
+        ]));
+    };
+
     instance.data._collabRetryCount = 0;
     const COLLAB_MAX_RETRIES = 5;
     const COLLAB_RETRY_DELAYS = [1000, 2000, 4000, 8000, 16000]; // exponential backoff
 
     instance.data.teardownEditor = function (reason) {
         instance.data.debug("tearing down editor:", reason);
+        instance.data._collabGeneration++;
 
         // Clear the collab sync polling interval
         if (instance.data._collabSyncPollInterval) {
@@ -731,6 +778,16 @@ try {
             }
             instance.data.editor = null;
         }
+
+        if (instance.data._leaveCollabRoom) {
+            try { instance.data._leaveCollabRoom(); }
+            catch (error) { instance.data.debug("error leaving collaboration room:", error); }
+            finally { instance.data._leaveCollabRoom = null; }
+        }
+        if (instance.data._collabDocument && instance.data._collabDocument !== instance.data._pendingCollabDocument) {
+            instance.data._collabDocument.destroy();
+        }
+        instance.data._collabDocument = null;
 
         instance.data.releaseMenus();
 
@@ -788,7 +845,9 @@ try {
         }
 
         // Use shared teardown
+        instance.data.preserveCollabDocument();
         instance.data.teardownEditor("collab auth failure, attempt " + attempt);
+        instance.data._collabRetryCount = attempt;
 
         // Schedule a re-trigger after a backoff delay.
         // We call setupEditor directly because publishState does not trigger update() in Bubble.
@@ -813,8 +872,54 @@ try {
         };
     }
 
+    function collaborationCaret(provider, properties) {
+        // y-tiptap keys caret widgets only by client ID, so ProseMirror can
+        // retain their DOM after a name/color update. Refresh retained widgets
+        // from awareness, with the subscription owned by this editor.
+        const cursors = new Map();
+        function paint(cursor, user) {
+            cursor.style.borderColor = user.color || "#958DF1";
+            cursor.firstChild.style.backgroundColor = user.color || "#958DF1";
+            cursor.firstChild.textContent = user.name || "Anonymous";
+        }
+        function refresh() {
+            const states = provider.awareness.getStates();
+            for (const [clientId, cursor] of cursors) {
+                if (!states.has(clientId)) cursors.delete(clientId);
+                else paint(cursor, states.get(clientId).user || {});
+            }
+        }
+        return window.tiptap.CollaborationCaret.extend({
+            onCreate() {
+                this.parent?.();
+                provider.awareness.on("update", refresh);
+            },
+            onDestroy() {
+                provider.awareness.off("update", refresh);
+                cursors.clear();
+                this.parent?.();
+            },
+        }).configure({
+            provider,
+            user: getCollabUser(properties),
+            render(user, clientId) {
+                let cursor = cursors.get(clientId);
+                if (!cursor) {
+                    cursor = document.createElement("span");
+                    cursor.className = "collaboration-carets__caret";
+                    const label = document.createElement("div");
+                    label.className = "collaboration-carets__label";
+                    cursor.appendChild(label);
+                    cursors.set(clientId, cursor);
+                }
+                paint(cursor, user);
+                return cursor;
+            },
+        });
+    }
+
     function maybeSetupCollaboration(instance, properties, options, extensions) {
-        if (properties.collab_active === false) return;
+        if (!properties.collab_active) return;
         instance.data.debug("collaboration is active, provider:", properties.collabProvider);
         // Store initial content before removing — used to populate new (empty) collab documents
         instance.data.collabInitialContent = options.content;
@@ -846,15 +951,12 @@ try {
 
     function setupCustomHocuspocus(extensions, properties) {
         instance.data.debug("setting up custom Hocuspocus collab");
-        const { HocuspocusProvider, Collaboration, CollaborationCaret, Y } = window.tiptap;
-        if (!properties.collab_url.endsWith("/")) {
-            properties.collab_url += "/";
-        }
-
-        const custom_url = properties.collab_url + properties.collab_app_id;
+        const { HocuspocusProvider, Collaboration } = window.tiptap;
+        const custom_url = (properties.collab_url || "").replace(/\/+$/, "") + "/" + (properties.collab_app_id || "");
         instance.data.debug("custom collab URL:", custom_url, "doc:", properties.collab_doc_id);
         try {
-            instance.data.provider = new HocuspocusProvider({
+            instance.data.provider = new HocuspocusProvider(instance.data.guardCollabCallbacks({
+                document: instance.data._collabDocument,
                 url: custom_url,
                 name: properties.collab_doc_id,
                 token: properties.collab_jwt,
@@ -892,10 +994,12 @@ try {
                 onStateless: ({ payload }) => {
                     instance.data.debug("custom collab stateless message:", payload);
                 },
-            });
+            }));
 
             // Also register synced handler via .on() as backup
+            const generation = instance.data._collabGeneration;
             instance.data.provider.on("synced", () => {
+                if (generation !== instance.data._collabGeneration) return;
                 instance.data.collabHasSynced = true;
                 instance.publishState("collab_synced", true);
                 instance.data.maybeSetCollabInitialContent();
@@ -905,16 +1009,13 @@ try {
                 Collaboration.configure({
                     document: instance.data.provider.document,
                 }),
-                CollaborationCaret.configure({
-                    provider: instance.data.provider,
-                    user: getCollabUser(properties),
-                }),
+                collaborationCaret(instance.data.provider, properties),
             );
             instance.data.debug("custom Hocuspocus provider created successfully");
         } catch (error) {
             const message = "Error setting up custom collab: ";
             context.reportDebugger(message + error);
-            console.error("[Tiptap]", message, error);
+            throw error;
         }
         return;
     }
@@ -922,11 +1023,12 @@ try {
     function setupTiptapCloud(extensions, properties) {
         instance.data.debug("setting up Tiptap Cloud collab");
 
-        const { HocuspocusProvider, Collaboration, CollaborationCaret } = window.tiptap;
+        const { HocuspocusProvider, Collaboration } = window.tiptap;
         const url = `wss://${properties.collab_app_id}.collab.tiptap.cloud`;
         instance.data.debug("Tiptap Cloud URL:", url, "doc:", properties.collab_doc_id);
         try {
-            instance.data.provider = new HocuspocusProvider({
+            instance.data.provider = new HocuspocusProvider(instance.data.guardCollabCallbacks({
+                document: instance.data._collabDocument,
                 url: url,
                 name: properties.collab_doc_id,
                 token: properties.collab_jwt,
@@ -958,10 +1060,12 @@ try {
                 onAwarenessChange: ({ states }) => {
                     instance.publishState("collab_connected_users", states.length);
                 },
-            });
+            }));
 
             // Also register synced handler via .on() as backup
+            const generation = instance.data._collabGeneration;
             instance.data.provider.on("synced", () => {
+                if (generation !== instance.data._collabGeneration) return;
                 instance.data.collabHasSynced = true;
                 instance.publishState("collab_synced", true);
                 instance.data.maybeSetCollabInitialContent();
@@ -971,17 +1075,14 @@ try {
         } catch (error) {
             const message = "Error setting up Tiptap Cloud collab: ";
             context.reportDebugger(message + error);
-            console.error("[Tiptap]", message, error);
+            throw error;
         }
 
         extensions.push(
             Collaboration.configure({
                 document: instance.data.provider.document,
             }),
-            CollaborationCaret.configure({
-                provider: instance.data.provider,
-                user: getCollabUser(properties),
-            }),
+            collaborationCaret(instance.data.provider, properties),
         );
 
         return;
@@ -994,7 +1095,7 @@ try {
             return;
         }
 
-        const { createClient, LiveblocksProvider, Collaboration, CollaborationCaret, Y } = window.tiptap;
+        const { createClient, LiveblocksProvider, Collaboration } = window.tiptap;
 
         try {
             const client = createClient({
@@ -1005,21 +1106,20 @@ try {
                 initialPresence: {},
             });
 
-            const yDoc = new Y.Doc();
-            const Text = yDoc.getText("tiptap");
+            instance.data._leaveCollabRoom = leave;
+            const yDoc = instance.data._collabDocument;
             const Provider = new LiveblocksProvider(room, yDoc);
+            instance.data.provider = Provider;
 
             extensions.push(
                 Collaboration.configure({
                     document: yDoc,
                 }),
-                CollaborationCaret.configure({
-                    provider: Provider,
-                    user: getCollabUser(properties),
-                }),
+                collaborationCaret(Provider, properties),
             );
         } catch (error) {
             context.reportDebugger("There was an error setting up Liveblocks. " + error);
+            throw error;
         }
 
         return extensions;
@@ -1472,6 +1572,10 @@ instance.data.getSelection = getSelection;
 // setupEditor — called once from update.js on first property load
 // ─────────────────────────────────────────────────────────────
 instance.data.setupEditor = function (properties, context) {
+    const collaborationConfiguration = instance.data.collaborationConfiguration(properties);
+    if (!instance.data.collaborationReady(collaborationConfiguration)) return;
+    instance.data._currentCollaborationConfiguration = collaborationConfiguration;
+    instance.data._collabGeneration++;
     instance.data.debug("starting editor setup");
 
     instance.data._lastProperties = properties;
@@ -2178,8 +2282,20 @@ instance.data.setupEditor = function (properties, context) {
         parseOptions: parseOptions,
         injectCSS: true,
         onCreate({ editor }) {
+            if (editor !== instance.data.editor || editor.isDestroyed) return;
             instance.data.debug("editor created and ready");
             instance.data.editor_is_ready = true;
+            // A user-property update can arrive before this async callback.
+            if (typeof editor.commands.updateUser === "function") {
+                const current = instance.data._lastProperties || properties;
+                editor.commands.updateUser({
+                    name: current.collab_user_name || "Anonymous",
+                    color: current.collab_cursor_color || "#958DF1",
+                });
+            }
+            // Bubble may only call update before this asynchronous callback.
+            // Enable native wheel scrolling before publishing readiness.
+            instance.canvas.css({ overflow: properties.bubble.fit_height() ? "auto" : "scroll" });
             instance.data._autobindingSave.resume(instance.data._pendingRebuildSave);
             delete instance.data._pendingRebuildSave;
             instance.triggerEvent("is_ready");
@@ -2381,6 +2497,10 @@ instance.data.setupEditor = function (properties, context) {
 
     // Both collaboration and editor construction can fail after menu acquisition.
     try {
+        if (collaborationConfiguration.active) {
+            instance.data._collabDocument = instance.data._pendingCollabDocument || new window.tiptap.Y.Doc();
+            instance.data._pendingCollabDocument = null;
+        }
         instance.data.maybeSetupCollaboration(instance, properties, options, extensions);
 
         instance.data.editor = new Editor(options);
