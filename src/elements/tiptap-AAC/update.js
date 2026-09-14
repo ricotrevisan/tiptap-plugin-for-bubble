@@ -5,6 +5,27 @@ instance.data._debug_mode = properties.debug_mode;
 instance.data._lastProperties = properties;
 instance.data._lastContext = context;
 
+const collaborationConfiguration = instance.data.collaborationConfiguration(properties);
+const previousCollaboration = instance.data._currentCollaborationConfiguration;
+const collaborationChanged = previousCollaboration &&
+    JSON.stringify(previousCollaboration) !== JSON.stringify(collaborationConfiguration);
+const sameSharedDocument = previousCollaboration?.active && collaborationConfiguration.active &&
+    ["provider", "document", "url", "app"].every(key => previousCollaboration[key] === collaborationConfiguration[key]) &&
+    // A Liveblocks public key identifies a project, not just a session token.
+    (collaborationConfiguration.provider !== "liveblocks" || previousCollaboration.credential === collaborationConfiguration.credential);
+
+// A prior rebuild may be waiting for credentials with no editor left to tear
+// down. Still discard its saved CRDT when the destination changes.
+if (!sameSharedDocument && instance.data._pendingCollabDocument) {
+    instance.data._pendingCollabDocument.destroy();
+    instance.data._pendingCollabDocument = null;
+}
+if (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument) {
+    delete instance.data._pendingRebuildContent;
+    delete instance.data._pendingRebuildInitialContent;
+    delete instance.data._pendingRebuildSave;
+}
+
 // Construction-time extensions require a full rebuild when their dynamic
 // Bubble toggle changes. Run this before collaboration prerequisite checks so
 // disabling one always clears stale state, even while credentials are loading.
@@ -18,13 +39,21 @@ const tableOfContentsChanged =
     instance.data._currentTableOfContentsEnabled !== !!properties.ext_table_of_contents;
 const menuConfiguration = instance.data.menuConfiguration(properties);
 const menusChanged = instance.data._currentMenuConfiguration?.some((value, index) => value !== menuConfiguration[index]);
-if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || menusChanged)) {
+if ((instance.data.isEditorSetup || instance.data._collabRetryPending) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || menusChanged)) {
     const changedExtensions = [];
+    if (collaborationChanged) changedExtensions.push("Collaboration configuration");
+    if (previousCollaboration?.active && collaborationConfiguration.active &&
+        previousCollaboration.document !== collaborationConfiguration.document) {
+        instance.triggerEvent("collab_doc_changed");
+    }
+    if (sameSharedDocument) {
+        instance.data.preserveCollabDocument();
+    }
     if (menusChanged) changedExtensions.push("Menus");
     if (aiToolkitChanged) changedExtensions.push("AI Toolkit");
     if (findReplaceChanged) changedExtensions.push("Find & Replace");
     if (tableOfContentsChanged) changedExtensions.push("Table of Contents");
-    const rebuildReason = changedExtensions.join(" and ") + " extension changed";
+    const rebuildReason = changedExtensions.join(" and ") + " changed";
     instance.data.debug(rebuildReason + " — rebuilding editor");
 
     // Rebuilding must not reset an unsaved local document back to the element's
@@ -33,11 +62,13 @@ if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || ta
     const bindingChange = instance.data._autobindingSave.classify(properties.autobinding_record_id, properties.autobinding);
     const boundDocumentChanged = properties.bubble.auto_binding() &&
         (bindingChange === "record" || bindingChange === "external");
-    if (!properties.collab_active && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
+    // Local → shared: seed only an empty synced document. Shared → local:
+    // retain the visible snapshot. Shared → another room: never carry content.
+    if ((!previousCollaboration?.active || !collaborationConfiguration.active) && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
         instance.data._pendingRebuildContent = instance.data.editor.getJSON();
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
-        instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
-    } else if (boundDocumentChanged) {
+        if (!collaborationConfiguration.active) instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
+    } else if (boundDocumentChanged || (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument)) {
         // A simultaneous extension toggle must not carry A's local document
         // into the editor being rebuilt for B.
         delete instance.data._pendingRebuildContent;
@@ -47,22 +78,8 @@ if (instance.data.isEditorSetup && (aiToolkitChanged || findReplaceChanged || ta
     instance.data.teardownEditor(rebuildReason);
 }
 
-if (properties.collab_active === true && !properties.collab_jwt) {
-    instance.data.debug("collab is active but auth token is not yet loaded. Returning...");
-    if (!instance.data._jwtEmptyWarningShown) {
-        instance.data._jwtEmptyWarningShown = true;
-        context.reportDebugger(
-            "Collaboration is enabled but the JWT token is empty. The editor will initialize once the token is provided.",
-        );
-    }
-    return;
-}
-
-if (properties.collab_active === true && !properties.collab_doc_id) {
-    instance.data.debug("collab is active but document name (collab_doc_id) is not yet loaded. Returning...");
-    context.reportDebugger(
-        "Collaboration is enabled but the Document name field is empty. Please provide a unique document name (e.g. a slug or unique ID) for collaboration to work.",
-    );
+if (!instance.data.collaborationReady(collaborationConfiguration)) {
+    context.reportDebugger("Collaboration is waiting for a supported provider, document name, credentials, and endpoint configuration.");
     return;
 }
 
@@ -72,32 +89,6 @@ if (properties.collab_active && properties.bubble.auto_binding() && !instance.da
     context.reportDebugger(
         "Collaboration and auto-binding are both enabled. Auto-binding will be ignored while collaboration is active — the collaborative document is the source of truth.",
     );
-}
-
-// Detect collab_doc_id change and rebuild editor if needed
-if (
-    instance.data.editor_is_ready &&
-    properties.collab_active &&
-    instance.data._currentCollabDocId &&
-    properties.collab_doc_id &&
-    instance.data._currentCollabDocId !== properties.collab_doc_id
-) {
-    instance.data.debug(
-        "collab_doc_id changed from",
-        instance.data._currentCollabDocId,
-        "to",
-        properties.collab_doc_id,
-        "— rebuilding editor"
-    );
-
-    // Trigger the document change event before teardown
-    instance.triggerEvent("collab_doc_changed");
-
-    // Teardown the current editor
-    instance.data.teardownEditor("collab_doc_id changed");
-
-    // The next update cycle (or continuation of this one) will re-setup
-    // because isEditorSetup is now false
 }
 
 // First run: set up the editor (defined in initialize.js)
@@ -192,7 +183,7 @@ if (!!instance.data.editor_is_ready) {
     }
 }
 
-if (!!instance.data.editor_is_ready && !!properties.collab_active) {
+if (instance.data.editor_is_ready && typeof instance.data.editor?.commands.updateUser === "function") {
     const collabUser = {
         name: properties.collab_user_name || "Anonymous",
         color: properties.collab_cursor_color || "#958DF1",
