@@ -18,16 +18,14 @@ if (!instance.data.editor_is_ready)
       options.alt = alt_text;
     }
 
-    instance.data.editor.commands.setImage(options);
-
-    //let options = { src: image, alt: alt_text, title: title };
-    /*
-        instance.data.editor
-            .chain()
-            .focus()
-            .setImage(options)
-            .run();
-            */
+    const before = instance.data.editor.state.doc;
+    const inserted = instance.data.editor.commands.setImage(options);
+    if (inserted && !before.eq(instance.data.editor.state.doc)) {
+      // This URL already exists. Record the successful insertion without
+      // uploading it again or emitting the upload-only fileUploaded event.
+      instance.data.fileUploadUrls = [...(instance.data.fileUploadUrls || []), image];
+      instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
+    }
   } else {
     console.log("tried to add Image, but extension is not active.");
   }

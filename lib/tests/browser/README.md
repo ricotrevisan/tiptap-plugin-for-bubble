@@ -10,12 +10,16 @@ CI builds before running Playwright and uploads failure traces. The server binds
 
 The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
-Four tests run in all three engines:
+Eight scenarios run in all three engines (24 browser tests total):
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
 - Extension rebuild preserves unsaved text; the internal teardown destroys the editor and update remounts it while a second instance remains independent.
 - Keyboard mention selection exercises shared list `length/get` and Thing `get` through the actual adapter and runtime.
+- Two collaborators preserve edits and repaint caret names/colors through runtime provider reconfiguration.
+- Real **Find**, **Replace**, and **Replace all** actions work after toggling **Find & Replace**, while preserving the draft.
+- Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
+- **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
 
 `publishAutobinding` is an explicit fixture output recorder. With autobinding disabled, typing must not call it. Tests observe adapter outputs without simulating persistence. Bubble reset remains disabled; the teardown test invokes the internal lifecycle function directly. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
 

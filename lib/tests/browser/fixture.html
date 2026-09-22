@@ -9,7 +9,13 @@ import { loadCallbacks, createHarness, bubbleList, bubbleThing } from '/lib/node
 const base = '/src/elements/tiptap-AAC/';
 const callbacks = await loadCallbacks({
   initialize: base + 'initialize.js', update: base + 'update.js',
-  actions: { setContent: base + 'actions/set-content-ACW.js' },
+  actions: {
+    setContent: base + 'actions/set-content-ACW.js',
+    find: base + 'actions/find-find.js',
+    replace: base + 'actions/replace-replace.js',
+    replaceAll: base + 'actions/replace-all-replace_all.js',
+    insertImage: base + 'actions/insert-image-ACD.js',
+  },
 });
 window.debuggerMessages = [];
 window.makeHarness = (id, overrides = {}) => {

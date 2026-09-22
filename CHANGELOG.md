@@ -4,6 +4,24 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.11.1
+
+### 🧹 Collaboration cursor colors stay clean
+
+- Bubble `rgb(...)` and `rgba(...)` cursor colors are normalized to hex before they reach Tiptap collaboration awareness. This removes repeated unsupported-color warnings while preserving the selected color.
+
+## v4.11.0
+
+### ✨ Find & Replace works, and image files are easier to manage
+
+- **Find & Replace** now ships with the runtime. Find, Replace, Replace all, navigation, case-sensitive, whole-word, and regex searches work without blanking the editor.
+- **Insert image** appends the inserted URL to **File upload URLs** after a successful insertion. It does not pretend that an existing URL was uploaded and does not fire **file is uploaded**.
+- New **Image deleted** event and **Removed image URLs** list report URLs that lost their last reference in the current document. The state is published before the event.
+- Image deletion is a notification only. The plugin never deletes the stored file. Document replacement, record switches, rebuilds, resets, and remote collaboration edits do not fire the event.
+- Updated the bundled Tiptap runtime to 3.31.3 and fixed collaboration-caret repainting after a user changes their name or color.
+
+---
+
 ## v4.10.6
 
 ### 🐛 Table of contents supports documents that do not start with H1
