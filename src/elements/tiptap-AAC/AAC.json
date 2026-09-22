@@ -522,6 +522,7 @@
     },
     "ACD": {
       "caption": "Insert image",
+      "doc": "Inserts an existing image URL and appends it to File upload URLs on success. Does not upload a file or trigger file is uploaded. Requires the Image extension.",
       "fields": {
         "ACE": {
           "caption": "Image",
@@ -583,6 +584,11 @@
   },
   "display": "Tiptap",
   "events": {
+    "image_deleted": {
+      "caption": "Image deleted",
+      "name": "image_deleted",
+      "doc": "Fires once per edit when one or more image URLs lose their last reference in this document. Read Removed image URLs in this event. Covers loaded and inserted images, keyboard and multi-image edits, undo insertion and redo deletion. Undo restoring an image does not fire. Undo/redo are evaluated as edits, even when history crosses a previous Set content or Clear contents action. Set content, Clear contents, initial content changes, record switches, resets and rebuilds do not fire. Yjs-origin changes (remote collaboration and collaborative undo/redo) do not fire. Notification only: no stored file is deleted. Do not delete shared files from this event without checking other documents, collaborators and undo history."
+    },
     "ABl": {
       "caption": "is focused",
       "name": "isFocused"
@@ -2550,6 +2556,16 @@
     "resizable": true
   },
   "states": {
+    "removed_image_urls": {
+      "caption": "Removed image URLs",
+      "doc": "Distinct image src values that lost their last reference in the latest document-changing edit. Published before Image deleted, so read this list inside that event. Repeated uses of a URL must all be removed before it is reported. Cleared by the next document-changing transaction, document replacement, reset or rebuild; selection-only changes leave it unchanged. URLs are compared exactly, without normalization. These are removal notifications, not proof that stored files are safe to delete.",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "is_list": true,
+      "name": "removed_image_urls",
+      "value": "text"
+    },
     "AAr": {
       "caption": "paragraph is a h3",
       "initialization_code": {
@@ -3032,7 +3048,7 @@
     },
     "AGA": {
       "caption": "File upload URLs",
-      "doc": "URLs of files that have been uploaded",
+      "doc": "Operation results, not all images in the document. A drop or paste upload starts a new batch; each successful upload adds its URL (including non-image files). Insert image appends its successfully inserted URL without uploading or firing file is uploaded. Repeated URLs are retained. Initial content, image deletion, and undo/redo do not add or remove entries. A later upload batch replaces this list.",
       "initialization_code": {
         "fn": "function(properties, context) {\n\n\n\n}"
       },

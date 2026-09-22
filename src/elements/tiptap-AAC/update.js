@@ -191,10 +191,7 @@ if (!!instance.data.editor_is_ready) {
 }
 
 if (instance.data.editor_is_ready && typeof instance.data.editor?.commands.updateUser === "function") {
-    const collabUser = {
-        name: properties.collab_user_name || "Anonymous",
-        color: properties.collab_cursor_color || "#958DF1",
-    };
+    const collabUser = instance.data.getCollabUser(properties);
     instance.data.debug("updating collab user:", collabUser.name, "color:", collabUser.color);
     instance.data.editor.commands.updateUser(collabUser);
 }

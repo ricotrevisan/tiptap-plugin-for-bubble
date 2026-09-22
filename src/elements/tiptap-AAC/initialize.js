@@ -16,6 +16,12 @@ try {
     // this boolean turns true when the editor is initialized and ready.
     instance.data.editor_is_ready = false;
 
+    // Operation results, not a registry of every image in the document.
+    // Upload batches reset this list; Insert image appends without uploading.
+    instance.data.fileUploadUrls = [];
+    instance.publishState("fileUploadUrls", []);
+    instance.publishState("removed_image_urls", []);
+
     instance.data.emptyFindReplaceState = function () {
         return {
             searchTerm: "",
@@ -753,6 +759,7 @@ try {
         }
 
         instance.data.cancelPendingContent();
+        instance.publishState("removed_image_urls", []);
 
         // Tear down provider (if in collab mode)
         if (instance.data.provider) {
@@ -880,25 +887,44 @@ try {
         }, delay);
     };
 
+    function normalizeCollabColor(color) {
+        const value = color || "#958DF1";
+        const rgb = value.match(/^rgba?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)(?:\s*,\s*[\d.]+)?\s*\)$/i);
+        if (!rgb) return value;
+        return `#${rgb.slice(1, 4).map(channel => Math.max(0, Math.min(255, Math.round(Number(channel))))
+            .toString(16).padStart(2, "0")).join("")}`.toUpperCase();
+    }
+
     function getCollabUser(properties) {
         return {
             name: properties.collab_user_name || "Anonymous",
-            color: properties.collab_cursor_color || "#958DF1",
+            color: normalizeCollabColor(properties.collab_cursor_color),
         };
     }
+    instance.data.getCollabUser = getCollabUser;
 
     function collaborationCaret(provider, properties) {
-        // y-tiptap keys caret widgets only by client ID, so ProseMirror can
-        // retain their DOM after a name/color update. Refresh retained widgets
-        // from awareness, with the subscription owned by this editor.
+        // CollaborationCaret forwards only `user` to its render option, while
+        // yCursorPlugin provides both `user` and `clientId`. Use the raw plugin
+        // so retained ProseMirror widgets can be repainted by stable client ID
+        // when a collaborator changes their name or color.
         const cursors = new Map();
+        let storage = null;
+        function usersFromAwareness() {
+            return Array.from(provider.awareness.getStates().entries()).map(([clientId, value]) => ({
+                clientId,
+                ...(value?.user || {}),
+            }));
+        }
         function paint(cursor, user) {
-            cursor.style.borderColor = user.color || "#958DF1";
-            cursor.firstChild.style.backgroundColor = user.color || "#958DF1";
+            const color = user.color || "#958DF1";
+            cursor.style.borderColor = color;
+            cursor.firstChild.style.backgroundColor = color;
             cursor.firstChild.textContent = user.name || "Anonymous";
         }
         function refresh() {
             const states = provider.awareness.getStates();
+            if (storage) storage.users = usersFromAwareness();
             for (const [clientId, cursor] of cursors) {
                 if (!states.has(clientId)) cursors.delete(clientId);
                 else paint(cursor, states.get(clientId).user || {});
@@ -907,29 +933,39 @@ try {
         return window.tiptap.CollaborationCaret.extend({
             onCreate() {
                 this.parent?.();
+                storage = this.storage;
                 provider.awareness.on("update", refresh);
+                provider.awareness.setLocalStateField("user", this.options.user);
+                refresh();
             },
             onDestroy() {
                 provider.awareness.off("update", refresh);
                 cursors.clear();
+                if (storage) storage.users = [];
+                storage = null;
                 this.parent?.();
+            },
+            addProseMirrorPlugins() {
+                return [window.tiptap.yCursorPlugin(provider.awareness, {
+                    cursorBuilder: (user, clientId) => {
+                        let cursor = cursors.get(clientId);
+                        if (!cursor) {
+                            cursor = document.createElement("span");
+                            cursor.className = "collaboration-carets__caret";
+                            const label = document.createElement("div");
+                            label.className = "collaboration-carets__label";
+                            cursor.appendChild(label);
+                            cursors.set(clientId, cursor);
+                        }
+                        paint(cursor, user);
+                        return cursor;
+                    },
+                    selectionBuilder: (user) => this.options.selectionRender(user),
+                })];
             },
         }).configure({
             provider,
             user: getCollabUser(properties),
-            render(user, clientId) {
-                let cursor = cursors.get(clientId);
-                if (!cursor) {
-                    cursor = document.createElement("span");
-                    cursor.className = "collaboration-carets__caret";
-                    const label = document.createElement("div");
-                    label.className = "collaboration-carets__label";
-                    cursor.appendChild(label);
-                    cursors.set(clientId, cursor);
-                }
-                paint(cursor, user);
-                return cursor;
-            },
         });
     }
 
@@ -1592,6 +1628,7 @@ instance.data.setupEditor = function (properties, context) {
     instance.data.debug("starting editor setup");
 
     instance.data._lastProperties = properties;
+    instance.publishState("removed_image_urls", []);
     instance.data.delay = properties.update_delay ?? 300;
     instance.data._boundRecordId = properties.autobinding_record_id || "";
     instance.data._lastBoundContent = properties.autobinding;
@@ -1734,7 +1771,9 @@ instance.data.setupEditor = function (properties, context) {
         details: properties.ext_details,
         invisiblecharacters: properties.ext_invisiblecharacters,
         draghandle: properties.ext_draghandle,
-        findreplace: properties.ext_find_replace,
+        // Only report Find & Replace as active when the runtime really provides it,
+        // so its actions report "extension not active" instead of throwing.
+        findreplace: !!properties.ext_find_replace && !!window.tiptap?.FindAndReplace,
         tableofcontents: properties.ext_table_of_contents,
     };
 
@@ -1800,7 +1839,17 @@ instance.data.setupEditor = function (properties, context) {
     if (properties.ext_selection) extensions.push(Selection);
     if (properties.ext_ai_toolkit) extensions.push(ServerAiToolkit);
     if (properties.ext_find_replace) {
-        extensions.push(FindAndReplace.configure({ searchDebounceMs: 0 }));
+        // The Find & Replace extension is optional in the runtime bundle. A
+        // missing export must degrade to "not active" instead of throwing here:
+        // this code runs after teardownEditor on a rebuild, so a throw leaves the
+        // element with no editor, no content states and is_ready false.
+        if (window.tiptap?.FindAndReplace) {
+            extensions.push(FindAndReplace.configure({ searchDebounceMs: 0 }));
+        } else {
+            context.reportDebugger(
+                "The Find & Replace toggle is on, but this runtime version does not include the Find & Replace extension. The toggle and its Find, Replace and Replace all actions stay inactive until the runtime that provides it is loaded.",
+            );
+        }
     }
     if (properties.ext_table_of_contents) {
         const canvas = instance.canvas[0] || instance.canvas.get?.(0);
@@ -2149,6 +2198,52 @@ instance.data.setupEditor = function (properties, context) {
         }
     }
 
+    // ── Image removal notifications ──────────────────────────
+
+    function imageUrlsInDocument(doc) {
+        const urls = new Set();
+        doc.descendants((node) => {
+            if (node.type.name === "image" && typeof node.attrs.src === "string" && node.attrs.src) {
+                urls.add(node.attrs.src);
+            }
+        });
+        return urls;
+    }
+
+    function publishImageRemovals(editor, transaction, appendedTransactions = []) {
+        if (editor !== instance.data.editor || editor.isDestroyed) return;
+        const transactions = [transaction, ...appendedTransactions];
+        if (!transactions.some((item) => item.docChanged)) return;
+
+        // setContent (including clearContent) always sets preventUpdate, even
+        // when emitUpdate is true. Do not confuse replacing/resetting a whole
+        // document with editing images. Still clear any old notification state.
+        const replacement = transactions.some((item) => item.getMeta("preventUpdate") !== undefined);
+        const remoteChange = properties.collab_active && transactions.some((item) =>
+            typeof window.tiptap.isChangeOrigin !== "function" || window.tiptap.isChangeOrigin(item),
+        );
+        if (replacement || instance.data.isProgrammaticUpdate || remoteChange || !instance.data.editor_is_ready) {
+            instance.publishState("removed_image_urls", []);
+            return;
+        }
+
+        // Compare documents rather than upload history: loaded images count,
+        // and deleting one copy of a repeated URL is not the last reference.
+        // Undo restores images silently; redo removal and undo insertion notify.
+        // History remains unchanged: this also applies when undo/redo crosses
+        // an earlier setContent/clearContent document replacement.
+        // Yjs-origin changes (including collab undo/redo) are suppressed above.
+        const before = imageUrlsInDocument(transaction.before);
+        const after = imageUrlsInDocument(editor.state.doc);
+        const removed = [...before].filter((url) => !after.has(url));
+        instance.publishState("removed_image_urls", removed);
+        if (removed.length) {
+            // Notification only. Never delete a file: undo, other documents,
+            // and collaborators can still reference the same stored URL.
+            instance.triggerEvent("image_deleted");
+        }
+    }
+
     // ── File upload handling ─────────────────────────────────
 
     function handleUpload(file, editor, pos) {
@@ -2191,8 +2286,8 @@ instance.data.setupEditor = function (properties, context) {
                         }
                     }
                     instance.data.fileUploadUrls.push(url);
+                    instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
                     instance.triggerEvent("fileUploaded");
-                    instance.publishState("fileUploadUrls", instance.data.fileUploadUrls);
                     resolve(url);
                 },
                 properties.attachFilesTo,
@@ -2412,7 +2507,8 @@ instance.data.setupEditor = function (properties, context) {
             instance.publishState("isFocused", false);
             instance.data.is_focused = false;
         },
-        onTransaction({ editor, transaction }) {
+        onTransaction({ editor, transaction, appendedTransactions }) {
+            publishImageRemovals(editor, transaction, appendedTransactions);
             instance.data.getSelection(editor);
             instance.data.publishActiveStates(editor);
             instance.data.publishFindReplaceState(editor);
