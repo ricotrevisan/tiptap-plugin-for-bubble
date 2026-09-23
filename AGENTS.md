@@ -12,3 +12,17 @@ Plugin-specific facts:
 - Demo page: `tiptap-demo` — one page, each demo is a reusable — `https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-test/tiptap-demo`
 - The demo page uses that development plugin version. It shows off the plugin in simple user-facing language, assuming a medior Bubble developer.
 - In every Bubble editor element, always set **File uploads enabled** to an explicit option (`yes` or `no`); never leave it empty.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in the ricowtf Linear workspace, in the Tiptap project. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the five existing WTF team triage labels. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Use a single root context and root ADR directory. See `docs/agents/domain.md`.
