@@ -134,6 +134,20 @@ lib/
 
 ---
 
+## Collaboration authentication retries
+
+Custom Hocuspocus and Tiptap Cloud allow **five total attempts**, not five retries:
+initial connection plus retries after **1, 2, 4, and 8 seconds**. Retry teardown
+preserves progress; successful authentication resets the consecutive-failure budget.
+
+After the fifth failure, the provider, websocket, editor, and active document are
+disposed, timers stop, `Collaboration status` becomes `failed`, and `Is ready` is
+`no`. Ordinary Bubble updates (including cursor name/color changes) cannot restart
+an exhausted connection. Changing credentials, provider/document/endpoint, or a
+construction-time extension/menu configuration starts a fresh budget. Disabling
+collaboration can still start a local editor. Raw authentication reasons are not
+logged because providers may include credentials or document identifiers.
+
 ## Library management
 
 All Tiptap libraries are centralized in `lib/index.js`, bundled into a single file, and exposed on `window.tiptap` for use in `initialize.js` and `update.js`.
