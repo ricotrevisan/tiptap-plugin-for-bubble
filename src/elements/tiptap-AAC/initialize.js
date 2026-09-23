@@ -683,8 +683,8 @@ try {
     };
 
     // ── Collab auth-failure retry mechanism ──────────────────
-    // When authentication fails (e.g. JWT not yet valid on server), tear down
-    // the editor + provider and let the next update() cycle re-create everything.
+    // Five total authentication attempts: the initial connection plus four
+    // timer-driven rebuilds. Exhaustion stays failed until configuration changes.
     // Only include settings used by the selected provider. Keep credentials out
     // of logs; compare this normalized construction configuration in update().
     instance.data.collaborationConfiguration = function (properties) {
@@ -732,10 +732,11 @@ try {
     };
 
     instance.data._collabRetryCount = 0;
-    const COLLAB_MAX_RETRIES = 5;
-    const COLLAB_RETRY_DELAYS = [1000, 2000, 4000, 8000, 16000]; // exponential backoff
+    instance.data._collabAuthFailed = false;
+    const COLLAB_MAX_ATTEMPTS = 5;
+    const COLLAB_RETRY_DELAYS = [1000, 2000, 4000, 8000]; // four retries
 
-    instance.data.teardownEditor = function (reason) {
+    instance.data.teardownEditor = function (reason, authAttempt = 0) {
         instance.data.debug("tearing down editor:", reason);
         instance.data._collabGeneration++;
 
@@ -798,8 +799,10 @@ try {
         // Reset collab state
         instance.data.collabHasSynced = false;
         instance.data.collabInitialContentSet = false;
-        instance.data._collabRetryCount = 0;
-        instance.data._collabRetryPending = false;
+        // Install retry state before publishing events: a synchronous Bubble
+        // update must wait for backoff unless it explicitly changes configuration.
+        instance.data._collabRetryCount = authAttempt;
+        instance.data._collabRetryPending = authAttempt > 0 && !instance.data._collabAuthFailed;
         instance.data._currentCollabDocId = null;
 
         // Reset flags for re-initialization
@@ -816,10 +819,11 @@ try {
         instance.data.resetTableOfContentsState();
         instance.publishState("collab_synced", false);
         instance.publishState("collab_connected_users", 0);
-        instance.data.publishCollabStatus("disconnected");
+        instance.data.publishCollabStatus(instance.data._collabAuthFailed ? "failed" : "disconnected");
     };
 
-    instance.data.handleCollabAuthFailure = function (providerLabel, reason) {
+    instance.data.handleCollabAuthFailure = function (providerLabel) {
+        if (instance.data._collabAuthFailed) return;
         instance.data._collabRetryCount++;
         const attempt = instance.data._collabRetryCount;
         const message =
@@ -827,17 +831,26 @@ try {
             " authentication failed (attempt " +
             attempt +
             "/" +
-            COLLAB_MAX_RETRIES +
-            "): " +
-            reason;
+            COLLAB_MAX_ATTEMPTS +
+            ").";
+        // Provider-supplied reasons can contain credentials or document names.
+        // Report the bounded attempt only, never the raw authentication payload.
         instance.data.debug(message);
         console.warn("[Tiptap]", message);
 
-        if (attempt >= COLLAB_MAX_RETRIES) {
+        // Teardown advances the generation once. Bubble status workflows may
+        // synchronously rebuild again; never write retry state over that editor.
+        const generation = instance.data._collabGeneration + 1;
+        if (attempt >= COLLAB_MAX_ATTEMPTS) {
+            // Latch before disposal: synchronous destroy callbacks and ordinary
+            // Bubble updates must not revive an exhausted connection.
+            instance.data._collabAuthFailed = true;
+            instance.data.teardownEditor("collab authentication exhausted", attempt);
+            if (generation !== instance.data._collabGeneration) return;
             const giveUpMsg =
                 providerLabel +
                 " authentication failed after " +
-                COLLAB_MAX_RETRIES +
+                COLLAB_MAX_ATTEMPTS +
                 " attempts. Giving up. Please check your JWT token configuration.";
             instance.data.debug(giveUpMsg);
             context.reportDebugger(giveUpMsg);
@@ -846,18 +859,20 @@ try {
 
         // Use shared teardown
         instance.data.preserveCollabDocument();
-        instance.data.teardownEditor("collab auth failure, attempt " + attempt);
-        instance.data._collabRetryCount = attempt;
+        instance.data.teardownEditor("collab auth failure, attempt " + attempt, attempt);
+        if (generation !== instance.data._collabGeneration) return;
 
         // Schedule a re-trigger after a backoff delay.
         // We call setupEditor directly because publishState does not trigger update() in Bubble.
-        const delay = COLLAB_RETRY_DELAYS[attempt - 1] || COLLAB_RETRY_DELAYS[COLLAB_RETRY_DELAYS.length - 1];
+        const delay = COLLAB_RETRY_DELAYS[attempt - 1];
         instance.data.debug("scheduling collab retry in " + delay + "ms");
-        instance.data._collabRetryPending = true;
         instance.data._collabRetryTimer = setTimeout(() => {
-            instance.data._collabRetryPending = false;
+            if (generation !== instance.data._collabGeneration || instance.data._collabAuthFailed) return;
+            instance.data._collabRetryTimer = null;
             instance.data.debug("collab retry timer fired — re-running setupEditor");
             instance.data.publishCollabStatus("retrying");
+            if (generation !== instance.data._collabGeneration) return;
+            instance.data._collabRetryPending = false;
             if (instance.data._lastProperties && instance.data._lastContext) {
                 instance.data.setupEditor(instance.data._lastProperties, instance.data._lastContext);
                 instance.data.applyStylesheet(instance.data._lastProperties);
@@ -953,7 +968,6 @@ try {
         instance.data.debug("setting up custom Hocuspocus collab");
         const { HocuspocusProvider, Collaboration } = window.tiptap;
         const custom_url = (properties.collab_url || "").replace(/\/+$/, "") + "/" + (properties.collab_app_id || "");
-        instance.data.debug("custom collab URL:", custom_url, "doc:", properties.collab_doc_id);
         try {
             instance.data.provider = new HocuspocusProvider(instance.data.guardCollabCallbacks({
                 document: instance.data._collabDocument,
@@ -970,8 +984,8 @@ try {
                     instance.data.debug("custom collab authenticated");
                     instance.data._collabRetryCount = 0; // reset on success
                 },
-                onAuthenticationFailed: ({ reason }) => {
-                    instance.data.handleCollabAuthFailure("Custom collab", reason);
+                onAuthenticationFailed: () => {
+                    instance.data.handleCollabAuthFailure("Custom collab");
                 },
                 onSynced: () => {
                     instance.data.debug("custom collab synced");
@@ -1025,7 +1039,6 @@ try {
 
         const { HocuspocusProvider, Collaboration } = window.tiptap;
         const url = `wss://${properties.collab_app_id}.collab.tiptap.cloud`;
-        instance.data.debug("Tiptap Cloud URL:", url, "doc:", properties.collab_doc_id);
         try {
             instance.data.provider = new HocuspocusProvider(instance.data.guardCollabCallbacks({
                 document: instance.data._collabDocument,
@@ -1039,8 +1052,8 @@ try {
                     instance.data.debug("Tiptap Cloud authenticated");
                     instance.data._collabRetryCount = 0; // reset on success
                 },
-                onAuthenticationFailed: ({ reason }) => {
-                    instance.data.handleCollabAuthFailure("Tiptap Cloud", reason);
+                onAuthenticationFailed: () => {
+                    instance.data.handleCollabAuthFailure("Tiptap Cloud");
                 },
                 onStatus: ({ status }) => {
                     instance.data.publishCollabStatus(status);
@@ -1573,7 +1586,7 @@ instance.data.getSelection = getSelection;
 // ─────────────────────────────────────────────────────────────
 instance.data.setupEditor = function (properties, context) {
     const collaborationConfiguration = instance.data.collaborationConfiguration(properties);
-    if (!instance.data.collaborationReady(collaborationConfiguration)) return;
+    if (instance.data._collabAuthFailed || !instance.data.collaborationReady(collaborationConfiguration)) return;
     instance.data._currentCollaborationConfiguration = collaborationConfiguration;
     instance.data._collabGeneration++;
     instance.data.debug("starting editor setup");

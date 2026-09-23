@@ -1595,7 +1595,7 @@
       "rank": 33
     },
     "collab_status_docs": {
-      "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced",
+      "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced; retrying / failed",
       "editor": "Label",
       "name": "collab_status_docs",
       "rank": 204
@@ -2973,7 +2973,7 @@
     },
     "collab_status": {
       "caption": "Collaboration status",
-      "doc": "The current collaboration connection status: disconnected, connecting, connected, or synced",
+      "doc": "The current collaboration connection status: disconnected, connecting, connected, synced, retrying, or failed. Custom Hocuspocus and Tiptap Cloud authentication allow five total attempts with retries after 1, 2, 4, and 8 seconds. After exhaustion, status is failed and Is ready is no. Change credentials or construction configuration to restart; ordinary updates do not retry.",
       "initialization_code": {
         "fn": "function(properties, context) {}"
       },

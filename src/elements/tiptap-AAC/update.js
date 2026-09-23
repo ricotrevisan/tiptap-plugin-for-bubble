@@ -39,7 +39,10 @@ const tableOfContentsChanged =
     instance.data._currentTableOfContentsEnabled !== !!properties.ext_table_of_contents;
 const menuConfiguration = instance.data.menuConfiguration(properties);
 const menusChanged = instance.data._currentMenuConfiguration?.some((value, index) => value !== menuConfiguration[index]);
-if ((instance.data.isEditorSetup || instance.data._collabRetryPending) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || menusChanged)) {
+// Terminal authentication failure also owns a configuration: only an explicit
+// construction-configuration change may clear it and start a fresh budget.
+if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instance.data._collabAuthFailed) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || menusChanged)) {
+    instance.data._collabAuthFailed = false;
     const changedExtensions = [];
     if (collaborationChanged) changedExtensions.push("Collaboration configuration");
     if (previousCollaboration?.active && collaborationConfiguration.active &&
@@ -90,6 +93,10 @@ if (properties.collab_active && properties.bubble.auto_binding() && !instance.da
         "Collaboration and auto-binding are both enabled. Auto-binding will be ignored while collaboration is active — the collaborative document is the source of truth.",
     );
 }
+
+// Exhaustion must survive ordinary Bubble updates, even though teardown cleared
+// isEditorSetup. Changed configuration above explicitly restarts authentication.
+if (instance.data._collabAuthFailed) return;
 
 // First run: set up the editor (defined in initialize.js)
 // Also re-runs after a collab auth failure retry (isEditorSetup is reset to false)
