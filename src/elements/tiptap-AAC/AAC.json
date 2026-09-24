@@ -3096,6 +3096,16 @@
       },
       "name": "h1",
       "value": "boolean"
+    },
+    "setup_error": {
+      "caption": "Setup error",
+      "doc": "Why the editor could not be created with the current settings, or empty when setup succeeded. While set, Is ready stays no and nothing is left half-built. The same settings are not retried on every update: change a setting (for example fix the UniqueID types or the JSON initial content) or reset the element to try again.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "setup_error",
+      "value": "text"
     }
   },
   "support_autobinding": true

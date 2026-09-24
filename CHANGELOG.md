@@ -4,6 +4,15 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## Unreleased
+
+### 🛡️ Failed editor setup leaves nothing half-built
+
+- If the editor can't be created, everything setup had already created is removed: the editor box, menu groups (put back where they were), the collaboration connection, and the shared document. Unsaved text waiting for a rebuild is kept for the next try.
+- Invalid settings are caught before anything is created. This covers UniqueID turned on with no types, and **Content is JSON?** set to yes with content that isn't valid JSON. An empty JSON initial content now starts an empty editor.
+- New **Setup error** state explains why setup failed. It is empty after a successful setup.
+- Settings that already failed are not retried on every page update. Change a setting or reset the element to try again.
+
 ## v4.11.1
 
 ### 🧹 Collaboration cursor colors stay clean

@@ -2,6 +2,9 @@ if (instance.data.debug) {
     instance.data.debug("reset running");
 }
 
+// An explicit reset retries a configuration whose setup failed.
+instance.data._setupFailure = null;
+
 // Use the teardown function if available
 if (instance.data.teardownEditor) {
     instance.data.teardownEditor("element reset");
