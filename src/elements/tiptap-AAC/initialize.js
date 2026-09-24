@@ -799,9 +799,10 @@ try {
 
         instance.data.releaseMenus();
 
-        // Remove the editor DOM element so setupEditor can recreate it
-        const editorEl = document.getElementById(instance.data.tiptapEditorID);
-        if (editorEl) editorEl.remove();
+        // Remove the editor DOM element so setupEditor can recreate it. Keep a
+        // reference: an id lookup misses wrappers in a detached Bubble canvas.
+        (instance.data._editorElement || document.getElementById(instance.data.tiptapEditorID))?.remove();
+        instance.data._editorElement = null;
 
         // Reset collab state
         instance.data.collabHasSynced = false;
@@ -1618,12 +1619,108 @@ function getSelection(editor) {
 instance.data.getSelection = getSelection;
 
 // ─────────────────────────────────────────────────────────────
-// setupEditor — called once from update.js on first property load
+// setupEditor — called from update.js on first property load and rebuilds
 // ─────────────────────────────────────────────────────────────
+
+// Scalar properties, Bubble's flags, and the Bubble data construction reads.
+// Other Things and lists are only read later, from editor callbacks.
+instance.data.setupFingerprint = function (properties, bubbleData) {
+    const values = Object.keys(properties).filter((key) => key !== "bubble").sort().map((key) => {
+        const value = properties[key];
+        return [key, (value !== null && typeof value === "object") || typeof value === "function" ? typeof value : value];
+    });
+    values.push(["auto_binding", !!properties.bubble.auto_binding()], ["fit_height", !!properties.bubble.fit_height()],
+        ["bubble_data", bubbleData]);
+    return JSON.stringify(values);
+};
+
+// Setup that is not attempted (for example while collaboration settings load)
+// must not keep showing an earlier configuration's error.
+instance.data.clearSetupFailure = function () {
+    if (!instance.data._setupFailure) return;
+    instance.data._setupFailure = null;
+    instance.publishState("setup_error", "");
+};
+
+// Setup either builds a complete editor or leaves nothing behind. Invalid
+// settings are rejected before any side effect; everything staged afterwards
+// (wrapper, menus, provider, Y.Doc, editor) shares one rollback. An unchanged
+// failed configuration is not retried on every Bubble update: changing a
+// property or resetting the element retries it.
 instance.data.setupEditor = function (properties, context) {
     const collaborationConfiguration = instance.data.collaborationConfiguration(properties);
-    if (instance.data._collabAuthFailed || !instance.data.collaborationReady(collaborationConfiguration)) return;
+    if (instance.data._collabAuthFailed || !instance.data.collaborationReady(collaborationConfiguration)) {
+        instance.data.clearSetupFailure();
+        return;
+    }
     instance.data._currentCollaborationConfiguration = collaborationConfiguration;
+
+    // Bubble throws from list reads while data is loading and re-runs update()
+    // once it arrives. Read before any side effect so that signal escapes
+    // without staging resources or latching a setup failure.
+    const bubbleData = {
+        allowedMimeTypes: properties.allowedMimeTypes
+            ? properties.allowedMimeTypes.get(0, properties.allowedMimeTypes.length())
+            : undefined,
+    };
+    const fingerprint = instance.data.setupFingerprint(properties, bubbleData);
+    if (instance.data._setupFailure === fingerprint) return;
+
+    function failSetup(message, error) {
+        instance.data._setupFailure = fingerprint;
+        instance.publishState("setup_error", message);
+        instance.publishState("is_ready", false);
+        instance.data.debug(message, error ?? "");
+        context.reportDebugger(error ? message + " " + (error?.message || error) : message);
+    }
+
+    const initialContent = properties.bubble.auto_binding() ? properties.autobinding : properties.initialContent;
+    let content = initialContent;
+    if (properties.content_is_json && !instance.data._pendingRebuildContent) {
+        // An empty JSON document starts empty instead of failing to parse.
+        try {
+            content = initialContent?.trim() ? JSON.parse(initialContent) : "";
+        } catch (error) {
+            failSetup("Initial content is not valid JSON. Provide Tiptap JSON or turn off \"Content is JSON?\".");
+            return;
+        }
+    }
+
+    let uniqueIdTypes = [];
+    if (properties.ext_uniqueid) {
+        uniqueIdTypes = (properties.extension_uniqueid_types || "").split(",").map((item) => item.trim()).filter(Boolean);
+        if (uniqueIdTypes.length === 0) {
+            failSetup("UniqueID extension is active but there are no types for it to target. You could target `paragraph, heading`, for example.");
+            return;
+        }
+    }
+
+    // buildEditor consumes these; a failed attempt hands them to the next one.
+    const pendingRebuild = {
+        content: instance.data._pendingRebuildContent,
+        initialContent: instance.data._pendingRebuildInitialContent,
+        collabDocument: instance.data._pendingCollabDocument,
+    };
+    try {
+        buildEditor(properties, context, collaborationConfiguration, initialContent, content, uniqueIdTypes, bubbleData);
+    } catch (error) {
+        console.error("[Tiptap] failed trying to create the Editor:", error);
+        // Copy CRDT state (including unsent operations) before disposal; the
+        // provider may own and destroy the document it was given.
+        if (pendingRebuild.collabDocument && instance.data._collabDocument) instance.data.preserveCollabDocument();
+        instance.data.teardownEditor("editor setup failed");
+        if (pendingRebuild.content && !instance.data._pendingRebuildContent) {
+            instance.data._pendingRebuildContent = pendingRebuild.content;
+            instance.data._pendingRebuildInitialContent = pendingRebuild.initialContent;
+        }
+        failSetup("The editor could not be created with the current settings.", error);
+        return;
+    }
+    instance.data._setupFailure = null;
+    instance.publishState("setup_error", "");
+};
+
+function buildEditor(properties, context, collaborationConfiguration, initialContent, content, uniqueIdTypes, bubbleData) {
     instance.data._collabGeneration++;
     instance.data.debug("starting editor setup");
 
@@ -1633,7 +1730,6 @@ instance.data.setupEditor = function (properties, context) {
     instance.data._boundRecordId = properties.autobinding_record_id || "";
     instance.data._lastBoundContent = properties.autobinding;
     instance.data._autobindingSave.receive(instance.data._boundRecordId, properties.autobinding);
-    let initialContent = properties.bubble.auto_binding() ? properties.autobinding : properties.initialContent;
 
     // A runtime AI Toolkit toggle tears down the editor and rebuilds it with a
     // new schema. Rebuilding must not reset an unsaved local document back to
@@ -1645,7 +1741,6 @@ instance.data.setupEditor = function (properties, context) {
         instance.data._pendingRebuildInitialContent = null;
     } else {
         instance.data.initialContent = initialContent;
-        content = properties.content_is_json ? JSON.parse(initialContent) : initialContent;
     }
 
     let placeholder = properties.placeholder;
@@ -1662,6 +1757,7 @@ instance.data.setupEditor = function (properties, context) {
     d.id = "tiptapEditor-" + randomId;
     d.style = "flex-grow: 1; display: flex;";
     instance.data.tiptapEditorID = d.id;
+    instance.data._editorElement = d;
     instance.canvas.append(d);
 
     // pull libraries from window.tiptap
@@ -1799,27 +1895,12 @@ instance.data.setupEditor = function (properties, context) {
     ];
 
     if (properties.ext_uniqueid) {
-        if (!properties.extension_uniqueid_types) {
-            context.reportDebugger("UniqueID extension is active but the types are empty. You could target `paragraph, heading`, for example.");
-            return;
-        }
-        let unique_id_types = properties.extension_uniqueid_types.split(",").map((item) => {
-            return item.trim();
-        });
-
-        if (unique_id_types.length === 0) {
-            context.reportDebugger(
-                "UniqueID extension is active but there are no types for it to target. You could target `paragraph, heading`, for example.",
-            );
-            return;
-        }
-
         let attributeName = properties.extension_uniqueid_attrName || "id";
         instance.data.debug("UniqueID attributeName:", attributeName);
 
         extensions.push(
             UniqueID.configure({
-                types: unique_id_types,
+                types: uniqueIdTypes,
                 attributeName: attributeName,
             }),
         );
@@ -2298,10 +2379,7 @@ instance.data.setupEditor = function (properties, context) {
         });
     }
 
-    let allowedMimeTypes = undefined;
-    if (properties.allowedMimeTypes) {
-        allowedMimeTypes = properties.allowedMimeTypes.get(0, properties.allowedMimeTypes.length());
-    }
+    const allowedMimeTypes = bubbleData.allowedMimeTypes;
 
     extensions.push(
         FileHandler.configure({
@@ -2601,23 +2679,19 @@ instance.data.setupEditor = function (properties, context) {
         }));
     }
 
-    // Both collaboration and editor construction can fail after menu acquisition.
-    try {
-        if (collaborationConfiguration.active) {
-            instance.data._collabDocument = instance.data._pendingCollabDocument || new window.tiptap.Y.Doc();
-            instance.data._pendingCollabDocument = null;
-        }
-        instance.data.maybeSetupCollaboration(instance, properties, options, extensions);
-
-        instance.data.editor = new Editor(options);
-        instance.data.isEditorSetup = true;
-        instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
-        instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
-        instance.data._currentTableOfContentsEnabled = !!properties.ext_table_of_contents;
-        instance.data._currentCollabDocId = properties.collab_doc_id;
-        instance.data.debug("editor instance created, waiting for onCreate");
-    } catch (error) {
-        instance.data.teardownEditor("editor construction failed");
-        console.error("[Tiptap] failed trying to create the Editor:", error);
+    // Collaboration and editor construction can fail after menu acquisition;
+    // setupEditor rolls back everything staged so far.
+    if (collaborationConfiguration.active) {
+        instance.data._collabDocument = instance.data._pendingCollabDocument || new window.tiptap.Y.Doc();
+        instance.data._pendingCollabDocument = null;
     }
-};
+    instance.data.maybeSetupCollaboration(instance, properties, options, extensions);
+
+    instance.data.editor = new Editor(options);
+    instance.data.isEditorSetup = true;
+    instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
+    instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
+    instance.data._currentTableOfContentsEnabled = !!properties.ext_table_of_contents;
+    instance.data._currentCollabDocId = properties.collab_doc_id;
+    instance.data.debug("editor instance created, waiting for onCreate");
+}
