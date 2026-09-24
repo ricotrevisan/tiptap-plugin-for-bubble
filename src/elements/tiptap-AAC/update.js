@@ -82,6 +82,7 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
 }
 
 if (!instance.data.collaborationReady(collaborationConfiguration)) {
+    instance.data.clearSetupFailure();
     context.reportDebugger("Collaboration is waiting for a supported provider, document name, credentials, and endpoint configuration.");
     return;
 }

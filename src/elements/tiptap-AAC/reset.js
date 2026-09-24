@@ -4,6 +4,7 @@ if (instance.data.debug) {
 
 // An explicit reset retries a configuration whose setup failed.
 instance.data._setupFailure = null;
+instance.publishState("setup_error", "");
 
 // Use the teardown function if available
 if (instance.data.teardownEditor) {

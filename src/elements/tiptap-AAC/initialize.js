@@ -1622,15 +1622,24 @@ instance.data.getSelection = getSelection;
 // setupEditor — called from update.js on first property load and rebuilds
 // ─────────────────────────────────────────────────────────────
 
-// Scalar properties plus Bubble's flags. Things and lists are identified by
-// type only; they cannot make the same construction succeed on a retry.
-instance.data.setupFingerprint = function (properties) {
+// Scalar properties, Bubble's flags, and the Bubble data construction reads.
+// Other Things and lists are only read later, from editor callbacks.
+instance.data.setupFingerprint = function (properties, bubbleData) {
     const values = Object.keys(properties).filter((key) => key !== "bubble").sort().map((key) => {
         const value = properties[key];
         return [key, (value !== null && typeof value === "object") || typeof value === "function" ? typeof value : value];
     });
-    values.push(["auto_binding", !!properties.bubble.auto_binding()], ["fit_height", !!properties.bubble.fit_height()]);
+    values.push(["auto_binding", !!properties.bubble.auto_binding()], ["fit_height", !!properties.bubble.fit_height()],
+        ["bubble_data", bubbleData]);
     return JSON.stringify(values);
+};
+
+// Setup that is not attempted (for example while collaboration settings load)
+// must not keep showing an earlier configuration's error.
+instance.data.clearSetupFailure = function () {
+    if (!instance.data._setupFailure) return;
+    instance.data._setupFailure = null;
+    instance.publishState("setup_error", "");
 };
 
 // Setup either builds a complete editor or leaves nothing behind. Invalid
@@ -1640,9 +1649,21 @@ instance.data.setupFingerprint = function (properties) {
 // property or resetting the element retries it.
 instance.data.setupEditor = function (properties, context) {
     const collaborationConfiguration = instance.data.collaborationConfiguration(properties);
-    if (instance.data._collabAuthFailed || !instance.data.collaborationReady(collaborationConfiguration)) return;
+    if (instance.data._collabAuthFailed || !instance.data.collaborationReady(collaborationConfiguration)) {
+        instance.data.clearSetupFailure();
+        return;
+    }
     instance.data._currentCollaborationConfiguration = collaborationConfiguration;
-    const fingerprint = instance.data.setupFingerprint(properties);
+
+    // Bubble throws from list reads while data is loading and re-runs update()
+    // once it arrives. Read before any side effect so that signal escapes
+    // without staging resources or latching a setup failure.
+    const bubbleData = {
+        allowedMimeTypes: properties.allowedMimeTypes
+            ? properties.allowedMimeTypes.get(0, properties.allowedMimeTypes.length())
+            : undefined,
+    };
+    const fingerprint = instance.data.setupFingerprint(properties, bubbleData);
     if (instance.data._setupFailure === fingerprint) return;
 
     function failSetup(message, error) {
@@ -1681,7 +1702,7 @@ instance.data.setupEditor = function (properties, context) {
         collabDocument: instance.data._pendingCollabDocument,
     };
     try {
-        buildEditor(properties, context, collaborationConfiguration, initialContent, content, uniqueIdTypes);
+        buildEditor(properties, context, collaborationConfiguration, initialContent, content, uniqueIdTypes, bubbleData);
     } catch (error) {
         console.error("[Tiptap] failed trying to create the Editor:", error);
         // Copy CRDT state (including unsent operations) before disposal; the
@@ -1699,7 +1720,7 @@ instance.data.setupEditor = function (properties, context) {
     instance.publishState("setup_error", "");
 };
 
-function buildEditor(properties, context, collaborationConfiguration, initialContent, content, uniqueIdTypes) {
+function buildEditor(properties, context, collaborationConfiguration, initialContent, content, uniqueIdTypes, bubbleData) {
     instance.data._collabGeneration++;
     instance.data.debug("starting editor setup");
 
@@ -2358,10 +2379,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         });
     }
 
-    let allowedMimeTypes = undefined;
-    if (properties.allowedMimeTypes) {
-        allowedMimeTypes = properties.allowedMimeTypes.get(0, properties.allowedMimeTypes.length());
-    }
+    const allowedMimeTypes = bubbleData.allowedMimeTypes;
 
     extensions.push(
         FileHandler.configure({

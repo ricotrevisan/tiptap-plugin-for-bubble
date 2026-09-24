@@ -18,9 +18,17 @@
   of the shared document's CRDT state, including unsent operations.
 - Failure publishes a stable **Setup error** (`setup_error`, text) and reports
   it to the debugger once. `is_ready` stays false. A successful setup clears it.
-- Retries are keyed by a fingerprint of the scalar properties plus Bubble's
-  auto-binding and fit-height flags. Unchanged updates don't retry a failed
-  configuration. Changing any property, or an element reset, retries it.
+- Retries are keyed by a fingerprint of the scalar properties, Bubble's
+  auto-binding and fit-height flags, and the Bubble data that construction reads
+  (currently **Allowed MIME types**). Unchanged updates don't retry a failed
+  configuration. Changing any of these, or an element reset, retries it.
+- Bubble signals data that is still loading by throwing from a list read and
+  re-running `update()` once it arrives. That list is read before the
+  fingerprint and before any side effect, so the signal escapes `update()`
+  exactly as before, without staging resources or latching a failure. (Caught
+  by independent review of the first revision.)
+- A stale **Setup error** is cleared while setup is skipped because
+  collaboration settings are incomplete or authentication is exhausted.
 - WTF-246 is unchanged: authentication exhaustion is still checked before the
   setup-failure latch.
 
@@ -46,6 +54,8 @@ initialize/update/reset source and bundle, and covers:
 - Hocuspocus provider construction failure;
 - Liveblocks provider failure after entering a room;
 - failed local and collaborative rebuilds;
+- a Bubble list that is still loading;
+- clearing a stale error;
 - unchanged-update suppression, changed-configuration retry, and reset retry.
 
 ## Final checks
