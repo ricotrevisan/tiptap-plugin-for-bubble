@@ -68,9 +68,12 @@ From `lib/` with the pinned Node binary on `PATH`: `npm ci`, `npm test`,
 - Validator tests: **11 passed**.
 - Browser tests: **24 passed** across Chromium, Firefox and WebKit.
 
-## Release gate — not deployed
+## Deployment — development version (2026-09-24)
 
-`src/` changed: `initialize.js`, `reset.js`, and a new state in `AAC.json`. The
-runtime bundle and CDN header did not change. Reaching the development version
-needs an authorized `pled push`, then a real-preview check that a broken setting
-shows **Setup error** and recovers once fixed. Neither has been done.
+- PR #45 was squash-merged as `6117c29`; `main`'s tree is identical to the reviewed head `ac715b5`.
+- Before pushing, `pled check-remote` reported divergence. The remote was pulled into a throwaway worktree and compared. Its Tiptap element code and `AAC.json` were identical to `f3ae0f3` (PR #42 with WTF-246). The only other remote difference was serialization in `toc_element`: a trailing newline and an empty `actions` object. So the remote held nothing that `main` lacked. `pled push --force` from `6117c29` completed, and `pled status` reports **In sync**. This commit records the resulting `.src.json` baseline.
+- Real run mode (`tiptap-plugin`, `version-test/tiptap-demo`):
+  - The served plugin bundle contains `setupFingerprint`, `clearSetupFailure` and `setup_error`, and not the old construction catch.
+  - All 10 demo editors mounted.
+  - Real keyboard typing in the HTML/JSON/text demo updated **Content (HTML)**.
+- **Not yet verified in Bubble: the failure case** (a misconfigured editor showing **Setup error** and recovering once fixed). `test` already has nine branches, Bubble's limit, so no verification branch could be created. No Bubble branch was created, edited or deleted, and nothing was released to the Marketplace.
