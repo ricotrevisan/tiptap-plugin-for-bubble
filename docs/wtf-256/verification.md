@@ -187,6 +187,17 @@ reported 72 passed and 6 skipped (the opt-in Tiptap Cloud spec). With this
 branch's `initialize.js` served in, `check-bubble-lab.mjs` passed 20/20 on the
 merged `version-test/lifecycle-lab`.
 
+After merging `origin/main` `a132fdb` (WTF-262 link fix, new runtime bundle,
+already pushed to the development version), with the CHANGELOG and tests
+README conflicts resolved by keeping both sides:
+- `npm ci`, `npm test`, `validate:plugin` and `test:validator` (11) all
+  passed;
+- `CI=1 npm run test:browser` reported 106 passed and 8 skipped (6 Tiptap
+  Cloud, 2 Chromium-only IME cases);
+- against the new deployed version, `check-bubble-lab.mjs` still fails the
+  same 7 of 20 checks, and with the merged `initialize.js` served in it
+  passes 20/20. `check-demo-menu-lifecycle.mjs` passes 3/3 with it.
+
 Round 1 gates, at `039fa6d`, had the same results with 54 browser tests.
 
 ## Review
