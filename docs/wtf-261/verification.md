@@ -29,3 +29,13 @@ Screenshot: `demo-mention-created.png`.
 
 ## Not done
 The Bubble branch has not been merged into `test` or `live`, and there has been no Marketplace release. Both need separate owner approval.
+
+## Release (2026-09-25)
+- Bubble branch `wtf-261-mention` was merged into Main (`test`) with no conflicts. Savepoint `1790335273000` was taken first. On `version-test/tiptap-demo`, Enter on Rico gave "Mention created fired: 1 times" with Rico's ID and `@`.
+- **Deploy to Live was blocked by Bubble:** "You cannot deploy your app because there are 13 issues". The same 13 issues already exist on `test` before this merge:
+  - 7 on bubbleex demo pages
+  - 3 on `modern-dropdown-demo`
+  - 3 Tiptap editors with File uploads enabled left empty: `editor_autobind`, `editor_reusable`, `editor_reusable_v2`
+  
+  Live was not deployed.
+- **Marketplace:** published **v4.12.0** (minor, MIT, not obfuscated) from main, with `pled status` In sync. It includes WTF-261, WTF-250 and WTF-248. Description: "Mention created event with mention ID, label and trigger states. New Setup error state. Liveblocks reports real sync."

@@ -4,7 +4,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## Unreleased
+## v4.12.0
 
 ### 🔔 Start a workflow when someone is mentioned
 
