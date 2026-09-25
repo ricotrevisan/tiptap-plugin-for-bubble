@@ -13,6 +13,10 @@ Plugin-specific facts:
 - The demo page uses that development plugin version. It shows off the plugin in simple user-facing language, assuming a medior Bubble developer.
 - In every Bubble editor element, always set **File uploads enabled** to an explicit option (`yes` or `no`); never leave it empty.
 
+## Software factory
+
+Tickets labelled `ready-for-agent` are worked one at a time by scheduled T3 sessions, and `ship-approved` ships them. Rules and commands are in `factory/README.md` and `factory/policy.toml`. A factory session follows the prompt it was given, which limits what it may do.
+
 ## Agent skills
 
 ### Issue tracker
