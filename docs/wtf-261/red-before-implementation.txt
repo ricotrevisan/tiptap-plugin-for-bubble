@@ -28,3 +28,7 @@ Error: expect(received).toEqual(expected) // deep equality
 -   Object {
 -     "id": "ada",
 -     "label": "Ada Lovelace",
+
+## 4. Review follow-up: at a039b37, accepting with no match inserted an empty mention
+AssertionError [ERR_ASSERTION]: no matching item leaves the document unchanged
++ ... {"type":"mention","attrs":{"id":null,"label":null,"mentionSuggestionChar":"#"}} ...

@@ -1305,10 +1305,13 @@ instance.data.MentionList = class MentionList {
         const item = this.items[index];
         const editor = this.editor;
         const range = this.range;
-        const docBefore = editor.state.doc;
+        // Nothing matched (or items are still loading): insert nothing rather
+        // than an empty mention.
+        if (!item) return;
 
-        if (item && range) {
-            editor.commands.insertContentAt(range, {
+        let inserted;
+        if (range) {
+            inserted = editor.commands.insertContentAt(range, {
                 type: "mention",
                 attrs: {
                     label: item.label,
@@ -1318,12 +1321,14 @@ instance.data.MentionList = class MentionList {
             editor.commands.insertContent(" ");
             editor.commands.setTextSelection(range.from + 1);
         } else {
+            const docBefore = editor.state.doc;
             this.command(item);
+            inserted = editor.state.doc !== docBefore;
         }
 
         // Only a user's local suggestion acceptance announces a mention; paste,
         // undo/redo, loaded content and remote edits never reach this path.
-        if (item && editor.state.doc !== docBefore) {
+        if (inserted) {
             instance.publishState("mentioned_id", item.id == null ? "" : String(item.id));
             instance.publishState("mentioned_label", item.label == null ? "" : String(item.label));
             instance.publishState("mentioned_trigger_char", this.triggerChar);
