@@ -1850,6 +1850,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Node,
         Extension,
         mergeAttributes,
+        Plugin,
+        PluginKey,
         Document,
         HardBreak,
         Paragraph,
@@ -2145,6 +2147,62 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
         extensions.push(ImageExtension.configure({ inline: properties.image_inline || false, allowBase64: properties.allowBase64 }), Resizable);
     }
+    // Text typed at a link's right edge is plain text (WTF-262). Tiptap makes
+    // links "inclusive" while autolink is on, so that text used to join the
+    // link. Text typed as a link (after Set link with nothing selected, or over
+    // a selected link) keeps the link until the caret moves.
+    // Contract: docs/wtf-262/link-boundary-contract.md.
+    function linkWithPlainRightEdge() {
+        const typingLinkKey = new PluginKey("typingLink");
+        return Link.extend({
+            inclusive: () => false,
+            addProseMirrorPlugins() {
+                const linkType = this.type;
+                // The link on every character of a non-empty selection, if any.
+                const selectedLink = ({ doc, selection }) => {
+                    if (selection.empty) return null;
+                    let link = linkType.isInSet(selection.$from.nodeAfter?.marks || []);
+                    doc.nodesBetween(selection.from, selection.to, node => {
+                        if (link && node.isText && !link.isInSet(node.marks)) link = null;
+                    });
+                    return link;
+                };
+                return [...(this.parent?.() || []), new Plugin({
+                    key: typingLinkKey,
+                    state: {
+                        init: () => null,
+                        // Text the user just typed as a link: { link, from, to }.
+                        apply(tr, _typing, oldState, newState) {
+                            if (!tr.docChanged || !newState.selection.empty) return null;
+                            // Paste, drop, cut and remote collaboration edits are not typing.
+                            if (tr.getMeta("uiEvent") || tr.getMeta("addToHistory") === false) return null;
+                            const { selection, storedMarks } = oldState;
+                            // Retyping a selected link must replace it, not insert next to it.
+                            const replaced = !selection.empty
+                                && tr.mapping.mapResult(selection.from).deletedAfter
+                                && tr.mapping.mapResult(selection.to).deletedBefore;
+                            const link = linkType.isInSet(storedMarks || []) || (replaced && selectedLink(oldState));
+                            if (!link) return null;
+                            const from = tr.mapping.map(selection.from, -1);
+                            const $cursor = newState.selection.$from;
+                            if (from >= $cursor.pos || newState.doc.resolve(from).parent !== $cursor.parent) return null;
+                            return { link, from, to: $cursor.pos };
+                        },
+                    },
+                    appendTransaction(_transactions, _oldState, newState) {
+                        const typing = typingLinkKey.getState(newState);
+                        if (!typing) return null;
+                        const { link, from, to } = typing;
+                        // Typing over a whole link drops it in ProseMirror; put it back.
+                        const tr = newState.tr.addMark(from, to, link);
+                        if (!newState.storedMarks) tr.setStoredMarks(link.addToSet(newState.selection.$from.marks()));
+                        return tr.docChanged || tr.storedMarksSet ? tr : null;
+                    },
+                })];
+            },
+        });
+    }
+
     if (properties.ext_link) {
         const linkConfig = {
             openOnClick: properties.link_openOnClick || false,
@@ -2164,7 +2222,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 .map(p => ({ scheme: p, optionalSlashes: true }));
             if (protocols.length > 0) linkConfig.protocols = protocols;
         }
-        extensions.push(Link.configure(linkConfig));
+        extensions.push(linkWithPlainRightEdge().configure(linkConfig));
     }
     if (properties.ext_placeholder) extensions.push(Placeholder.configure({
         placeholder: placeholder,

@@ -6,6 +6,12 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### 🔗 Typing after a link no longer extends it
+
+- Text you type right after a link is plain text. Before, with **Autolink** on (the default), a word you linked with **Set link** swallowed everything typed after it.
+- Typing inside a link still edits it. **Set link** with nothing selected still links the text you type next, until you move the caret. Retyping a selected link keeps the link.
+- **Remove link**, autolink, pasted content and saved HTML/JSON work as before. To make an existing link longer, select the text and use **Set link**.
+
 ### 🔔 Start a workflow when someone is mentioned
 
 - New **Mention created** event fires once when a user picks someone from the mention list. Use it to notify the mentioned person without comparing Content (JSON).
