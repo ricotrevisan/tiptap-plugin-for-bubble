@@ -21,10 +21,10 @@
 <div class="main-page">
   <section id="row-a"><div id="host-a" class="host"></div>
     <div id="bm-a" class="menu" style="color: red" tabindex="3"><button data-editor="a" data-cmd="h1">H1</button><button data-editor="a" data-cmd="bold">B</button></div>
-    <div id="fm-a" class="menu"><button data-editor="a" data-cmd="h2">H2</button></div>
+    <div id="fm-a" class="menu"><button data-editor="a" data-cmd="h2">H2</button><div class="div-button" data-editor="a" data-cmd="hr">—</div></div>
   </section>
   <section id="row-b"><div id="host-b" class="host"></div>
-    <!-- Bubble buttons are usually non-focusable divs; menus can also hold inputs (e.g. a link URL). -->
+    <!-- Bubble Buttons are focusable <button>s; clickable groups and icons are not (the div here). Menus can also hold inputs (e.g. a link URL). -->
     <div id="bm-b" class="menu"><button data-editor="b" data-cmd="h1">H1</button><div class="div-button" data-editor="b" data-cmd="bold">B</div><input class="menu-input" placeholder="Link URL"></div>
   </section>
   <!-- Two instances of one reusable element: same menu ID in each copy. -->
@@ -146,7 +146,7 @@ window.tiptap.createClient = options => liveblocks.createClient(options);
 const base = '/src/elements/tiptap-AAC/';
 const callbacks = await loadCallbacks({
   initialize: base + 'initialize.js', update: base + 'update.js',
-  actions: { h1: base + 'actions/h1-AAp.js', h2: base + 'actions/h2-AAv.js', bold: base + 'actions/bold-AAh.js' },
+  actions: { h1: base + 'actions/h1-AAp.js', h2: base + 'actions/h2-AAv.js', bold: base + 'actions/bold-AAh.js', hr: base + 'actions/horizontal-rule-ABO.js' },
 });
 
 // Bubble-owned styles of every menu group, captured before any editor leases one.

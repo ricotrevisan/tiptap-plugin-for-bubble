@@ -23,14 +23,14 @@ inventory (see below).
 What is in this PR:
 
 - **Automated lifecycle lab** (`lib/tests/browser/lab.html`,
-  `lifecycle-lab.spec.mjs`, in CI): 14 cases (L1–L14) in Chromium, Firefox and
+  `lifecycle-lab.spec.mjs`, in CI): 15 cases (L1–L15) in Chromium, Firefox and
   WebKit. The contract, and how it maps to the ticket's matrix, is in
   [lifecycle-lab.md](lifecycle-lab.md).
 - **Real-Bubble lab:**
   - the `lifecycle-lab` page on the Bubble branch `wtf-256-lab` (`73kof`),
     with its source copied to [bubble-lab/](bubble-lab/);
-  - four saved Buildprint tests;
-  - `check-bubble-lab.mjs` (19 checks) and `check-demo-menu-lifecycle.mjs`
+  - five saved Buildprint tests;
+  - `check-bubble-lab.mjs` (20 checks) and `check-demo-menu-lifecycle.mjs`
     (3 checks). Both share `real-bubble.mjs`, which provides
     `--local-initialize`.
 - **Page inventory:** [page-inventory.md](page-inventory.md).
@@ -70,6 +70,16 @@ What is in this PR:
    anything other than the menu or its editor. When there is no
    `relatedTarget` (a click on empty space) it hides too, the same as Tiptap's
    blur handler.
+   - Review round 2 found that the first version (`6b68f1e`) re-entered
+     Tiptap's `hide()`: Chromium fires `focusout` while `hide()` removes the
+     focused menu. The inner hide moved the wrapper, the outer `remove()`
+     threw, and the transaction's update was lost. So a "Divider" menu button
+     didn't publish its edit (L15, red in Chromium; real Bubble published
+     Content (HTML) without the `<hr>`).
+   - The listener now ignores a menu that is already being hidden (`hide()`
+     sets `visibility: hidden` before it removes the menu). It dispatches its
+     own hide in a microtask, which re-checks that focus hasn't returned to
+     the menu or editor and that the editor is still current.
 
 ## Red → green
 
@@ -77,16 +87,17 @@ Full record: [red-before-fix.txt](red-before-fix.txt).
 
 | Surface | `origin/main` / deployed dev version | This branch |
 | --- | --- | --- |
-| Automated lab, 3 engines | L4, L8, L10 fail (9 failed, 33 passed) | 42/42 |
-| `check-bubble-lab.mjs` on `lifecycle-lab` | 6 of 19 checks fail. Menu A lingers after a focus move and after leaving its input, and then intercepts the pointer after resize and scroll. The scroll-group Floating Menu gets z-index 2004 over the closed popup at 2002. | 19/19 with `--local-initialize=origin/main` |
+| Automated lab, 3 engines | L4, L8, L10 fail (9 failed, 33 passed of L1–L14). L15 passes on main, which has no fix 3; it failed in Chromium on the unguarded `6b68f1e`. | 45/45 |
+| `check-bubble-lab.mjs` on `lifecycle-lab` | 7 of 20 checks fail: menus linger after a focus move and after leaving their input, then intercept the pointer after resize and scroll, and menus go above the closed popup (2004/2005 over 2002). With `6b68f1e`'s code only the Divider check fails (no `<hr>` published). | 20/20 with `--local-initialize=origin/main` |
 | `check-demo-menu-lifecycle.mjs` on `tiptap-demo` | 2 of 3 fail (menu lingers; z-index 2003 over a popup at 2002) | 3/3 with `--local-initialize=origin/main` |
-| Saved Buildprint tests on `wtf-256-lab` | `menu_hides_on_focus_move` and `menu_below_closed_popup` fail at their bug checks; the other two pass | green expected after `pled push` (they run the deployed plugin) |
+| Saved Buildprint tests on `wtf-256-lab` | `menu_hides_on_focus_move` and `menu_below_closed_popup` fail at their bug checks; the other three pass | green expected after `pled push` (they run the deployed plugin) |
 
 ## Bubble changes (all on my branch `wtf-256-lab`, `73kof`)
 
 - **Branch:** created from `test` with Buildprint. There were six other
   branches under `test`, so this is the seventh of nine.
-- **Savepoint:** `1790354571044`, taken before the first apply.
+- **Savepoints:** `1790354571044` before the first apply, and `1790358077446`
+  before the Divider scenario.
 - **Page `lifecycle-lab`:**
   - editors A and B with Bubble Menus;
   - a Floating Menu on A, and an input inside menu A;
@@ -96,7 +107,9 @@ Full record: [red-before-fix.txt](red-before-fix.txt).
   - an editor in a floating group;
   - two copies of the new reusable `lab-editor-copy`, which share the menu
     ID `labDupMenu`;
-  - one page counter per menu workflow.
+  - one page counter per menu workflow;
+  - a Divider (horizontal rule) button in Floating Menu A, and a text that
+    shows editor A's published Content (HTML).
 
   Every editor sets **File uploads enabled** to `no` and **Type of content**
   to User; mentions are off.
@@ -106,8 +119,10 @@ Full record: [red-before-fix.txt](red-before-fix.txt).
   - `menu_hides_on_focus_move`
   - `menu_below_closed_popup`
   - `reusable_copies_isolated`
+  - `floating_menu_divider_publishes`
 
-  One recorded batch: `ac19f939-0325-4430-8f7c-f9af20ed9a8f`.
+  Recorded batches: `ac19f939-0325-4430-8f7c-f9af20ed9a8f` (the first four)
+  and `bbdc5a96-c3c9-4045-96ee-d9700445f619` (all five).
 - **Tooling:** Buildprint's runner needs `agent-browser` 0.38.0 or newer. The
   global `agent-browser` in `~/.local` was upgraded from 0.35.1 to 0.38.1,
   when no session was running. npm skipped its postinstall script; the runner
@@ -148,16 +163,23 @@ Round 2:
   gets a 90 s timeout.
 - One real-Bubble run hit a 60 s page-load timeout. The rerun passed. Page
   loads now wait up to 120 s.
+- Review round 2 found two races in the lab's own `settled()` helper, both
+  fixed:
+  - The stale write in L11 finishing last needs a corrective write, so the
+    helper now also waits for the plugin's queued save or repair.
+  - It read the store and the controller in one page evaluation, so a
+    repair can't fire between two reads.
+- After the fixes, L11/L12 passed 36/36 over 6 repeats in all engines.
 
 ## Gates (Node 24, from `lib/`, merged with `origin/main` `9d46395`)
 
-All passed on 2026-09-25, round 2:
+All passed on 2026-09-25, round 2, after the review fixes:
 
-- `npm ci`
+- `npm ci` (run earlier in round 2)
 - `npm test`: 19 scripts
 - `npm run validate:plugin`: 5 metadata files, 73 function bodies
 - `npm run test:validator`: 11 passed
-- `CI=1 npm run test:browser`: 69 passed. That is 42 lab tests plus the
+- `CI=1 npm run test:browser`: 72 passed. That is 45 lab tests plus the
   existing 27, across Chromium, Firefox and WebKit.
 
 Round 1 gates, at `039fa6d`, had the same results with 54 browser tests.
@@ -198,6 +220,24 @@ Round 1 gates, at `039fa6d`, had the same results with 54 browser tests.
     - The check script gives a clear error if no popup opened.
 - **Drummer (static, nonblocking) review of `bbf79fd`:** no important or
   blocker findings.
+- **Round 2, review of `6b68f1e`: request changes.**
+  1. **Blocking:** fix 3 re-entered Tiptap's `hide()` in Chromium and lost
+     the edit's update. Fixed with a guard and a microtask. L15 was added
+     (red on `6b68f1e` in Chromium), plus a real-Bubble Divider check and a
+     Buildprint test.
+  2. **Medium:** L11 never made a stale write land last. Fixed: the delays are
+     now 2500/100/100 ms, and the test asserts the corrective write.
+  3. **Low:** the L14 doc claimed more than the test checked. The test now
+     counts the server's rejected attempts (5).
+  4. **Nit:** the record store only echoes on completion. Documented.
+  5. **Nit:** `check-bubble-lab.mjs` had an unguarded popup lookup. Guarded.
+
+  The reviewer confirmed that removing the listener fails only L10, that
+  L12 matches the WTF-260 contract, and that the real-Bubble logs match.
+  The drummer review of `6b68f1e` had no important or blocker findings.
+- Also corrected while fixing: Bubble Buttons render as real `<button>`s
+  (tabIndex 0), not `<div>`s. The docs now describe the lab's `<div>` button
+  as a clickable group or icon.
 
 ## Not covered (follow-ups)
 

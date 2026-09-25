@@ -22,7 +22,7 @@ The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded ini
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
 
-`lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab. `lab.html` is a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area, resource counters, a Bubble-like autobinding record store, and the in-memory Liveblocks service. There are 14 cases in all three engines (42 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. The cases cover:
+`lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab. `lab.html` is a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area, resource counters, a Bubble-like autobinding record store, and the in-memory Liveblocks service. There are 15 cases in all three engines (45 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. The cases cover:
 - menu hit-testing and stacking;
 - exact-once actions and multi-editor isolation;
 - rebuild leaks;

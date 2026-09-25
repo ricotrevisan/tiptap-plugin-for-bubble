@@ -62,32 +62,37 @@ replaced by `git show origin/main:src/elements/tiptap-AAC/initialize.js`:
 L4 (closed popup), L8 (focus move) and L10 (leaving the menu's input) fail in all
 three engines. The autobinding, Liveblocks and authentication cases (L11–L14) pass on
 main: they guard earlier fixes (WTF-260, WTF-248, WTF-246). With this branch's
-initialize.js the same command passes 42/42.
+initialize.js the same command passes 42/42 (45/45 after L15 was added in
+review round 2; L15 passes on main, which has no focusout listener).
 
 ## Real Bubble: lifecycle-lab page (branch wtf-256-lab, version-73kof), deployed development version
 
     node tests/browser/check-bubble-lab.mjs
 
     ok   on load: hidden menus don't intercept the pointer {"bad":[]}
-    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":286.546875,"inViewport":true}
+    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":314.140625,"inViewport":true}
     ok   one click runs H1 once on editor A {"a":"A H1: 1","b":"B H1: 0"}
-    FAIL moving to editor B hides menu A and shows menu B {"a":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":309.546875,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1503,"hitsMenu":true,"x":198,"y":602.9375,"inViewport":true}}
-    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":309.546875,"inViewport":true}
-    FAIL leaving the menu input for editor B hides menu A {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":309.546875,"inViewport":true}
-    FAIL after resize to 900px: hidden menus don't intercept the pointer {"bad":["labMenuA"]}
-    FAIL after resize to 1280px: hidden menus don't intercept the pointer {"bad":["labMenuA"]}
-    FAIL after page scroll: hidden menus don't intercept the pointer {"bad":["labMenuA"]}
+    FAIL moving to editor B hides menu A and shows menu B {"a":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":337.140625,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1503,"hitsMenu":true,"x":198,"y":655.328125,"inViewport":true}}
+    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":337.140625,"inViewport":true}
+    FAIL leaving the menu input for editor B hides menu A {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":337.140625,"inViewport":true}
+    ok   floating menu A shows on an empty line {"visible":true,"pointerEvents":"auto","zIndex":1503,"hitsMenu":true,"x":77.5,"y":594.34375,"inViewport":true}
+    ok   the Divider workflow runs once and Content (HTML) includes the rule {"count":"A Divider: 1","published":"A published HTML: <h1>Editor A. Select this text to show menu A.</h1><p></p><hr><p></p>","errors":[]}
+    FAIL after resize to 900px: hidden menus don't intercept the pointer {"bad":["labFloatA"]}
+    FAIL after resize to 1280px: hidden menus don't intercept the pointer {"bad":["labFloatA"]}
+    FAIL after page scroll: hidden menus don't intercept the pointer {"bad":["labFloatA"]}
     ok   menu of an editor in a floating group paints above the group {"visible":true,"pointerEvents":"auto","zIndex":1503,"hitsMenu":true,"x":1067,"y":778.1875,"inViewport":true}
     ok   floating-group menu click runs once {"f":"F H1: 1"}
     ok   only the focused copy shows its menu {"dup":["hidden","visible"]}
     ok   the copy menu runs H1 once, on its own copy {"copyCounts":["Copy H1: 0","Copy H1: 1"],"copyHeadings":[0,1]}
     ok   menu of an editor in a popup paints above the popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"x":502,"y":115.1875,"inViewport":true,"popupZ":2002}
     ok   popup menu click runs once {"p":"P H1: 1"}
-    ok   after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":309.546875,"inViewport":true,"popupZ":2002}
-    FAIL floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":2004,"hitsMenu":true,"x":78.5,"y":481.75,"inViewport":true,"popupZ":2002}
+    FAIL after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":2004,"hitsMenu":true,"x":98,"y":337.140625,"inViewport":true,"popupZ":2002}
+    FAIL floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":2005,"hitsMenu":true,"x":78.5,"y":482.140625,"inViewport":true,"popupZ":2002}
     ok   scroll-group floating menu click runs H2 once {"s":"S H2: 1"}
     ok   after typing and scrolling the scroll group: hidden menus don't intercept the pointer {"bad":[]}
-    6 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-73kof/lifecycle-lab
+    7 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-73kof/lifecycle-lab
+
+The Divider check passes here because the deployed version has no fix 3.
 
 ## Same page with this branch's initialize.js served in place of origin/main's
 
@@ -95,11 +100,13 @@ initialize.js the same command passes 42/42.
 
     Serving local initialize.js in place of origin/main
     ok   on load: hidden menus don't intercept the pointer {"bad":[]}
-    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":286.546875,"inViewport":true}
+    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":314.140625,"inViewport":true}
     ok   one click runs H1 once on editor A {"a":"A H1: 1","b":"B H1: 0"}
-    ok   moving to editor B hides menu A and shows menu B {"a":{"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":119,"y":589.296875,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":198,"y":602.9375,"inViewport":true}}
-    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":309.546875,"inViewport":true}
-    ok   leaving the menu input for editor B hides menu A {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":561,"y":589.296875,"inViewport":true}
+    ok   moving to editor B hides menu A and shows menu B {"a":{"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":119,"y":644.484375,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":198,"y":655.328125,"inViewport":true}}
+    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":337.140625,"inViewport":true}
+    ok   leaving the menu input for editor B hides menu A {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":561,"y":644.484375,"inViewport":true}
+    ok   floating menu A shows on an empty line {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":77.5,"y":594.34375,"inViewport":true}
+    ok   the Divider workflow runs once and Content (HTML) includes the rule {"count":"A Divider: 1","published":"A published HTML: <h1>Editor A. Select this text to show menu A.</h1><p></p><hr><p></p>","errors":[]}
     ok   after resize to 900px: hidden menus don't intercept the pointer {"bad":[]}
     ok   after resize to 1280px: hidden menus don't intercept the pointer {"bad":[]}
     ok   after page scroll: hidden menus don't intercept the pointer {"bad":[]}
@@ -109,8 +116,8 @@ initialize.js the same command passes 42/42.
     ok   the copy menu runs H1 once, on its own copy {"copyCounts":["Copy H1: 0","Copy H1: 1"],"copyHeadings":[0,1]}
     ok   menu of an editor in a popup paints above the popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"x":502,"y":115.1875,"inViewport":true,"popupZ":2002}
     ok   popup menu click runs once {"p":"P H1: 1"}
-    ok   after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":309.546875,"inViewport":true,"popupZ":2002}
-    ok   floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":78.5,"y":481.75,"inViewport":true,"popupZ":2002}
+    ok   after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":337.140625,"inViewport":true,"popupZ":2002}
+    ok   floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":78.5,"y":482.140625,"inViewport":true,"popupZ":2002}
     ok   scroll-group floating menu click runs H2 once {"s":"S H2: 1"}
     ok   after typing and scrolling the scroll group: hidden menus don't intercept the pointer {"bad":[]}
     All checks passed on https://tiptap-plugin.bubbleapps.io/version-73kof/lifecycle-lab
@@ -136,9 +143,55 @@ initialize.js the same command passes 42/42.
 
 ## Saved Buildprint tests on wtf-256-lab, deployed development version
 
-    buildprint test run lifecycle_lab    # batch ac19f939-0325-4430-8f7c-f9af20ed9a8f
+    buildprint test run lifecycle_lab    # batch bbdc5a96-c3c9-4045-96ee-d9700445f619
 
-    menu_click_runs_once       passed
-    reusable_copies_isolated   passed
-    menu_hides_on_focus_move   error at "Menu A is hidden and not clickable after moving to editor B"
-    menu_below_closed_popup    error at "Menu A shows below the closed popup's layer"
+    floating_menu_divider_publishes   passed (guards fix 3 once it is pushed)
+    menu_click_runs_once              passed
+    reusable_copies_isolated          passed
+    menu_hides_on_focus_move          error at "Menu A is hidden and not clickable after moving to editor B"
+    menu_below_closed_popup           error at "Menu A shows below the closed popup's layer"
+
+The first batch (ac19f939-0325-4430-8f7c-f9af20ed9a8f, four tests) had the same results.
+
+## Review round 2: the first version of fix 3 (6b68f1e) lost edits in Chromium
+
+The focusout listener re-entered Tiptap's hide() while Chromium removed the
+focused menu. The independent reviewer found it.
+
+    CI=1 npx playwright test tests/browser/lifecycle-lab.spec.mjs -g L15   # with 6b68f1e's initialize.js
+
+    ✓  2 [firefox] › tests/browser/lifecycle-lab.spec.mjs:611:1 › L15 a menu action that hides its own menu while focus is inside it still publishes the edit
+    ✓  3 [webkit] › tests/browser/lifecycle-lab.spec.mjs:611:1 › L15 a menu action that hides its own menu while focus is inside it still publishes the edit
+    ✘  1 [chromium] › tests/browser/lifecycle-lab.spec.mjs:611:1 › L15 a menu action that hides its own menu while focus is inside it still publishes the edit
+    +   "Failed to execute 'remove' on 'Element': The node to be removed is no longer a child of this node. Perhaps it was moved in a 'blur' event handler?",
+    1 failed
+
+Real Bubble, lifecycle-lab, with 6b68f1e's initialize.js served in:
+
+    Serving local initialize.js in place of origin/main
+    ok   on load: hidden menus don't intercept the pointer {"bad":[]}
+    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":314.140625,"inViewport":true}
+    ok   one click runs H1 once on editor A {"a":"A H1: 1","b":"B H1: 0"}
+    ok   moving to editor B hides menu A and shows menu B {"a":{"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":119,"y":644.484375,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":198,"y":655.328125,"inViewport":true}}
+    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":337.140625,"inViewport":true}
+    ok   leaving the menu input for editor B hides menu A {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":561,"y":644.484375,"inViewport":true}
+    ok   floating menu A shows on an empty line {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":77.5,"y":594.34375,"inViewport":true}
+    FAIL the Divider workflow runs once and Content (HTML) includes the rule {"count":"A Divider: 1","published":"A published HTML: <h1>Editor A. Select this text to show menu A.</h1><p></p><p></p>","errors":[]}
+    ok   after resize to 900px: hidden menus don't intercept the pointer {"bad":[]}
+    ok   after resize to 1280px: hidden menus don't intercept the pointer {"bad":[]}
+    ok   after page scroll: hidden menus don't intercept the pointer {"bad":[]}
+    ok   menu of an editor in a floating group paints above the group {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":1067,"y":778.1875,"inViewport":true}
+    ok   floating-group menu click runs once {"f":"F H1: 1"}
+    ok   only the focused copy shows its menu {"dup":["hidden","visible"]}
+    ok   the copy menu runs H1 once, on its own copy {"copyCounts":["Copy H1: 0","Copy H1: 1"],"copyHeadings":[0,1]}
+    ok   menu of an editor in a popup paints above the popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"x":502,"y":115.1875,"inViewport":true,"popupZ":2002}
+    ok   popup menu click runs once {"p":"P H1: 1"}
+    ok   after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":337.140625,"inViewport":true,"popupZ":2002}
+    ok   floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":78.5,"y":482.140625,"inViewport":true,"popupZ":2002}
+    ok   scroll-group floating menu click runs H2 once {"s":"S H2: 1"}
+    ok   after typing and scrolling the scroll group: hidden menus don't intercept the pointer {"bad":[]}
+    1 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-73kof/lifecycle-lab
+
+The Divider workflow ran, but Content (HTML) was published without the <hr>.
+With the guarded fix, L15 passes in all three engines and every real-Bubble
+check passes (above).

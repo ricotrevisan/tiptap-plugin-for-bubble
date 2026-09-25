@@ -18,10 +18,10 @@ Bubble Menu / Floating Menu groups behave on a Bubble-shaped page. It has two la
      - a counter per menu workflow.
 
      Source: `docs/wtf-256/bubble-lab/`.
-   - Four **saved Buildprint tests** (`tests/lifecycle_lab/` in the Bubble
+   - Five **saved Buildprint tests** (`tests/lifecycle_lab/` in the Bubble
      workspace) drive it with real mouse and keyboard input. Run them with
      `buildprint test run lifecycle_lab` from a clone of the branch.
-   - `lib/tests/browser/check-bubble-lab.mjs` runs 19 checks on that page.
+   - `lib/tests/browser/check-bubble-lab.mjs` runs 20 checks on that page.
      `check-demo-menu-lifecycle.mjs` runs 3 on `tiptap-demo`.
    - With `--local-initialize=<ref>`, both scripts preview an unpushed
      `initialize.js` in the real page without changing Bubble.
@@ -80,13 +80,14 @@ real mouse click at those coordinates.
 | L5 | Two copies of a reusable with the same menu ID each lease their own copy. Only the focused copy's menu shows, and its action goes to its own editor. | 2, 3, 8; menus never claimed across editors |
 | L6 | A menu ID already owned by another editor is reported once in the debugger. The second editor holds no menu lease, and selecting text in it shows nothing, even after Tiptap's 250 ms show delay. The owner's menu still works. | 8 |
 | L7 | Over three cycles, the lab destroys and recreates editor A, switches a construction-time extension on and off, and turns the Floating Menu off and on. After each step the menu works with exactly one action per click. After destroy, the Bubble-owned groups are back in place with their original style/tabindex. At the end of each cycle every resource counter equals the baseline. Final teardown leaves no editors, placeholders or extra body children. | 6; restores Bubble styles, no leaked DOM/listeners |
-| L8 | When focus moves from editor A to editor B, or to an input, A's Bubble Menu and Floating Menu hide. Inside the menu, clicking a `<button>`, clicking a non-focusable `<div>` button (as Bubble renders them), and typing in an input all keep the menu usable. | 2; menus never claimed across editors |
+| L8 | When focus moves from editor A to editor B, or to an input, A's Bubble Menu and Floating Menu hide. Inside the menu, clicking a `<button>`, clicking a non-focusable `<div>` button (like a clickable Bubble group or icon), and typing in an input all keep the menu usable. | 2; menus never claimed across editors |
 | L9 | Collaboration (a local Hocuspocus server): three document switches, collaboration off, then on. Exactly one open connection while collaboration is on, and none while it's off or after teardown. Menus keep working. Resources return to the baseline. | 9; providers not leaked |
 | L10 | While focus is in the menu's own input, clicking another editor or empty space hides the menu. Going back from the input to its own editor keeps it. | 2; menus never claimed across editors |
-| L11 | Autobinding against a Bubble-like record store whose writes finish out of order (900/100/500 ms). After typing stops, the stored record equals the editor, and the other record is untouched. A Bubble Menu action on the bound editor is saved once. A fresh editor loading the record (a reload) shows the same content and doesn't save it. | WTF-260 convergence and reload |
+| L11 | Autobinding against a Bubble-like record store where the first write takes 2.5 s and later ones 100 ms, so its stale value lands last. The plugin must send one corrective write with the newest HTML. After things settle, the stored record equals the editor, and the other record is untouched. A Bubble Menu action on the bound editor is saved once. A fresh editor loading the record (a reload) shows the same content and doesn't save it. | WTF-260 convergence and reload |
 | L12 | Autobinding: a record switch before the save delay cancels the unsent edit, and neither record changes. A dirty blur saves once to the bound record; a clean blur writes nothing. Content saved by someone else shows up without being saved back, and it cancels a pending local edit. | WTF-260 record isolation, blur, external content |
 | L13 | Liveblocks (the installed provider, backed by the in-memory service in `lib/tests/support/fake-liveblocks.mjs`): two editors share a room, both report 2 users, and edits and a menu action in A reach B. Switching A through two rooms and back keeps exactly one live session per editor. Teardown leaves no session, no editor and no menu lease. | 9; Liveblocks setup and teardown |
-| L14 | A token rejected by a real Hocuspocus server leads to exactly five attempts (1, 2, 4 and 8 s apart), then a `failed` state. The editor, menu leases and connection are released, and there is one debugger message. An unchanged Bubble update doesn't retry. A corrected token recovers, and the menu works. | Bounded authentication retry |
+| L14 | A token rejected by a real Hocuspocus server: the server counts exactly five attempts (the plugin backs off 1, 2, 4 and 8 s), then the state is `failed`. The editor, menu leases and connection are released, and there is one debugger message. An unchanged Bubble update doesn't retry. A corrected token recovers, and the menu works. | Bounded authentication retry |
+| L15 | A non-focusable `<div>` button in the Floating Menu runs "Horizontal rule" on an empty line. That ends the empty line, so Tiptap hides the menu while focus is on the menu. The action runs once, no error is thrown, and the published Content (HTML) equals the editor, including the `<hr>`. | Menu actions publish their edit (review finding on fix 3) |
 
 The real-Bubble layer covers the parts that depend on Bubble's own DOM:
 
@@ -100,6 +101,7 @@ The real-Bubble layer covers the parts that depend on Bubble's own DOM:
 | After the popup closes, later menus stay below its z-index | ✓ | `menu_below_closed_popup` | L4 |
 | Reusable copies with the same menu ID stay isolated | ✓ | `reusable_copies_isolated` | L5 |
 | Floating Menu inside a scroll group | ✓ | | L1, L2 |
+| A Floating Menu Divider button (a real Bubble `<button>`) that ends the empty line still publishes Content (HTML) with the rule | ✓ | `floating_menu_divider_publishes` | L15 |
 
 `check-demo-menu-lifecycle.mjs` checks L2, L8 and L4 on the Notion and popup
 demos of `tiptap-demo`.
@@ -126,6 +128,13 @@ demos of `tiptap-demo`.
    other than the menu itself or its own editor, the plugin now hides it the
    way Tiptap does, with the menu's `hide` transaction.
 
+   The first version of this fix re-entered Tiptap's `hide()` in Chromium,
+   which fires `focusout` while `hide()` removes the focused menu. The error
+   lost the transaction's update, so a menu button such as "Divider" didn't
+   publish its edit (L15). The listener now ignores a menu that is already
+   being hidden, and dispatches its own hide in a microtask. The microtask
+   re-checks that focus hasn't come back to the menu or editor.
+
 All three reproduce in real Bubble on the current development version. With
 the local `initialize.js` served in the real page, every check passes (see
 `verification.md`).
@@ -133,8 +142,10 @@ the local `initialize.js` served in the real page, every check passes (see
 ## Not covered
 
 - **Real-Bubble autobinding with the database.** L11/L12 use a record store in
-  the page; the Python probes from WTF-260 cover Bubble's database, and they
-  need their own fixture branch.
+  the page. That store models Bubble's echo only at write completion; real
+  Bubble also echoes the value optimistically first (docs/wtf-260/README.md).
+  The Python probes from WTF-260 cover Bubble's database, and they need their
+  own fixture branch.
 - **Real Liveblocks, and real Tiptap Cloud authentication.** L13/L14 use the
   installed providers against local stand-ins.
 - A menu that is shown *while* a modal is already open still goes above that

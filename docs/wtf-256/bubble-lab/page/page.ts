@@ -12,6 +12,7 @@ export default page("bwpjnlmz", {
 	customStates: [
 		{ name: "a h1", id: "a_h1_", type: "number", defaultValue: 0 },
 		{ name: "a h2", id: "a_h2_", type: "number", defaultValue: 0 },
+		{ name: "a hr", id: "a_hr_", type: "number", defaultValue: 0 },
 		{ name: "b h1", id: "b_h1_", type: "number", defaultValue: 0 },
 		{ name: "s h2", id: "s_h2_", type: "number", defaultValue: 0 },
 		{ name: "p h1", id: "p_h1_", type: "number", defaultValue: 0 },
@@ -56,6 +57,10 @@ export default page("bwpjnlmz", {
 	name: "Counter A H2",
 	layout: { height: "fit", width: "fill" }, appearance: { htmlId: "lab-count-a-h2" },
 	typography: { color: "#0F172A", fontSize: 14, lineHeight: 1.4 },
+}), text("bwnwarrr", dynamicText("A Divider: ", element("lifecycle-lab").state("a hr")), {
+	name: "Counter A Divider",
+	layout: { height: "fit", width: "fill" }, appearance: { htmlId: "lab-count-a-hr" },
+	typography: { color: "#0F172A", fontSize: 14, lineHeight: 1.4 },
 })],
 }),
 		group("bwqgazdn", {
@@ -81,6 +86,11 @@ export default page("bwpjnlmz", {
 	layout: { height: "fit", padding: "6px 10px", width: "fit" },
 	appearance: { background: "#FFFFFF", border: "1px solid #94A3B8", borderRadius: 6, htmlId: "lab-a-h2" },
 	typography: { color: "#0F172A", fontSize: 13, lineHeight: 1.2 },
+}), button("bwjwoqys", "Divider", {
+	name: "A Divider button",
+	layout: { height: "fit", padding: "6px 10px", width: "fit" },
+	appearance: { background: "#FFFFFF", border: "1px solid #94A3B8", borderRadius: 6, htmlId: "lab-a-divider" },
+	typography: { color: "#0F172A", fontSize: 13, lineHeight: 1.2 },
 })],
 }), plugin("bwlpaort", {
 	type: "1670612027178x122079323974008830_current-AAC",
@@ -89,6 +99,10 @@ export default page("bwpjnlmz", {
 	layout: { minHeight: 140, alignSelf: "stretch", minWidth: 0 },
 	appearance: { background: "#FFFFFF", border: "1px solid #CBD5E1", borderRadius: 10 },
 	properties: { mention_list_type: dataTypeRef("User"), bubbleMenu: "labMenuA", ext_bubblemenu: true, ext_floatingmenu: true, file_upload_condition: false, floatingMenu: "labFloatA", initialContent: "<p>Editor A. Select this text to show menu A.</p>", isEditable: true, placeholder: "Type here…" },
+}), text("bwkvcsgr", dynamicText("A published HTML: ", element("Editor A").state("contentHTML")), {
+	name: "A published HTML",
+	layout: { height: "fit", width: "fill" }, appearance: { htmlId: "lab-a-html" },
+	typography: { color: "#475569", fontSize: 12, lineHeight: 1.4 },
 })],
 }),
 		group("bwxjiems", {
