@@ -10,7 +10,7 @@ CI builds before running Playwright and uploads failure traces. The server binds
 
 The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
-Nine scenarios run in all three engines (27 browser tests total):
+`lifecycle.spec.mjs` runs nine scenarios in all three engines (27 browser tests):
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
@@ -21,6 +21,10 @@ Nine scenarios run in all three engines (27 browser tests total):
 - Real **Find**, **Replace**, and **Replace all** actions work after toggling **Find & Replace**, while preserving the draft.
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
+
+`lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab (`lab.html`: a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area and resource counters). It has nine cases in all three engines (27 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. That covers menu hit-testing, stacking, exact-once actions, multi-editor isolation, rebuild leaks and collaboration connections.
+
+`check-demo-menu-lifecycle.mjs` is not a Playwright test and not in CI. It runs the same menu checks against real Bubble (`tiptap-demo`). Use `--local-initialize=<git ref>` to preview this checkout's `initialize.js` there before a `pled push`.
 
 `publishAutobinding` is an explicit fixture output recorder. With autobinding disabled, typing must not call it. Tests observe adapter outputs without simulating persistence. Bubble reset remains disabled; the teardown test invokes the internal lifecycle function directly. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
 

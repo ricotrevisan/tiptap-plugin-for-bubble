@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Tiptap lifecycle lab</title>
+<!-- WTF-256 lifecycle lab. Contract: docs/wtf-256/lifecycle-lab.md -->
+<style>
+  body { margin: 0; font: 14px Arial, sans-serif; }
+  /* Bubble renders the page as a positioned top-level stacking context. */
+  .main-page { position: relative; z-index: 2; background: #fff; padding: 8px; }
+  .host { width: 520px; height: 150px; border: 1px solid #ccc; overflow: auto; }
+  .tiptap { min-height: 120px; padding: 8px; outline: none; }
+  .menu { display: flex; gap: 4px; padding: 4px; background: #cbd5e1; border-radius: 6px; width: max-content; }
+  .menu button { width: 44px; height: 30px; }
+  section { margin: 8px 0; }
+  #scroller { height: 200px; overflow: auto; border: 2px dashed #999; width: 560px; }
+  #floating-group { position: fixed; z-index: 5; right: 0; top: 0; width: 540px; background: #f1f5f9; padding: 8px; }
+  #popup { position: fixed; z-index: 1000; left: 40px; top: 40px; width: 560px; background: #fff; border: 1px solid #333; padding: 8px; display: none; }
+  #modal { position: fixed; z-index: 1000; inset: 0; background: rgba(0, 0, 0, 0.3); display: none; }
+</style>
+<body>
+<div class="main-page">
+  <section id="row-a"><div id="host-a" class="host"></div>
+    <div id="bm-a" class="menu" style="color: red" tabindex="3"><button data-editor="a" data-cmd="h1">H1</button><button data-editor="a" data-cmd="bold">B</button></div>
+    <div id="fm-a" class="menu"><button data-editor="a" data-cmd="h2">H2</button></div>
+  </section>
+  <section id="row-b"><div id="host-b" class="host"></div>
+    <div id="bm-b" class="menu"><button data-editor="b" data-cmd="h1">H1</button><button data-editor="b" data-cmd="bold">B</button></div>
+  </section>
+  <!-- Two instances of one reusable element: same menu ID in each copy. -->
+  <section id="reusable-1" class="reusable"><div id="host-r1" class="host"></div>
+    <div id="dup-menu" class="menu"><button data-editor="r1" data-cmd="h1">H1</button></div>
+  </section>
+  <section id="reusable-2" class="reusable"><div id="host-r2" class="host"></div>
+    <div id="dup-menu" class="menu"><button data-editor="r2" data-cmd="h1">H1</button></div>
+  </section>
+  <section><input id="lab-input" placeholder="A Bubble input"></section>
+  <div id="scroller"><div style="height: 120px">Scroll area</div>
+    <div id="host-s" class="host"></div>
+    <div id="fm-s" class="menu"><button data-editor="s" data-cmd="h2">H2</button></div>
+    <div style="height: 600px"></div>
+  </div>
+  <div style="height: 1400px"></div>
+</div>
+<div id="floating-group"><div id="host-f" class="host"></div>
+  <div id="bm-f" class="menu"><button data-editor="f" data-cmd="h1">H1</button></div>
+</div>
+<div id="popup"><div id="host-p" class="host"></div>
+  <div id="bm-p" class="menu"><button data-editor="p" data-cmd="h1">H1</button></div>
+</div>
+<div id="modal"><button id="modal-button" style="margin: 200px auto; display: block">Modal</button></div>
+<script>
+// Resource counters. Installed before the runtime so every listener, observer
+// and socket the plugin or Tiptap creates is tracked.
+(() => {
+  const listeners = new Map();
+  const key = (type, listener, options) => [type, !!(typeof options === 'boolean' ? options : options?.capture)];
+  const add = EventTarget.prototype.addEventListener;
+  const remove = EventTarget.prototype.removeEventListener;
+  EventTarget.prototype.addEventListener = function (type, listener, options) {
+    if (listener) {
+      const [t, capture] = key(type, listener, options);
+      const set = listeners.get(this) || new Map();
+      listeners.set(this, set);
+      set.set(listener, new Set([...(set.get(listener) || []), t + '|' + capture]));
+    }
+    return add.call(this, type, listener, options);
+  };
+  EventTarget.prototype.removeEventListener = function (type, listener, options) {
+    const [t, capture] = key(type, listener, options);
+    listeners.get(this)?.get(listener)?.delete(t + '|' + capture);
+    return remove.call(this, type, listener, options);
+  };
+  const observers = new Set();
+  for (const name of ['ResizeObserver', 'IntersectionObserver', 'MutationObserver']) {
+    const Native = window[name];
+    if (!Native) continue;
+    window[name] = class extends Native {
+      constructor(...args) { super(...args); this.labTargets = new Set(); this.labKind = name; observers.add(this); }
+      observe(target, ...rest) { this.labTargets.add(target); return super.observe(target, ...rest); }
+      unobserve(target) { this.labTargets.delete(target); return super.unobserve(target); }
+      disconnect() { this.labTargets.clear(); return super.disconnect(); }
+    };
+  }
+  const sockets = new Set();
+  const NativeSocket = window.WebSocket;
+  window.WebSocket = class extends NativeSocket {
+    constructor(...args) { super(...args); sockets.add(this); }
+  };
+  // Nodes that outlive an editor generation: the page, Bubble groups, window/document.
+  const persistent = target => target === window || target === document
+    || (target instanceof Node && target.isConnected && !target.closest?.('.tiptap'));
+  const menuComments = () => {
+    const walker = document.createTreeWalker(document, NodeFilter.SHOW_COMMENT);
+    let count = 0;
+    while (walker.nextNode()) if (walker.currentNode.data === 'Tiptap menu position') count++;
+    return count;
+  };
+  const describe = target => target === window ? 'window' : target === document ? 'document'
+    : target.id ? '#' + target.id : target.nodeName + (target.className ? '.' + String(target.className).split(' ')[0] : '');
+  // Readable breakdown for failure messages: "target type|capture" → count.
+  window.labListeners = () => {
+    const result = {};
+    for (const [target, byListener] of listeners) {
+      if (!persistent(target)) continue;
+      for (const types of byListener.values()) for (const type of types) {
+        const name = describe(target) + ' ' + type;
+        result[name] = (result[name] || 0) + 1;
+      }
+    }
+    return result;
+  };
+  window.labResources = () => {
+    let persistentListeners = 0;
+    for (const [target, byListener] of listeners) {
+      if (!persistent(target)) continue;
+      for (const types of byListener.values()) persistentListeners += types.size;
+    }
+    const liveObservers = {};
+    for (const observer of observers) {
+      const connected = [...observer.labTargets].filter(target => target.isConnected).length;
+      if (connected) liveObservers[observer.labKind] = (liveObservers[observer.labKind] || 0) + 1;
+    }
+    return {
+      editors: document.querySelectorAll('.tiptap').length,
+      menuPlaceholders: menuComments(),
+      bodyChildren: document.body.children.length,
+      persistentListeners,
+      resizeObservers: liveObservers.ResizeObserver || 0,
+      intersectionObservers: liveObservers.IntersectionObserver || 0,
+      openSockets: [...sockets].filter(socket => socket.readyState <= 1).length,
+    };
+  };
+})();
+</script>
+<script src="/lib/node_modules/jquery/dist/jquery.js"></script>
+<script src="/lib/dist.js"></script>
+<script type="module">
+import { loadCallbacks, createHarness } from '/lib/node_modules/@rico/bubble-element-test-harness/src/index.js';
+const base = '/src/elements/tiptap-AAC/';
+const callbacks = await loadCallbacks({
+  initialize: base + 'initialize.js', update: base + 'update.js',
+  actions: { h1: base + 'actions/h1-AAp.js', h2: base + 'actions/h2-AAv.js', bold: base + 'actions/bold-AAh.js' },
+});
+
+// Bubble-owned styles of every menu group, captured before any editor leases one.
+window.menuHomes = Array.from(document.querySelectorAll('.menu')).map(node => ({
+  node, parent: node.parentNode, next: node.nextSibling, style: node.getAttribute('style'), tabindex: node.getAttribute('tabindex'),
+}));
+window.debuggerMessages = [];
+// Workflow counters: each menu button runs one element action, as a Bubble
+// "When Button is clicked → Tiptap A: H1" workflow does.
+window.actionCounts = {};
+window.editors = {};
+document.addEventListener('click', event => {
+  const button = event.target.closest?.('button[data-cmd]');
+  if (!button) return;
+  const { editor, cmd } = button.dataset;
+  actionCounts[editor + ':' + cmd] = (actionCounts[editor + ':' + cmd] || 0) + 1;
+  editors[editor].h.action(cmd, {});
+});
+window.makeEditor = (name, overrides = {}) => {
+  const properties = {
+    initialContent: `<p>Editor ${name} text</p>`, content_is_json: false,
+    isEditable: true, collab_active: false, file_upload_condition: false,
+    ext_heading: true, headings: '1,2,3', ext_history: true, ext_bold: true,
+    ext_bubblemenu: false, bubbleMenu: '', ext_floatingmenu: false, floatingMenu: '',
+    bubble: { auto_binding: () => false, fit_height: () => false, font_size: () => 16, font_color: () => '#111111', font_face: () => 'Arial:400' },
+    ...overrides,
+  };
+  const h = createHarness({ callbacks, canvas: window.jQuery(document.getElementById('host-' + name)), methods: { publishAutobinding() {} }, context: {
+    reportDebugger: message => debuggerMessages.push(name + ': ' + String(message)),
+    reportToDebugger: message => debuggerMessages.push(name + ': ' + String(message)),
+  } });
+  h.initialize(); h.update(properties);
+  editors[name] = { h, properties };
+  return editors[name];
+};
+window.ready = true;
+</script>
+</body></html>

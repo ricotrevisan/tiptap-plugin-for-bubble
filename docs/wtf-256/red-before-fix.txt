@@ -1,0 +1,63 @@
+# WTF-256: red before the fix
+
+## Automated lab, origin/main initialize.js (321e20b), 2026-09-25
+
+Command (from lib/), with src/elements/tiptap-AAC/initialize.js temporarily
+replaced by `git show origin/main:src/elements/tiptap-AAC/initialize.js`:
+
+    CI=1 npx playwright test tests/browser/lifecycle-lab.spec.mjs
+
+    ✓ L1 [chromium] hidden menus never intercept the pointer: before first show, after hide, resize and scroll
+    ✓ L1 [firefox] hidden menus never intercept the pointer: before first show, after hide, resize and scroll
+    ✓ L1 [webkit] hidden menus never intercept the pointer: before first show, after hide, resize and scroll
+    ✓ L2 [chromium] a visible menu paints above its editor and one click runs one action on that editor only
+    ✓ L2 [firefox] a visible menu paints above its editor and one click runs one action on that editor only
+    ✓ L2 [webkit] a visible menu paints above its editor and one click runs one action on that editor only
+    ✓ L3 [chromium] menus of editors inside a floating group and a popup paint above that container
+    ✓ L3 [firefox] menus of editors inside a floating group and a popup paint above that container
+    ✓ L3 [webkit] menus of editors inside a floating group and a popup paint above that container
+    ✘ L4 [chromium] a modal opened after a menu is shown covers the menu; closing it restores the menu
+    ✘ L4 [firefox] a modal opened after a menu is shown covers the menu; closing it restores the menu
+    ✘ L4 [webkit] a modal opened after a menu is shown covers the menu; closing it restores the menu
+    ✓ L5 [chromium] two copies of a reusable with the same menu ID each use their own menu
+    ✓ L5 [firefox] two copies of a reusable with the same menu ID each use their own menu
+    ✓ L5 [webkit] two copies of a reusable with the same menu ID each use their own menu
+    ✓ L6 [chromium] a menu ID already owned by another editor is reported and never shared
+    ✓ L6 [firefox] a menu ID already owned by another editor is reported and never shared
+    ✓ L6 [webkit] a menu ID already owned by another editor is reported and never shared
+    ✓ L7 [chromium] destroy/recreate and configuration rebuilds keep menus working and leak nothing
+    ✓ L7 [firefox] destroy/recreate and configuration rebuilds keep menus working and leak nothing
+    ✓ L7 [webkit] destroy/recreate and configuration rebuilds keep menus working and leak nothing
+    ✘ L8 [chromium] moving focus to another editor or an input hides the first editor's menus
+    ✘ L8 [firefox] moving focus to another editor or an input hides the first editor's menus
+    ✘ L8 [webkit] moving focus to another editor or an input hides the first editor's menus
+    ✓ L9 [chromium] collaboration setup, document switches and teardown release their connection
+    ✓ L9 [firefox] collaboration setup, document switches and teardown release their connection
+    ✓ L9 [webkit] collaboration setup, document switches and teardown release their connection
+
+    Error: modal must be above the menu (hit BUTTON)
+    Error: #bm-a did not hide: {"selection":"Editor b text","editors":{"a":{"focus":false,"from":1,"to":14},"b":{"focus":true,"from":1,"to":14}}}
+
+    6 failed
+    21 passed (55.4s)
+
+With this branch's initialize.js the same command passes 27/27 (see verification.md).
+
+## Real Bubble, deployed development version, 2026-09-25
+
+    node tests/browser/check-demo-menu-lifecycle.mjs    # version-test/tiptap-demo
+
+    ok   selecting text shows the menu above the editor {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true}
+    FAIL moving to another editor hides the menu {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":false}
+    FAIL a closed popup does not lift the menu above that popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"closedPopupZIndex":2002}
+    2 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo
+
+## Same page with this branch's initialize.js served in place of origin/main's
+
+    node tests/browser/check-demo-menu-lifecycle.mjs --local-initialize=origin/main
+
+    Serving local initialize.js in place of origin/main
+    ok   selecting text shows the menu above the editor {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true}
+    ok   moving to another editor hides the menu {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false}
+    ok   a closed popup does not lift the menu above that popup {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true,"closedPopupZIndex":2002}
+    All checks passed on https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo
