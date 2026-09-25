@@ -6,6 +6,12 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### 🔔 Start a workflow when someone is mentioned
+
+- New **Mention created** event fires once when a user picks someone from the mention list. Use it to notify the mentioned person without comparing Content (JSON).
+- New states **Created mention ID**, **Created mention label** and **Created mention trigger character** hold that mention. They are set before the event fires, so read them in the workflow.
+- Pasted or dropped mentions, undo/redo, initial content, **Set content**, autobinding loads, resets and edits from other collaborators do not fire it. Each editor on a page fires only its own event. Saved mention content is unchanged.
+
 ### 🛡️ Failed editor setup leaves nothing half-built
 
 - If the editor can't be created, everything setup had already created is removed: the editor box, menu groups (put back where they were), the collaboration connection, and the shared document. Unsaved text waiting for a rebuild is kept for the next try.

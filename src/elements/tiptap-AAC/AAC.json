@@ -584,6 +584,11 @@
   },
   "display": "Tiptap",
   "events": {
+    "mention_created": {
+      "caption": "Mention created",
+      "name": "mention_created",
+      "doc": "Fires once when a user picks someone from the mention list and the mention is added. Read Created mention ID, Created mention label and Created mention trigger character in this event. Does not fire for pasted or dropped mentions, undo/redo, initial content, Set content, autobinding loads, resets, or changes from other collaborators. Picking the same person again fires again."
+    },
     "image_deleted": {
       "caption": "Image deleted",
       "name": "image_deleted",
@@ -2556,6 +2561,36 @@
     "resizable": true
   },
   "states": {
+    "mentioned_id": {
+      "caption": "Created mention ID",
+      "doc": "The ID of the mention a user last picked from the mention list, as text. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "mentioned_id",
+      "value": "text"
+    },
+    "mentioned_label": {
+      "caption": "Created mention label",
+      "doc": "The label (display name) of the mention a user last picked from the mention list. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "mentioned_label",
+      "value": "text"
+    },
+    "mentioned_trigger_char": {
+      "caption": "Created mention trigger character",
+      "doc": "The trigger character (for example @ or #) of the mention a user last picked from the mention list. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "mentioned_trigger_char",
+      "value": "text"
+    },
     "removed_image_urls": {
       "caption": "Removed image URLs",
       "doc": "Distinct image src values that lost their last reference in the latest document-changing edit. Published before Image deleted, so read this list inside that event. Repeated uses of a URL must all be removed before it is reported. Cleared by the next document-changing transaction, document replacement, reset or rebuild; selection-only changes leave it unchanged. URLs are compared exactly, without normalization. These are removal notifications, not proof that stored files are safe to delete.",
