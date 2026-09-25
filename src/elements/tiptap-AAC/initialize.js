@@ -737,6 +737,18 @@ try {
         ]));
     };
 
+    // Provider-specific resources (rooms, subscriptions) are released in
+    // reverse acquisition order, exactly once, however often teardown runs.
+    instance.data._collabDisposers = [];
+    instance.data.disposeCollabResources = function () {
+        const disposers = instance.data._collabDisposers;
+        instance.data._collabDisposers = [];
+        while (disposers.length) {
+            try { disposers.pop()(); }
+            catch (error) { instance.data.debug("error disposing collaboration resource:", error); }
+        }
+    };
+
     instance.data._collabRetryCount = 0;
     instance.data._collabAuthFailed = false;
     const COLLAB_MAX_ATTEMPTS = 5;
@@ -787,13 +799,11 @@ try {
             instance.data.editor = null;
         }
 
-        if (instance.data._leaveCollabRoom) {
-            try { instance.data._leaveCollabRoom(); }
-            catch (error) { instance.data.debug("error leaving collaboration room:", error); }
-            finally { instance.data._leaveCollabRoom = null; }
-        }
-        if (instance.data._collabDocument && instance.data._collabDocument !== instance.data._pendingCollabDocument) {
-            instance.data._collabDocument.destroy();
+        instance.data.disposeCollabResources();
+        // Liveblocks destroys the document it was given; destroy only once.
+        const collabDocument = instance.data._collabDocument;
+        if (collabDocument && collabDocument !== instance.data._pendingCollabDocument && !collabDocument.isDestroyed) {
+            collabDocument.destroy();
         }
         instance.data._collabDocument = null;
 
@@ -1147,6 +1157,12 @@ try {
 
         const { createClient, LiveblocksProvider, Collaboration } = window.tiptap;
 
+        const generation = instance.data._collabGeneration;
+        const current = (handler) => (...args) => {
+            if (generation === instance.data._collabGeneration) handler(...args);
+        };
+        const own = (dispose) => instance.data._collabDisposers.push(dispose);
+
         try {
             const client = createClient({
                 publicApiKey: properties.liveblocksPublicApiKey,
@@ -1155,11 +1171,56 @@ try {
             const { room, leave } = client.enterRoom(properties.collab_doc_id, {
                 initialPresence: {},
             });
+            own(leave);
 
-            instance.data._leaveCollabRoom = leave;
+            // Liveblocks' room status is the connection state; the provider's
+            // sync event says whether the shared document has loaded.
+            let Provider = null;
+            const publishUsers = () => {
+                if (Provider) instance.publishState("collab_connected_users", Provider.awareness.getStates().size);
+            };
+            // Report connection errors once until the room connects again, without
+            // the raw payload: provider messages can contain room names or credentials.
+            let errorReported = false;
+            const publishRoomStatus = (status) => {
+                if (status === "connected") errorReported = false;
+                publishUsers();
+                instance.data.publishCollabStatus(status === "connected" || status === "disconnected" ? status : "connecting");
+                if (status !== "connected" && instance.data.collabHasSynced) publishSynced(false);
+            };
+            const publishSynced = (synced) => {
+                if (synced === instance.data.collabHasSynced) return;
+                instance.data.collabHasSynced = synced;
+                instance.publishState("collab_synced", synced);
+                if (!synced) return;
+                instance.data.debug("Liveblocks synced");
+                instance.triggerEvent("collab_synced");
+                instance.data.maybeSetCollabInitialContent();
+            };
+            own(room.subscribe("status", current(publishRoomStatus)));
+            own(room.subscribe("others", current(publishUsers)));
+            own(room.subscribe("my-presence", current(publishUsers)));
+            own(room.subscribe("error", current((error) => {
+                let message;
+                if (error?.context?.type === "ROOM_CONNECTION_ERROR") {
+                    if (errorReported) return;
+                    errorReported = true;
+                    const code = error.context.code;
+                    message = "Liveblocks connection error" + (code === undefined ? "" : " (code " + code + ")") +
+                        ". Check the public API key and the room's permissions.";
+                } else {
+                    message = "Liveblocks error" + (error?.context?.type ? " (" + error.context.type + ")" : "") + ".";
+                }
+                instance.data.debug(message);
+                context.reportDebugger(message);
+            })));
+
             const yDoc = instance.data._collabDocument;
-            const Provider = new LiveblocksProvider(room, yDoc);
+            Provider = new LiveblocksProvider(room, yDoc);
             instance.data.provider = Provider;
+            Provider.on("sync", current(publishSynced));
+            publishRoomStatus(room.getStatus());
+            if (Provider.synced) publishSynced(true);
 
             extensions.push(
                 Collaboration.configure({
