@@ -49,7 +49,7 @@ systemctl --user enable --now tiptap-factory.timer
 journalctl --user -u tiptap-factory.service -n 20     # decisions and errors
 ```
 
-A failed dispatch exits non-zero and shows in the journal. Its `starting` receipt keeps every later run reporting "busy … unfinished dispatch" until someone inspects it. That's deliberate: never start duplicate work.
+Every run (including dry runs and paused runs) reads Linear and the local T3 server; if either is down, the run fails and dispatches nothing. A failed dispatch exits non-zero and shows in the journal. Its `starting` receipt keeps every later run reporting "busy … unfinished dispatch" until someone inspects it. That's deliberate: never start duplicate work.
 
 ## What's left for the maintainer
 

@@ -312,6 +312,10 @@ def dispatch(policy, kind, issue):
         else:
             git('worktree', 'add', '--quiet', '--no-track', '-b', branch, worktree, base, cwd=repo)
         values.update(worktree=worktree, branch=branch, base_sha=base[:7])
+    if kind == 'fix' and attempt > 1:
+        # Reworked code needs a fresh approval. Done while the receipt is still
+        # `starting`, so a failure here leaves the factory stopped, not shipping.
+        remove_label(policy, issue, policy['promotion']['ship_label'])
     prompt_file = directory / 'prompt.md'
     prompt_file.write_text(render(policy, kind, **values))
 
@@ -338,9 +342,6 @@ def dispatch(policy, kind, issue):
     thread_id = result['receipt']['threadId']
     receipt.update(status='started', threadId=thread_id, branch=branch, worktree=worktree)
     receipt_path.write_text(json.dumps(receipt, indent=2))
-    if kind == 'fix' and attempt > 1:
-        # Reworked code needs a fresh approval.
-        remove_label(policy, issue, policy['promotion']['ship_label'])
     comment(policy, issue, f"Factory started a {kind} session: T3 thread `{thread_id}`"
             + (f", branch `{branch}`, worktree `{worktree}`." if branch else '.'))
     return receipt
