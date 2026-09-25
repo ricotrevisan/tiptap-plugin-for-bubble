@@ -59,7 +59,8 @@ content and collaborators from sending the same notification again.
    quirk, kept on purpose: the plugin's own insertion does not set
    `mentionSuggestionChar`, so the JSON stores the default `@` even in an editor
    using `#`. Use **Created mention trigger character** for the real
-   character. The rendered HTML already uses the configured character.
+   character. The visible mention text uses the configured character; the
+   `data-mention-suggestion-char` HTML attribute still stores `@`.
 8. **Each acceptance is separate.** Mentioning the same person twice fires
    twice. Notification workflows that must not repeat should deduplicate in
    Bubble (for example "only when this person is not already notified for this
