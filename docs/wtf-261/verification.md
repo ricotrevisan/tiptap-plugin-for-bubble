@@ -15,7 +15,7 @@
 - The existing editor keeps **File uploads enabled = no** (`file_upload_condition: false`).
 
 ## Real-preview check
-URL: https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-73kna/tiptap-demo
+URL: https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-73kna/tiptap-demo (branch since deleted; the demo is now on `version-test` and Live)
 
 | Step | Result |
 | --- | --- |
@@ -27,5 +27,16 @@ URL: https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-73kna/tiptap-demo
 
 Screenshot: `demo-mention-created.png`.
 
-## Not done
-The Bubble branch has not been merged into `test` or `live`, and there has been no Marketplace release. Both need separate owner approval.
+## Release (2026-09-25)
+- Bubble branch `wtf-261-mention` was merged into Main (`test`) with no conflicts. Savepoint `1790335273000` was taken first. On `version-test/tiptap-demo`, Enter on Rico gave "Mention created fired: 1 times" with Rico's ID and `@`.
+- **The first Deploy to Live was blocked:** "You cannot deploy your app because there are 13 issues". `test` already had the same 13 issues before this merge.
+- **Issues fixed on a second branch, `wtf-261-live-issues` (`13kns`):** savepoint `1790343850428` was taken first, and the diff is in the release evidence. It changes 17 values in 8 files:
+  - bubbleex I59/I61/I63 inputs: invalid raw formats replaced with valid Bubble types. Decimal becomes `float_number`, Percent `percentage`, Address `geographic_address`, Numbers `int_number`, DateTime `datetime-local`. bubble_ex keeps frozen copies of these pages, so its tests are unaffected.
+  - Three Modern Dropdown demo elements get `return_data_type: "text"`.
+  - The three Tiptap test editors get **File uploads enabled = no**.
+  - In `editor_reusable_v2`, the stale `AEH` condition becomes a static `collab_app_id` equal to the parameter's default. The reusable is not used on any page.
+- Bubble's issue list is cached and only rechecks an element when it is opened. After each flagged element was opened, the branch showed 0 issues.
+- Merged into Main (savepoint `1790344264973`): 17 non-conflicting changes, no conflicts. `test` showed 0 issues.
+- **Deployed Main to Live (Web):** "Web deployment successful". `tiptap-demo` in Live loads all 10 editors and the Mention created readout. The Live mention list is empty because the Live database has no User records.
+- After the Live deploy, `wtf-261-mention` (`73kna`) was deleted, with owner approval. `buildprint branch list` no longer lists it. `wtf-261-live-issues` (`13kns`) is merged and kept until the owner decides whether to delete it.
+- **Marketplace:** published **v4.12.0** (minor, MIT, not obfuscated) from main, with `pled status` In sync. It includes WTF-261, WTF-250 and WTF-248. Description: "Mention created event with mention ID, label and trigger states. New Setup error state. Liveblocks reports real sync."
