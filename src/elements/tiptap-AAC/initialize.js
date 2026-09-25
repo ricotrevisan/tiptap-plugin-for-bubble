@@ -49,6 +49,11 @@ try {
     instance.publishState("collab_status", "disconnected");
     instance.publishState("collab_synced", false);
     instance.publishState("collab_connected_users", 0);
+    // Latest mention created from the suggestion list. Kept until the next one
+    // so a Mention created workflow can still read it (docs/wtf-261).
+    instance.publishState("mentioned_id", "");
+    instance.publishState("mentioned_label", "");
+    instance.publishState("mentioned_trigger_char", "");
 
     //    instance.canvas.cfss({'overflow':'scroll'});
 
@@ -1248,6 +1253,7 @@ instance.data.MentionList = class MentionList {
         this.command = props.command;
         this.selectedIndex = 0;
         this.randomId = props.randomId;
+        this.triggerChar = props.triggerChar;
         this.editor = editor;
         this.initElement();
         this.updateItems(this);
@@ -1299,9 +1305,13 @@ instance.data.MentionList = class MentionList {
         const item = this.items[index];
         const editor = this.editor;
         const range = this.range;
+        // Nothing matched (or items are still loading): insert nothing rather
+        // than an empty mention.
+        if (!item) return;
 
-        if (item && range) {
-            editor.commands.insertContentAt(range, {
+        let inserted;
+        if (range) {
+            inserted = editor.commands.insertContentAt(range, {
                 type: "mention",
                 attrs: {
                     label: item.label,
@@ -1311,7 +1321,18 @@ instance.data.MentionList = class MentionList {
             editor.commands.insertContent(" ");
             editor.commands.setTextSelection(range.from + 1);
         } else {
+            const docBefore = editor.state.doc;
             this.command(item);
+            inserted = editor.state.doc !== docBefore;
+        }
+
+        // Only a user's local suggestion acceptance announces a mention; paste,
+        // undo/redo, loaded content and remote edits never reach this path.
+        if (inserted) {
+            instance.publishState("mentioned_id", item.id == null ? "" : String(item.id));
+            instance.publishState("mentioned_label", item.label == null ? "" : String(item.label));
+            instance.publishState("mentioned_trigger_char", this.triggerChar);
+            instance.triggerEvent("mention_created");
         }
     }
 
@@ -1355,8 +1376,9 @@ instance.data.MentionList = class MentionList {
 };
 
 function configureSuggestion(instance, properties) {
+    const char = properties.mention_triggerChar || "@";
     return {
-        char: properties.mention_triggerChar || "@",
+        char,
         items: ({ query }) => {
             if (typeof query !== "string") {
                 // console.log("thing passed to Mention is not a string, returning. Typeof query: ", typeof query);
@@ -1382,6 +1404,7 @@ function configureSuggestion(instance, properties) {
             return {
                 onStart: (props) => {
                     props.randomId = instance.data.randomId;
+                    props.triggerChar = char;
                     component = new instance.data.MentionList({
                         props,
                         editor: props.editor,

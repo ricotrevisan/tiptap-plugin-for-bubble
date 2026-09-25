@@ -10,12 +10,13 @@ CI builds before running Playwright and uploads failure traces. The server binds
 
 The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
-Eight scenarios run in all three engines (24 browser tests total):
+Nine scenarios run in all three engines (27 browser tests total):
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
 - Extension rebuild preserves unsaved text; the internal teardown destroys the editor and update remounts it while a second instance remains independent.
 - Keyboard mention selection exercises shared list `length/get` and Thing `get` through the actual adapter and runtime.
+- Enter and click mention selection publish ID/label/trigger before **Mention created** fires once each; keyboard undo/redo does not fire.
 - Two collaborators preserve edits and repaint caret names/colors through runtime provider reconfiguration.
 - Real **Find**, **Replace**, and **Replace all** actions work after toggling **Find & Replace**, while preserving the draft.
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
