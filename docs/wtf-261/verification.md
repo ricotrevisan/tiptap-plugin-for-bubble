@@ -15,7 +15,7 @@
 - The existing editor keeps **File uploads enabled = no** (`file_upload_condition: false`).
 
 ## Real-preview check
-URL: https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-73kna/tiptap-demo
+URL: https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-73kna/tiptap-demo (branch since deleted; the demo is now on `version-test` and Live)
 
 | Step | Result |
 | --- | --- |
@@ -38,5 +38,5 @@ Screenshot: `demo-mention-created.png`.
 - Bubble's issue list is cached and only rechecks an element when it is opened. After each flagged element was opened, the branch showed 0 issues.
 - Merged into Main (savepoint `1790344264973`): 17 non-conflicting changes, no conflicts. `test` showed 0 issues.
 - **Deployed Main to Live (Web):** "Web deployment successful". `tiptap-demo` in Live loads all 10 editors and the Mention created readout. The Live mention list is empty because the Live database has no User records.
-- The `wtf-261-mention` branch was deleted after the merge; it is no longer listed.
+- After the Live deploy, `wtf-261-mention` (`73kna`) was deleted, with owner approval. `buildprint branch list` no longer lists it. `wtf-261-live-issues` (`13kns`) is merged and kept until the owner decides whether to delete it.
 - **Marketplace:** published **v4.12.0** (minor, MIT, not obfuscated) from main, with `pled status` In sync. It includes WTF-261, WTF-250 and WTF-248. Description: "Mention created event with mention ID, label and trigger states. New Setup error state. Liveblocks reports real sync."
