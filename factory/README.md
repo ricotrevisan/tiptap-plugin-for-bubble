@@ -6,7 +6,7 @@ A scheduled loop on `lab` that takes this project's Linear tickets through fix, 
 
 | Linear | Who | What happens |
 | --- | --- | --- |
-| Backlog/Todo + `ready-for-agent` | Maintainer (triage) | The queue. Todo comes before Backlog, then Linear priority, then oldest. Tickets assigned to someone else, or blocked by an open ticket, are skipped. |
+| Backlog/Todo + `ready-for-agent` | Maintainer (triage) | The queue. Todo comes before Backlog, then Linear priority, then oldest. Tickets blocked by an open ticket, or assigned to anyone except the Linear API user (the maintainer's own account), are skipped. To keep a ticket out, use `ready-for-human` or remove `ready-for-agent`. |
 | In Progress | Fix session | Worktree + branch from `origin/main`, regression test first, fix, full gates, PR, independent review receipt + drummer review. |
 | In Review | Maintainer | Reads the PR and the ticket's closing comment. Add **`ship-approved`** to ship. To send it back, comment what to change and move the ticket to Todo: the next run starts a rework session on the same branch and PR. |
 | In Review + `ship-approved` | Ship session | Refreshes the PR if main moved (re-gated and re-reviewed), guarded merge, `pled push` of only this ticket, check on `tiptap-demo`, baseline commit, Done, removes the worktree. |
@@ -33,7 +33,8 @@ Each dispatch writes `~/.t3/task-handoffs/tiptap-factory/<ticket>-<fix|ship>/`: 
 
 - `factory.json` is written before anything else happens. If a dispatch dies partway, its status stays `starting` and the whole factory stays stopped. Check whether the T3 thread started and whether the worktree exists, then either fix `factory.json` or delete the directory.
 - A fix is dispatched once per ticket, plus once per rework round (earlier receipts are kept as `factory.1.json`, …).
-- A ship is dispatched once. To retry a blocked ship, delete its `-ship` directory.
+- A ship is dispatched once per approval. A ship session that blocks removes `ship-approved` itself. Once the factory has seen the label gone, adding it again ships again.
+- The factory records that a fix reached In Review on its next run (every 30 minutes, even while paused). If a ticket goes to review and back to Todo between two runs, the factory can't see it was reviewed and stays busy; set `"reachedReview": true` in its `factory.json`.
 
 Sessions run as Claude Code, `claude-opus-5-5`, medium effort, full access (`[session.model]` in the policy).
 

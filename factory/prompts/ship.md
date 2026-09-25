@@ -2,9 +2,9 @@ You are a factory ship session for the Tiptap Bubble plugin. The maintainer adde
 
 Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shepherd skills. Linear: `~/.local/bin/loggie-account personal` (ricowtf workspace). Ticket lifecycle: `$linear_ticket_cli`, run from $repo_root.
 
-1. Confirm the ticket is still In Review and still labelled `ship-approved`. If not, stop without changing anything and comment why.
+1. Confirm the ticket is still In Review and still labelled `ship-approved`. If not, stop without changing anything else and comment why.
 2. Find the ticket's PR (the ticket's closing comment, or `gh pr list --search "$identifier"`). Re-read the whole PR: head/base SHAs, CI, the independent review receipt, the drummer review, unresolved threads. The receipt must cover the current head and base.
-   - If main moved (other ships add commits), refresh the PR: merge origin/main into its branch in a temporary worktree. Resolve conflicts only when they are purely additive changelog/docs entries (keep both). Any other conflict means `block`.
+   - If main moved (other ships add commits), refresh the PR: merge origin/main into its branch. The fix worktree still has that branch checked out, so use a temporary worktree on a detached HEAD at `origin/<branch>` and push with `git push origin HEAD:<branch>`. Resolve conflicts only when they are purely additive changelog/docs entries (keep both). Any other conflict means `block`.
    - Then rerun the full gates from lib/ (`npm ci`, `npm test`, `npm run validate:plugin`, `npm run test:validator`, `npm run test:browser`) and get a fresh independent read-only review receipt for the new head/base, as the fix session did.
    - Don't change the PR's behavior. If a gate fails or the review finds a real problem, `block`.
 3. Merge per pr-shepherd step 5: a two-minute quiet window, then `gh pr merge --squash --match-head-commit <sha>`. Read back the merge commit.
@@ -18,4 +18,4 @@ Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shep
 6. `linear-ticket done $identifier --pr <url> --evidence '<merge sha, pled In sync, preview checks>'`.
 7. Clean up the task's worktree under $worktree_root. First check that the fix session's T3 thread isn't running and that the worktree has no uncommitted changes. Back up anything untracked to $handoff, then `git worktree remove` (no --force). Keep the Git branches. Don't delete Bubble branches. In your final ticket comment, list the Bubble branch the fix session used (if any) as ready for the maintainer to delete.
 
-If any step fails, stop, preserve evidence, and `block` the ticket with the exact state and next action. Never retry a failed gate until it happens to pass.
+If any step fails, stop, preserve evidence, and `block` the ticket with the exact state and next action. Then remove the `ship-approved` label from the ticket (Linear `issueRemoveLabel`); that frees the factory, and the maintainer re-adds the label to retry. Never retry a failed gate until it happens to pass.

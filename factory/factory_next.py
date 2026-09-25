@@ -52,7 +52,7 @@ def held_locks(issues, receipts, policy):
         issue = by_id.get(receipt['identifier'])
         if not issue or issue['state']['name'] in release[receipt['kind']]:
             continue
-        if reworking(issue, receipt, policy):
+        if reworking(issue, receipt, policy) or receipt.get('withdrawn') or unapproved(issue, receipt, policy):
             continue
         held.append(receipt)
     return held
@@ -63,14 +63,27 @@ def reworking(issue, receipt, policy):
             and issue['state']['name'] in policy['intake']['queue_states'])
 
 
+def unapproved(issue, receipt, policy):
+    """A ship whose label was withdrawn stops; it no longer holds the factory."""
+    return (receipt['kind'] == 'ship' and issue['state']['name'] == policy['states']['in_review']
+            and policy['promotion']['ship_label'] not in labels(issue))
+
+
 def mark_reviewed(issues, receipts, policy):
-    """Record fix receipts whose ticket is now In Review; returns those changed."""
-    in_review = {i['identifier'] for i in issues if i['state']['name'] == policy['states']['in_review']}
+    """Record what the factory observed: a fix whose ticket reached In Review,
+    and a ship whose label was withdrawn. Returns the receipts changed."""
+    by_id = {i['identifier']: i for i in issues}
     changed = []
     for receipt in receipts:
-        if (receipt['kind'] == 'fix' and receipt.get('status') == 'started'
-                and not receipt.get('reachedReview') and receipt['identifier'] in in_review):
+        issue = by_id.get(receipt['identifier'])
+        if not issue or receipt.get('status') != 'started':
+            continue
+        if (receipt['kind'] == 'fix' and not receipt.get('reachedReview')
+                and issue['state']['name'] == policy['states']['in_review']):
             receipt['reachedReview'] = True
+            changed.append(receipt)
+        elif receipt['kind'] == 'ship' and not receipt.get('withdrawn') and unapproved(issue, receipt, policy):
+            receipt['withdrawn'] = True
             changed.append(receipt)
     return changed
 
@@ -102,7 +115,10 @@ def decide(issues, receipts, policy, dispatched_today=0, viewer_id=None):
     if dispatched_today >= limits['max_dispatches_per_day']:
         return None, None, 'daily dispatch limit reached'
 
-    shipped = {r['identifier'] for r in receipts if r['kind'] == 'ship'}
+    # A label that was withdrawn and then added again ships again.
+    by_id = {i['identifier']: i for i in issues}
+    shipped = {r['identifier'] for r in receipts if r['kind'] == 'ship' and not r.get('withdrawn')
+               and not (r['identifier'] in by_id and unapproved(by_id[r['identifier']], r, policy))}
     ship_label = policy['promotion']['ship_label']
     to_ship = [i for i in issues if i['state']['name'] == states['in_review']
                and ship_label in labels(i) and i['identifier'] not in shipped]
@@ -115,7 +131,6 @@ def decide(issues, receipts, policy, dispatched_today=0, viewer_id=None):
         return None, None, f'{len(waiting)} tickets wait for review'
 
     # A reviewed ticket moved back to the queue is dispatched again (rework).
-    by_id = {i['identifier']: i for i in issues}
     fixed = {r['identifier'] for r in receipts if r['kind'] == 'fix'
              and not (r['identifier'] in by_id and reworking(by_id[r['identifier']], r, policy))}
     blocked_labels = set(intake['human_only_labels'])
@@ -234,8 +249,12 @@ def dispatch(policy, kind, issue):
     directory = handoff_root(policy) / f'{identifier}-{kind}'
     previous = directory / 'factory.json'
     attempt = 1
-    if kind == 'fix' and previous.exists():
-        # Rework of a reviewed ticket: keep earlier receipts for the record.
+    earlier = json.loads(previous.read_text()) if previous.exists() else {}
+    if previous.exists():
+        # Only a released receipt may be superseded: never start duplicate work.
+        if not (earlier.get('reachedReview') or earlier.get('withdrawn')):
+            raise FileExistsError(f'{directory} holds an unreleased {kind} dispatch')
+        # Rework, or a re-approved ship: keep earlier receipts for the record.
         attempt = 2
         while (directory / f'factory.{attempt - 1}.json').exists():
             attempt += 1
@@ -256,13 +275,19 @@ def dispatch(policy, kind, issue):
         repo = session['repo_root']
         git('fetch', '--quiet', 'origin', cwd=repo)
         base = git('rev-parse', 'origin/main', cwd=repo)
-        branch = branch_name(issue)
-        worktree = str(Path(session['worktree_root']) / branch.split('/', 1)[1])
+        # Rework continues on the ticket's earlier branch, even if its title changed.
+        branch = earlier.get('branch') or branch_name(issue)
+        worktree = earlier.get('worktree') or str(Path(session['worktree_root']) / branch.split('/', 1)[1])
+
+        def exists(ref):
+            return subprocess.run(['git', 'rev-parse', '--verify', '--quiet', ref], cwd=repo,
+                                  capture_output=True).returncode == 0
         if Path(worktree).exists():
-            pass  # rework: continue in the ticket's existing worktree
-        elif subprocess.run(['git', 'rev-parse', '--verify', '--quiet', 'refs/heads/' + branch], cwd=repo,
-                            capture_output=True).returncode == 0:
+            pass  # continue in the existing worktree
+        elif exists('refs/heads/' + branch):
             git('worktree', 'add', '--quiet', worktree, branch, cwd=repo)
+        elif exists('refs/remotes/origin/' + branch):
+            git('worktree', 'add', '--quiet', '--track', '-b', branch, worktree, 'origin/' + branch, cwd=repo)
         else:
             git('worktree', 'add', '--quiet', '--no-track', '-b', branch, worktree, base, cwd=repo)
         values.update(worktree=worktree, branch=branch, base_sha=base[:7])
@@ -339,14 +364,15 @@ def main():
     if args.command == 'status':
         print(json.dumps(status(policy), indent=2))
         return
-    if (handoff_root(policy) / 'PAUSE').exists():
-        print(json.dumps({'action': None, 'reason': 'paused'}))
-        return
     receipts = load_receipts(policy)
     issues, viewer_id = fetch_issues(policy)
+    # Bookkeeping runs even while paused, so rework is recognized afterwards.
     for receipt in mark_reviewed(issues, receipts, policy):
         if args.dispatch:  # a dry run never writes
             save_receipt(receipt)
+    if (handoff_root(policy) / 'PAUSE').exists():
+        print(json.dumps({'action': None, 'reason': 'paused'}))
+        return
     kind, issue, reason = decide(issues, receipts, policy, dispatched_today(receipts), viewer_id)
     decision = {'action': kind, 'ticket': issue and issue['identifier'], 'reason': reason,
                 'dryRun': not args.dispatch}

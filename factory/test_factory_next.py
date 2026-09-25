@@ -1,5 +1,6 @@
 import copy
 import string
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -96,6 +97,17 @@ class Decide(unittest.TestCase):
         del issues[0]  # Done tickets aren't fetched
         self.assertEqual(decide(issues, shipping)[:2], ('fix', 'WTF-2'))
 
+    def test_withdrawn_ship_releases_and_can_ship_again(self):
+        approved = issue('WTF-1', 'In Review', labels=('ship-approved',))
+        withdrawn = issue('WTF-1', 'In Review', labels=())
+        ship = receipt('WTF-1', 'ship')
+        self.assertIsNone(decide([approved, issue('WTF-2')], [ship])[0])
+        # The session blocked and removed the label; the factory notices.
+        self.assertEqual(factory.mark_reviewed([withdrawn], [ship], POLICY), [ship])
+        self.assertEqual(decide([withdrawn, issue('WTF-2')], [ship])[:2], ('fix', 'WTF-2'))
+        # The maintainer adds the label again: ship again.
+        self.assertEqual(decide([approved, issue('WTF-2')], [ship])[:2], ('ship', 'WTF-1'))
+
     def test_review_backlog_limit(self):
         waiting = [issue(f'WTF-{n}', 'In Review') for n in range(1, 4)]
         self.assertIsNone(decide(waiting + [issue('WTF-9')])[0])
@@ -155,6 +167,32 @@ class Dispatch(unittest.TestCase):
         self.assertEqual(receipts[0]['status'], 'starting')
         self.assertIsNone(decide([issue('WTF-2')], receipts, self.policy)[0])
         self.assertEqual(self.comments, [])
+
+
+    def test_rework_reuses_branch_and_worktree(self):
+        root = Path(self.tmp.name)
+        origin, repo = root / 'origin.git', root / 'repo'
+        run = lambda *args, cwd=root: subprocess.run(args, cwd=cwd, check=True, capture_output=True)
+        run('git', 'init', '--quiet', '--bare', '-b', 'main', str(origin))
+        run('git', 'clone', '--quiet', str(origin), str(repo))
+        run('git', '-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '--quiet', '--allow-empty', '-m', 'init', cwd=repo)
+        run('git', 'push', '--quiet', 'origin', 'main', cwd=repo)
+        self.policy['session'].update(repo_root=str(repo), worktree_root=str(root / 'worktrees'),
+                                      handoff_root=str(root / 'handoffs'))
+        patch, seen = self.helper()
+        with patch:
+            first = factory.dispatch(self.policy, 'fix', issue('WTF-5', title='Original title'))
+            self.assertEqual(first['branch'], 'feat/wtf-5-original-title')
+            self.assertTrue(Path(first['worktree']).is_dir())
+            [reviewed] = factory.load_receipts(self.policy)
+            factory.mark_reviewed([issue('WTF-5', 'In Review')], [reviewed], self.policy)
+            factory.save_receipt(reviewed)
+            second = factory.dispatch(self.policy, 'fix', issue('WTF-5', title='Renamed while in review'))
+        self.assertEqual((second['branch'], second['worktree'], second['attempt']),
+                         (first['branch'], first['worktree'], 2))
+        self.assertTrue(seen['title'].endswith('(rework 1)'))
+        handoff = Path(self.policy['session']['handoff_root']) / 'WTF-5-fix'
+        self.assertTrue((handoff / 'factory.1.json').exists() and (handoff / 'prompt.1.md').exists())
 
 
 class FakeClient:
