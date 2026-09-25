@@ -37,7 +37,7 @@ Two real-Bubble checks are not Playwright tests and are not in CI:
 
 Add `--local-initialize=<git ref>` to preview this checkout's `initialize.js` there before a `pled push` (see `real-bubble.mjs`).
 
-`tiptap-cloud.spec.mjs` runs the plugin's Tiptap Cloud provider against the real Tiptap Cloud: two shared sessions, and a rejected token that recovers. It is skipped unless `TIPTAP_CLOUD_APP_ID` and `TIPTAP_CLOUD_SECRET` are set; see its header for the 1Password references. CI has no credentials, so it reports skipped there.
+`tiptap-cloud.spec.mjs` runs the plugin's Tiptap Cloud provider against the real Tiptap Cloud: two shared sessions, and a rejected token that recovers. It is skipped unless `TIPTAP_CLOUD_APP_ID`, `TIPTAP_CLOUD_SECRET` and `TIPTAP_CLOUD_API_TOKEN` are set; see its header for the 1Password references. CI has no credentials, so it reports skipped there.
 
 The WTF-260 real-database autobinding probes (`*.py`) run against the `wtf-260-autobinding` page on `test`. Set `WTF260_WORKSPACE` to a Buildprint clone of `test`, then run `python3 open-autobinding-fixture.py`, then any probe.
 

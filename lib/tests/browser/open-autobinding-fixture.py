@@ -6,6 +6,9 @@ import json
 import subprocess
 from autobinding_test_support import PREVIEW, RECORD_A, RECORD_B, VERSION, WORKSPACE, wait_ready
 
+if not WORKSPACE:
+    raise SystemExit('Set WTF260_WORKSPACE to a Buildprint workspace of tiptap-plugin before resetting records')
+
 # Reset both disposable records to canonical HTML. Editors normalize markup
 # (for example leading spaces), so non-canonical stored HTML can never compare
 # equal to the editor's HTML.

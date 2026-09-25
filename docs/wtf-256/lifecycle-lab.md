@@ -47,9 +47,10 @@ Bubble Menu / Floating Menu groups behave on a Bubble-shaped page. It has two la
      token.
 
    Tokens are signed locally for one document and expire after 15 minutes.
-   The document is deleted afterwards. Credentials come from the 1Password
-   item `tiptap-cloud` (see the spec header); without them the spec is
-   skipped.
+   The document is deleted afterwards through the REST API. All three
+   credentials from the 1Password item `tiptap-cloud` are required (see the
+   spec header); without them the spec is skipped. Tracing is off for this
+   spec, so signed tokens stay out of failure traces.
 
 The fast Node tests (`menu-ownership-lifecycle.mjs`,
 `floating-menu-hidden-guard.mjs`, …) remain the first layer.

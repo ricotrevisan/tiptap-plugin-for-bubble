@@ -292,6 +292,18 @@ The maintainer answered the round-2 questions:
   - All 5 Buildprint tests are active on `test`.
 - **`code_highlight`:** source recovered from the 2026-08-21 snapshot. The
   rebuild waits on Buildprint access to `nocode-to-knowcode`.
+- **Review of `6af5cfd`: approve with findings, none blocking.** All four are
+  fixed in the next commit:
+  1. **Low:** `open-autobinding-fixture.py` now refuses to write without
+     `WTF260_WORKSPACE`.
+  2. **Low:** tracing is off in the Tiptap Cloud spec, because signed tokens
+     reached local failure traces.
+  3. **Nit:** the spec now needs all three credentials, so documents are
+     always deleted.
+  4. **Nit:** sessions open inside `try`, so cleanup always runs.
+
+  After the fixes, real Tiptap Cloud passed 6/6 again, with every document
+  deleted.
 
 ## Not covered (follow-ups)
 
