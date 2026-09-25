@@ -2,7 +2,7 @@
 
 A full-featured rich text editor for [Bubble.io](https://bubble.io) built on [Tiptap v3](https://tiptap.dev). Drop it into any Bubble app and get a modern editing experience — formatting, tables, images, collaboration, and 55+ editor actions — without writing a line of code inside Bubble.
 
-**[Install the plugin](https://bubble.io/plugin/rich-text-editor-tiptapdev-1670612027178x122079323974008830)** · **[Live demo](https://tiptap-demo.bubbleapps.io/version-test/doc/demo)**
+**[Install the plugin](https://bubble.io/plugin/rich-text-editor-tiptapdev-1670612027178x122079323974008830)** · **[Live demo](https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo)** (login `tippy` / `tappy`) · **[Recipes](docs/recipes.md)**
 
 ---
 
@@ -22,6 +22,12 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 - **55+ workflow actions** — Control the editor programmatically from Bubble workflows
 - **Keyboard & Markdown shortcuts** — Standard editor shortcuts plus Markdown-style triggers
 - **Fully customizable** — CSS overrides for every element, per-extension toggles, debug mode
+
+---
+
+## Recipes
+
+[docs/recipes.md](docs/recipes.md) has short, tested setups for saving with a button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. Each one is running on the demo page.
 
 ---
 

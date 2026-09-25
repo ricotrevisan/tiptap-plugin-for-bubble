@@ -6,6 +6,14 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### 📘 Recipes for saving, collaboration, menus and read-only text
+
+- New [recipes](docs/recipes.md) with short, tested setups: a Save button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud.
+- They explain who owns the document in each setup, and what **Content updated** means in each (handed to Bubble, not stored).
+- The demo page has two new sections, "Save to your database" and "Edit together, live", that run these recipes.
+- The README now links the current demo page.
+- Saving through Tiptap Cloud webhooks doesn't work in Bubble yet: Bubble can't pass the webhook's document object to **convert webhook payload to HTML**. The recipes show a Save-a-copy button instead.
+
 ### 🔔 Start a workflow when someone is mentioned
 
 - New **Mention created** event fires once when a user picks someone from the mention list. Use it to notify the mentioned person without comparing Content (JSON).
