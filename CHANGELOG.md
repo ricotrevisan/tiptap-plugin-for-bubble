@@ -13,6 +13,8 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 - With the caret right after a link, the **link** state is now *no*, and **Set link** starts a new link there instead of removing the one before it. If a Link button is highlighted from the **link** state, it now lights up only inside a link.
 - **Remove link**, autolink, pasted content and saved HTML/JSON work as before. To make an existing link longer, select the text and use **Set link**.
 
+## v4.12.0
+
 ### 🔔 Start a workflow when someone is mentioned
 
 - New **Mention created** event fires once when a user picks someone from the mention list. Use it to notify the mentioned person without comparing Content (JSON).
