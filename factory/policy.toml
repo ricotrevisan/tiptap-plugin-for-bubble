@@ -1,0 +1,57 @@
+# Tiptap software factory policy. Reviewed like code: change it through a PR.
+# factory/factory_next.py reads this file; factory/README.md explains the loop.
+
+# Master switch. Creating ~/.t3/task-handoffs/tiptap-factory/PAUSE also stops dispatch.
+enabled = true
+
+[linear]
+loggie_account = "personal"
+workspace_url_key = "ricowtf"
+project_id = "1aca6724-a0c1-4f95-a37f-9fd367e37736"
+
+[intake]
+# Tickets the factory may pick up: this label, in one of these states (earlier
+# state wins, then Linear priority, then oldest).
+ready_label = "ready-for-agent"
+queue_states = ["Todo", "Backlog"]
+# Never picked up, even when also labelled ready-for-agent.
+human_only_labels = ["ready-for-human", "requires-subscription", "needs-info", "needs-triage", "wontfix", "security"]
+# Specific tickets kept out of the queue (reason in a comment).
+exclude = []
+
+[states]
+in_progress = "In Progress"
+in_review = "In Review"
+# A fix session holds the factory until its ticket reaches one of these.
+releases_fix_lock = ["In Review", "Done", "Canceled", "Duplicate"]
+# A ship session holds the factory until its ticket reaches one of these.
+releases_ship_lock = ["Done", "Canceled", "Duplicate"]
+
+[promotion]
+# Maintainer's approval to merge the PR, pled push the development version and
+# verify it. Marketplace releases are never done by the factory.
+ship_label = "ship-approved"
+
+[limits]
+# One ticket at a time: the plugin development version, the dev app's data and
+# Bubble branch slots are shared.
+max_active = 1
+# Don't start new fixes while this many tickets wait for maintainer review.
+max_waiting_review = 3
+max_dispatches_per_day = 4
+
+[session]
+repo_root = "/home/rico/bubble-plugins/tiptap-plugin-for-bubble"
+worktree_root = "/home/rico/.t3/worktrees/tiptap-plugin-for-bubble"
+handoff_root = "/home/rico/.t3/task-handoffs/tiptap-factory"
+t3_helper = "/home/rico/.agents/skills/t3-thread-management/scripts/t3_threads.py"
+linear_ticket_cli = "/home/rico/.agents/skills/linear-ticket-workflow/scripts/linear-ticket"
+# Any existing thread in the Tiptap T3 project; only its identity is borrowed.
+# The model and runtime below are always applied.
+source_thread = "785028d6-a4d5-4228-ba49-11f9abf4922d"
+runtime_mode = "full-access"
+
+[session.model]
+instanceId = "claudeAgent"
+model = "claude-opus-5-5"
+options = [{ id = "effort", value = "medium" }, { id = "fastMode", value = false }]

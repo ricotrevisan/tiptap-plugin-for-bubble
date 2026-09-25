@@ -1,0 +1,9 @@
+[Unit]
+Description=Tiptap software factory: start the next ticket session
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/rico/bubble-plugins/tiptap-plugin-for-bubble
+Environment=PATH=/home/rico/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 factory/factory_next.py --dispatch
