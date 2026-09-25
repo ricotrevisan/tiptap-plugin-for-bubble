@@ -6,6 +6,12 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### 🧭 Bubble Menu and Floating Menu hide and stack correctly
+
+- When you click into another editor, an input or any other focusable element, the previous editor's **Bubble Menu** and **Floating Menu** now hide. Before, they stayed visible and clickable until you clicked empty space.
+- A menu no longer appears above a popup. Before, after any popup on the page had been opened and closed once, menus shown later were placed above that popup, so a popup opened from a menu button (for example to add a link) appeared under the menu.
+- New lifecycle lab, run on every change in Chromium, Firefox and WebKit. It checks hidden menus, stacking, clicks, multiple editors, rebuilds, leftover resources and collaboration connections.
+
 ### 🔔 Start a workflow when someone is mentioned
 
 - New **Mention created** event fires once when a user picks someone from the mention list. Use it to notify the mentioned person without comparing Content (JSON).
