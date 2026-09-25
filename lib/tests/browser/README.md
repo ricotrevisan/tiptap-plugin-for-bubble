@@ -22,9 +22,20 @@ The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded ini
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
 
-`lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab (`lab.html`: a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area and resource counters). It has nine cases in all three engines (27 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. That covers menu hit-testing, stacking, exact-once actions, multi-editor isolation, rebuild leaks and collaboration connections.
+`lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab. `lab.html` is a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area, resource counters, a Bubble-like autobinding record store, and the in-memory Liveblocks service. There are 14 cases in all three engines (42 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. The cases cover:
+- menu hit-testing and stacking;
+- exact-once actions and multi-editor isolation;
+- rebuild leaks;
+- autobinding convergence, record switches and blur;
+- Hocuspocus, Liveblocks and rejected-token lifecycles.
 
-`check-demo-menu-lifecycle.mjs` is not a Playwright test and not in CI. It runs the same menu checks against real Bubble (`tiptap-demo`). Use `--local-initialize=<git ref>` to preview this checkout's `initialize.js` there before a `pled push`.
+The collaboration cases start local Hocuspocus servers. The token case waits out the plugin's real 15-second backoff.
+
+Two real-Bubble checks are not Playwright tests and are not in CI:
+- `check-bubble-lab.mjs` runs on the `lifecycle-lab` page.
+- `check-demo-menu-lifecycle.mjs` runs on `tiptap-demo`.
+
+Add `--local-initialize=<git ref>` to preview this checkout's `initialize.js` there before a `pled push` (see `real-bubble.mjs`).
 
 `publishAutobinding` is an explicit fixture output recorder. With autobinding disabled, typing must not call it. Tests observe adapter outputs without simulating persistence. Bubble reset remains disabled; the teardown test invokes the internal lifecycle function directly. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
 

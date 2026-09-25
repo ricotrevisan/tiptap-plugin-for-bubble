@@ -2,7 +2,7 @@
 
 ## Automated lab, origin/main initialize.js, 2026-09-25
 
-initialize.js is identical at 321e20b (branch start) and f2c4f9f (PR base).
+`initialize.js` is identical at 321e20b (branch start), f2c4f9f and 9d46395 (current base).
 
 Command (from lib/), with src/elements/tiptap-AAC/initialize.js temporarily
 replaced by `git show origin/main:src/elements/tiptap-AAC/initialize.js`:
@@ -36,30 +36,109 @@ replaced by `git show origin/main:src/elements/tiptap-AAC/initialize.js`:
     ✓ L9 [chromium] collaboration setup, document switches and teardown release their connection
     ✓ L9 [firefox] collaboration setup, document switches and teardown release their connection
     ✓ L9 [webkit] collaboration setup, document switches and teardown release their connection
+    ✘ L10 [chromium] leaving a menu's own input for another editor or empty space hides the menu
+    ✘ L10 [firefox] leaving a menu's own input for another editor or empty space hides the menu
+    ✘ L10 [webkit] leaving a menu's own input for another editor or empty space hides the menu
+    ✓ L11 [chromium] autobinding converges with out-of-order writes, survives reload, and a menu action saves once
+    ✓ L11 [firefox] autobinding converges with out-of-order writes, survives reload, and a menu action saves once
+    ✓ L11 [webkit] autobinding converges with out-of-order writes, survives reload, and a menu action saves once
+    ✓ L12 [chromium] autobinding: a record switch cancels the unsent edit, blur flushes once, external content is not saved back
+    ✓ L12 [firefox] autobinding: a record switch cancels the unsent edit, blur flushes once, external content is not saved back
+    ✓ L12 [webkit] autobinding: a record switch cancels the unsent edit, blur flushes once, external content is not saved back
+    ✓ L13 [chromium] Liveblocks: two editors share a room, room switches leave the old room once, teardown leaves nothing
+    ✓ L13 [firefox] Liveblocks: two editors share a room, room switches leave the old room once, teardown leaves nothing
+    ✓ L13 [webkit] Liveblocks: two editors share a room, room switches leave the old room once, teardown leaves nothing
+    ✓ L14 [chromium] a rejected collaboration token gives up after five attempts, releases everything, and recovers with a valid token
+    ✓ L14 [firefox] a rejected collaboration token gives up after five attempts, releases everything, and recovers with a valid token
+    ✓ L14 [webkit] a rejected collaboration token gives up after five attempts, releases everything, and recovers with a valid token
 
     Error: modal must be above the menu (hit BUTTON)
     Error: #bm-a did not hide: {"selection":"Editor b text","editors":{"a":{"focus":false,"from":1,"to":14},"b":{"focus":true,"from":1,"to":14}}}
+    Error: #bm-b did not hide: {"selection":"Editor a text","editors":{"a":{"focus":true,"from":1,"to":14},"b":{"focus":false,"from":1,"to":14}}}
 
-    6 failed
-    21 passed (55.4s)
+    9 failed
+    33 passed (2.2m)
 
-With this branch's initialize.js the same command passes 27/27 (see verification.md).
+L4 (closed popup), L8 (focus move) and L10 (leaving the menu's input) fail in all
+three engines. The autobinding, Liveblocks and authentication cases (L11–L14) pass on
+main: they guard earlier fixes (WTF-260, WTF-248, WTF-246). With this branch's
+initialize.js the same command passes 42/42.
 
-## Real Bubble, deployed development version, 2026-09-25
+## Real Bubble: lifecycle-lab page (branch wtf-256-lab, version-73kof), deployed development version
 
-    node tests/browser/check-demo-menu-lifecycle.mjs    # version-test/tiptap-demo
+    node tests/browser/check-bubble-lab.mjs
 
-    ok   selecting text shows the menu above the editor {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true}
-    FAIL moving to another editor hides the menu {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":false}
-    FAIL a closed popup does not lift the menu above that popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"closedPopupZIndex":2002}
-    2 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo
+    ok   on load: hidden menus don't intercept the pointer {"bad":[]}
+    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":286.546875,"inViewport":true}
+    ok   one click runs H1 once on editor A {"a":"A H1: 1","b":"B H1: 0"}
+    FAIL moving to editor B hides menu A and shows menu B {"a":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":309.546875,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1503,"hitsMenu":true,"x":198,"y":602.9375,"inViewport":true}}
+    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":309.546875,"inViewport":true}
+    FAIL leaving the menu input for editor B hides menu A {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":309.546875,"inViewport":true}
+    FAIL after resize to 900px: hidden menus don't intercept the pointer {"bad":["labMenuA"]}
+    FAIL after resize to 1280px: hidden menus don't intercept the pointer {"bad":["labMenuA"]}
+    FAIL after page scroll: hidden menus don't intercept the pointer {"bad":["labMenuA"]}
+    ok   menu of an editor in a floating group paints above the group {"visible":true,"pointerEvents":"auto","zIndex":1503,"hitsMenu":true,"x":1067,"y":778.1875,"inViewport":true}
+    ok   floating-group menu click runs once {"f":"F H1: 1"}
+    ok   only the focused copy shows its menu {"dup":["hidden","visible"]}
+    ok   the copy menu runs H1 once, on its own copy {"copyCounts":["Copy H1: 0","Copy H1: 1"],"copyHeadings":[0,1]}
+    ok   menu of an editor in a popup paints above the popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"x":502,"y":115.1875,"inViewport":true,"popupZ":2002}
+    ok   popup menu click runs once {"p":"P H1: 1"}
+    ok   after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":309.546875,"inViewport":true,"popupZ":2002}
+    FAIL floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":2004,"hitsMenu":true,"x":78.5,"y":481.75,"inViewport":true,"popupZ":2002}
+    ok   scroll-group floating menu click runs H2 once {"s":"S H2: 1"}
+    ok   after typing and scrolling the scroll group: hidden menus don't intercept the pointer {"bad":[]}
+    6 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-73kof/lifecycle-lab
 
 ## Same page with this branch's initialize.js served in place of origin/main's
+
+    node tests/browser/check-bubble-lab.mjs --local-initialize=origin/main
+
+    Serving local initialize.js in place of origin/main
+    ok   on load: hidden menus don't intercept the pointer {"bad":[]}
+    ok   menu A shows above its editor {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":116,"y":286.546875,"inViewport":true}
+    ok   one click runs H1 once on editor A {"a":"A H1: 1","b":"B H1: 0"}
+    ok   moving to editor B hides menu A and shows menu B {"a":{"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":119,"y":589.296875,"inViewport":true},"b":{"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":198,"y":602.9375,"inViewport":true}}
+    ok   typing in the menu input keeps menu A open {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":540,"y":309.546875,"inViewport":true}
+    ok   leaving the menu input for editor B hides menu A {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":561,"y":589.296875,"inViewport":true}
+    ok   after resize to 900px: hidden menus don't intercept the pointer {"bad":[]}
+    ok   after resize to 1280px: hidden menus don't intercept the pointer {"bad":[]}
+    ok   after page scroll: hidden menus don't intercept the pointer {"bad":[]}
+    ok   menu of an editor in a floating group paints above the group {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":1067,"y":778.1875,"inViewport":true}
+    ok   floating-group menu click runs once {"f":"F H1: 1"}
+    ok   only the focused copy shows its menu {"dup":["hidden","visible"]}
+    ok   the copy menu runs H1 once, on its own copy {"copyCounts":["Copy H1: 0","Copy H1: 1"],"copyHeadings":[0,1]}
+    ok   menu of an editor in a popup paints above the popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"x":502,"y":115.1875,"inViewport":true,"popupZ":2002}
+    ok   popup menu click runs once {"p":"P H1: 1"}
+    ok   after the popup closes, menu A stays below the popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":98,"y":309.546875,"inViewport":true,"popupZ":2002}
+    ok   floating menu shows on an empty line inside the scroll group, below the closed popup layer {"visible":true,"pointerEvents":"auto","zIndex":1502,"hitsMenu":true,"x":78.5,"y":481.75,"inViewport":true,"popupZ":2002}
+    ok   scroll-group floating menu click runs H2 once {"s":"S H2: 1"}
+    ok   after typing and scrolling the scroll group: hidden menus don't intercept the pointer {"bad":[]}
+    All checks passed on https://tiptap-plugin.bubbleapps.io/version-73kof/lifecycle-lab
+
+## Real Bubble: tiptap-demo, deployed development version
+
+    node tests/browser/check-demo-menu-lifecycle.mjs
+
+    ok   selecting text shows the menu above the editor {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true,"x":209.5,"y":399.34375,"inViewport":true}
+    FAIL moving to another editor hides the menu {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":false,"x":209.5,"y":1349.34375,"inViewport":false}
+    FAIL a closed popup does not lift the menu above that popup {"visible":true,"pointerEvents":"auto","zIndex":2003,"hitsMenu":true,"x":209.5,"y":399.34375,"inViewport":true,"closedPopupZIndex":2002}
+    2 check(s) failed on https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo
+
+## Same page with this branch's initialize.js
 
     node tests/browser/check-demo-menu-lifecycle.mjs --local-initialize=origin/main
 
     Serving local initialize.js in place of origin/main
-    ok   selecting text shows the menu above the editor {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true}
-    ok   moving to another editor hides the menu {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false}
-    ok   a closed popup does not lift the menu above that popup {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true,"closedPopupZIndex":2002}
+    ok   selecting text shows the menu above the editor {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true,"x":209.5,"y":399.34375,"inViewport":true}
+    ok   moving to another editor hides the menu {"visible":false,"pointerEvents":"none","zIndex":0,"hitsMenu":false,"x":370.5,"y":5014.703125,"inViewport":false}
+    ok   a closed popup does not lift the menu above that popup {"visible":true,"pointerEvents":"auto","zIndex":3,"hitsMenu":true,"x":209.5,"y":399.34375,"inViewport":true,"closedPopupZIndex":2002}
     All checks passed on https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo
+
+## Saved Buildprint tests on wtf-256-lab, deployed development version
+
+    buildprint test run lifecycle_lab    # batch ac19f939-0325-4430-8f7c-f9af20ed9a8f
+
+    menu_click_runs_once       passed
+    reusable_copies_isolated   passed
+    menu_hides_on_focus_move   error at "Menu A is hidden and not clickable after moving to editor B"
+    menu_below_closed_popup    error at "Menu A shows below the closed popup's layer"

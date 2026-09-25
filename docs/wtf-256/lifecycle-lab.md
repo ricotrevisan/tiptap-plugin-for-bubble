@@ -8,25 +8,37 @@ Bubble Menu / Floating Menu groups behave on a Bubble-shaped page. It has two la
    It runs in Chromium, Firefox and WebKit, with real layout, real pointer
    and keyboard input, and the real decoded `initialize.js`/`update.js`/actions
    running on the built `dist.js`.
-2. **Real-Bubble check** (before and after a `pled push`):
-   `lib/tests/browser/check-demo-menu-lifecycle.mjs` runs on `tiptap-demo`.
-   It covers the cases that depend on Bubble's own DOM. With
-   `--local-initialize=<ref>` it previews an unpushed `initialize.js` in the
-   real page without changing Bubble.
+2. **Real Bubble** (before and after a `pled push`):
+   - The `lifecycle-lab` page on the Bubble branch `wtf-256-lab` (`73kof`)
+     has:
+     - editors with Bubble and Floating Menus;
+     - an input inside a menu;
+     - a scroll group, a popup and a floating group;
+     - two copies of a reusable that share a menu ID;
+     - a counter per menu workflow.
+
+     Source: `docs/wtf-256/bubble-lab/`.
+   - Four **saved Buildprint tests** (`tests/lifecycle_lab/` in the Bubble
+     workspace) drive it with real mouse and keyboard input. Run them with
+     `buildprint test run lifecycle_lab` from a clone of the branch.
+   - `lib/tests/browser/check-bubble-lab.mjs` runs 19 checks on that page.
+     `check-demo-menu-lifecycle.mjs` runs 3 on `tiptap-demo`.
+   - With `--local-initialize=<ref>`, both scripts preview an unpushed
+     `initialize.js` in the real page without changing Bubble.
 
 The fast Node tests (`menu-ownership-lifecycle.mjs`,
 `floating-menu-hidden-guard.mjs`, …) remain the first layer.
 
 ## The lab page
 
-`lab.html` mirrors how Bubble lays out a page. Measured on `tiptap-demo`
-(2026-09-25):
+`lab.html` mirrors how Bubble lays out a page. Measured in run mode on
+`tiptap-demo` and `lifecycle-lab` (2026-09-25):
 
 - The page root is a body child with `position: relative; z-index: 2`.
-- A **floating group** is a fixed body child (`z-index: 5`).
-- A **popup** is a fixed body child (`z-index: 1000`). Bubble keeps a popup
-  in `<body>` after it closes, as `display: none` with its z-index (2002 on
-  `tiptap-demo`), and uses the same z-index when it reopens.
+- A **floating group** is a fixed body child (`z-index: 1501`).
+- A **popup** is a fixed body child (`z-index: 2002`). Bubble keeps a popup in
+  `<body>` after it closes, as `display: none` with its z-index, and uses the
+  same z-index when it reopens.
 - A full-screen **modal** layer opens above everything.
 - Editors A and B have their own Bubble Menu groups. Editor A also has a
   Floating Menu.
@@ -70,13 +82,27 @@ real mouse click at those coordinates.
 | L7 | Over three cycles, the lab destroys and recreates editor A, switches a construction-time extension on and off, and turns the Floating Menu off and on. After each step the menu works with exactly one action per click. After destroy, the Bubble-owned groups are back in place with their original style/tabindex. At the end of each cycle every resource counter equals the baseline. Final teardown leaves no editors, placeholders or extra body children. | 6; restores Bubble styles, no leaked DOM/listeners |
 | L8 | When focus moves from editor A to editor B, or to an input, A's Bubble Menu and Floating Menu hide. Inside the menu, clicking a `<button>`, clicking a non-focusable `<div>` button (as Bubble renders them), and typing in an input all keep the menu usable. | 2; menus never claimed across editors |
 | L9 | Collaboration (a local Hocuspocus server): three document switches, collaboration off, then on. Exactly one open connection while collaboration is on, and none while it's off or after teardown. Menus keep working. Resources return to the baseline. | 9; providers not leaked |
+| L10 | While focus is in the menu's own input, clicking another editor or empty space hides the menu. Going back from the input to its own editor keeps it. | 2; menus never claimed across editors |
+| L11 | Autobinding against a Bubble-like record store whose writes finish out of order (900/100/500 ms). After typing stops, the stored record equals the editor, and the other record is untouched. A Bubble Menu action on the bound editor is saved once. A fresh editor loading the record (a reload) shows the same content and doesn't save it. | WTF-260 convergence and reload |
+| L12 | Autobinding: a record switch before the save delay cancels the unsent edit, and neither record changes. A dirty blur saves once to the bound record; a clean blur writes nothing. Content saved by someone else shows up without being saved back, and it cancels a pending local edit. | WTF-260 record isolation, blur, external content |
+| L13 | Liveblocks (the installed provider, backed by the in-memory service in `lib/tests/support/fake-liveblocks.mjs`): two editors share a room, both report 2 users, and edits and a menu action in A reach B. Switching A through two rooms and back keeps exactly one live session per editor. Teardown leaves no session, no editor and no menu lease. | 9; Liveblocks setup and teardown |
+| L14 | A token rejected by a real Hocuspocus server leads to exactly five attempts (1, 2, 4 and 8 s apart), then a `failed` state. The editor, menu leases and connection are released, and there is one debugger message. An unchanged Bubble update doesn't retry. A corrected token recovers, and the menu works. | Bounded authentication retry |
 
-The real-Bubble check covers the same contract on `tiptap-demo`:
+The real-Bubble layer covers the parts that depend on Bubble's own DOM:
 
-- selecting text shows the Notion demo's menu above its editor (L2);
-- moving to another editor hides it (L8);
-- after the demo popup opens and closes, the menu stays below that popup's
-  z-index (L4).
+| Check | `check-bubble-lab.mjs` | Buildprint test | Lab case |
+| --- | --- | --- | --- |
+| Hidden menus don't intercept the pointer on load, after resize, after page scroll, and after scrolling the scroll group | ✓ | | L1 |
+| One menu click runs one workflow on its own editor (counters) | ✓ | `menu_click_runs_once` | L2 |
+| Moving to editor B hides menu A | ✓ | `menu_hides_on_focus_move` | L8 |
+| Leaving menu A's own input for editor B hides menu A | ✓ | `menu_hides_on_focus_move` | L10 |
+| Menus of editors in a floating group and in a popup paint above that layer | ✓ | | L3 |
+| After the popup closes, later menus stay below its z-index | ✓ | `menu_below_closed_popup` | L4 |
+| Reusable copies with the same menu ID stay isolated | ✓ | `reusable_copies_isolated` | L5 |
+| Floating Menu inside a scroll group | ✓ | | L1, L2 |
+
+`check-demo-menu-lifecycle.mjs` checks L2, L8 and L4 on the Notion and popup
+demos of `tiptap-demo`.
 
 ## Defects the lab found (fixed in this PR)
 
@@ -93,29 +119,25 @@ The real-Bubble check covers the same contract on `tiptap-demo`:
    until the user clicked empty space. Each shown menu now sits in its own
    `display: contents` box in `<body>`. That box has no layout, only holds
    the menu, and is removed on hide and on release.
+3. **A menu stayed open after focus left its own input (L10).** Once focus is
+   inside the menu, for example in a link input, the editor is already blurred.
+   Tiptap then gets no blur event when the user moves on, so the menu stayed
+   until the editor was used again. When focus leaves the menu for anything
+   other than the menu itself or its own editor, the plugin now hides it the
+   way Tiptap does, with the menu's `hide` transaction.
 
-Both reproduce in real Bubble on the current development version. With the
-local `initialize.js` served in the real page, both checks pass (see
+All three reproduce in real Bubble on the current development version. With
+the local `initialize.js` served in the real page, every check passes (see
 `verification.md`).
 
-## Not covered yet
+## Not covered
 
-- **Saved Buildprint project tests** and a dedicated Bubble lab page. The
-  earlier lab branch (`plugin-lifecycle-lab`, `83ie9`) no longer exists. The
-  real-Bubble layer is the `tiptap-demo` check above.
-- **Autobinding scenarios from WTF-260**, database convergence after reload,
-  and **Liveblocks/auth** scenarios. Those have their own Node suites
-  (`autobinding-record-lifecycle.mjs`, `liveblocks-lifecycle.mjs`,
-  `collaboration-auth-lifecycle.mjs`) and Python real-Bubble probes. They
-  aren't part of this lab yet.
-- **Page inventory and cleanup** (Phase 1) needs separate approval. It wasn't
-  started. The August inventory is out of date: the `test` branch now has 44
-  pages, and many pages it classified (`floating`, `popup`, `rebuild`,
-  `doc-nobind`, `zzz_collab`, `collab_*`, …) are no longer on `test`. Redo the
-  inventory before any cleanup decision.
+- **Real-Bubble autobinding with the database.** L11/L12 use a record store in
+  the page; the Python probes from WTF-260 cover Bubble's database, and they
+  need their own fixture branch.
+- **Real Liveblocks, and real Tiptap Cloud authentication.** L13/L14 use the
+  installed providers against local stand-ins.
 - A menu that is shown *while* a modal is already open still goes above that
   modal. This is by design: it takes the highest visible layer + 1.
-- If focus is already inside the menu (for example its link input) and the
-  user then clicks another editor, the menu stays visible. The editor was
-  already blurred, so Tiptap gets no blur event to hide on. This was already
-  the case before this PR.
+- Page inventory: see [page-inventory.md](page-inventory.md). No page was
+  deleted.
