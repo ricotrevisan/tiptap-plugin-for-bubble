@@ -1,0 +1,34 @@
+# WTF-261 red evidence (lib/tests/mention-created-lifecycle.mjs against main's initialize.js at ae194ac)
+
+## 1. Unmodified main: the new states do not exist
+AssertionError [ERR_ASSERTION]: states start empty
++ actual - expected
+
+  [
++   undefined,
++   undefined,
++   undefined
+-   '',
+-   '',
+-   ''
+exit 1
+
+## 2. Main plus empty initial states only: suggestion acceptance never fires Mention created
+AssertionError [ERR_ASSERTION]: suggestion acceptance fires once
+
+0 !== 1
+
+exit 1
+
+## 3. Browser (chromium), main's initialize.js: real Enter selection publishes no Mention created
+Error: expect(received).toEqual(expected) // deep equality
+- Expected  - 7
++ Received  + 1
+- Array [
+-   Object {
+-     "id": "ada",
+-     "label": "Ada Lovelace",
+
+## 4. Review follow-up: at a039b37, accepting with no match inserted an empty mention
+AssertionError [ERR_ASSERTION]: no matching item leaves the document unchanged
++ ... {"type":"mention","attrs":{"id":null,"label":null,"mentionSuggestionChar":"#"}} ...
