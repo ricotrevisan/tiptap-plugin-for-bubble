@@ -2777,11 +2777,20 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         // editor is used again.
         const pluginKey = label === "BubbleMenu" ? "bubbleMenu" : "floatingMenu";
         lease.wrapper.addEventListener("focusout", (event) => {
-            const editor = instance.data.editor;
             const next = event.relatedTarget;
-            if (!lease.active || !editor || editor.isDestroyed) return;
+            // Tiptap's hide() sets visibility before removing the menu, and
+            // Chromium fires focusout during that removal. Hiding again from
+            // inside hide() throws and loses the transaction's update.
+            if (!lease.active || lease.wrapper.style.visibility === "hidden") return;
+            const editor = instance.data.editor;
+            if (!editor || editor.isDestroyed) return;
             if (next && (lease.wrapper.contains(next) || editor.view.dom.contains(next))) return;
-            editor.view.dispatch(editor.state.tr.setMeta(pluginKey, "hide"));
+            // Never dispatch from inside another transaction or DOM removal.
+            queueMicrotask(() => {
+                if (!lease.active || editor.isDestroyed || instance.data.editor !== editor) return;
+                if (lease.wrapper.contains(document.activeElement) || editor.view.hasFocus()) return;
+                editor.view.dispatch(editor.state.tr.setMeta(pluginKey, "hide"));
+            });
         });
         options.extensions.push(extension.configure({
             element: lease.wrapper,
