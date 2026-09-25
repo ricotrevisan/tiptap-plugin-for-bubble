@@ -14,8 +14,10 @@
     the only path.
   - room `others` / `my-presence` → **Collab connected users** (the provider's
     awareness state count, including this session; same as Hocuspocus).
-  - room `error` → one fixed debugger message per connection attempt, with
-    only the Liveblocks error code. The raw message can contain room names.
+  - room `error` → a fixed debugger message without the raw text, which can
+    contain room names. Connection errors (`ROOM_CONNECTION_ERROR`) include
+    only the error code and are reported once until the room connects again.
+    Other room errors report only their type.
   All callbacks are guarded by the collaboration generation, so a replaced
   session can't publish into its successor.
 - Ownership: the room's `leave` and every subscription go on
@@ -50,8 +52,8 @@ with two editor sessions:
 5. Callbacks already queued by a replaced room (status, others, presence,
    error, delivered after unsubscribe) change no state. With the generation
    guard removed, this fails.
-6. Connection errors: reported once per attempt, sanitized, and again after
-   a reconnect.
+6. Errors are sanitized. A connection error is reported once until the room
+   reconnects. Other error types don't use up that one report.
 7. Repeated teardown: every room left once, zero listeners remaining, and
    `destroy()` called exactly once on each provider-owned Y.Doc.
 
@@ -78,6 +80,10 @@ blocking issues. Addressed in the follow-up commit:
 - the changelog overstated cleanup on element removal. Cleanup runs on update,
   reset or failed setup; nothing detects a silently removed element. That was
   already true for every provider.
+
+A second pass on `3df677f` approved. Its two low findings were fixed in the
+next commit: the dedup wording, and deduplicating only
+`ROOM_CONNECTION_ERROR`.
 
 Recorded, not changed: the fake models a simpler room than Liveblocks. It
 doesn't keep self/others through reconnect, doesn't reference-count rooms

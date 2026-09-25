@@ -1179,8 +1179,8 @@ try {
             const publishUsers = () => {
                 if (Provider) instance.publishState("collab_connected_users", Provider.awareness.getStates().size);
             };
-            // Report one error per connection attempt, without the raw payload:
-            // provider messages can contain room names or credentials.
+            // Report connection errors once until the room connects again, without
+            // the raw payload: provider messages can contain room names or credentials.
             let errorReported = false;
             const publishRoomStatus = (status) => {
                 if (status === "connected") errorReported = false;
@@ -1201,11 +1201,16 @@ try {
             own(room.subscribe("others", current(publishUsers)));
             own(room.subscribe("my-presence", current(publishUsers)));
             own(room.subscribe("error", current((error) => {
-                if (errorReported) return;
-                errorReported = true;
-                const code = error?.context?.code;
-                const message = "Liveblocks connection error" + (code === undefined ? "" : " (code " + code + ")") +
-                    ". Check the public API key and the room's permissions.";
+                let message;
+                if (error?.context?.type === "ROOM_CONNECTION_ERROR") {
+                    if (errorReported) return;
+                    errorReported = true;
+                    const code = error.context.code;
+                    message = "Liveblocks connection error" + (code === undefined ? "" : " (code " + code + ")") +
+                        ". Check the public API key and the room's permissions.";
+                } else {
+                    message = "Liveblocks error" + (error?.context?.type ? " (" + error.context.type + ")" : "") + ".";
+                }
                 instance.data.debug(message);
                 context.reportDebugger(message);
             })));
