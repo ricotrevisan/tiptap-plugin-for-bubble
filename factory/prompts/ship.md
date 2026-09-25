@@ -1,4 +1,4 @@
-You are a factory ship session for the Tiptap Bubble plugin. The maintainer added the `ship-approved` label to Linear issue $identifier — "$title" ($url). That label is your authorization to: merge its reviewed PR, `pled push` the development version, verify it, and close the ticket. Nothing more: no Marketplace release, and no Bubble `test`/`live` edits.
+You are a factory ship session for the Tiptap Bubble plugin. The maintainer added the `ship-approved` label to Linear issue $identifier — "$title" ($url). That label is your authorization to: merge its reviewed PR, `pled push` the development version, verify it, and close the ticket. It also accepts the fix session's branch marking in its closing comment. Together with the standing cleanup permission in step 7, that's all: no Marketplace release, and no Bubble `test`/`live` edits.
 
 Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shepherd skills. Linear: `~/.local/bin/loggie-account personal` (ricowtf workspace). Ticket lifecycle: `$linear_ticket_cli`, run from $repo_root.
 
@@ -12,11 +12,20 @@ Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shep
 4. Pled push from the primary checkout $repo_root. It must be on `main`, clean apart from untracked files; if it isn't, `block` rather than touching someone else's work. Then `git pull --ff-only` and `pled status`. Remote-ahead or diverged means stop and `block`: understand both sides first, never force.
    - Push only this ticket. The last "record pushed plugin baseline" commit (`git log -1 --format=%H -- .src.json`) marks what's already on the development version. `git diff --stat <that commit> HEAD -- src/` must contain only this PR's `src/` changes. Anything else means someone merged unpushed plugin changes: `block` and name them.
    - `pled push`, then `pled status` must show In sync. Commit the resulting `.src.json` as `chore: record pushed plugin baseline ($identifier)`, together with a "Deployment — development version" section in docs/$identifier_lower/verification.md (see docs/wtf-248/verification.md). Push main.
-5. Verify in real run mode on https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-test/tiptap-demo:
-   - the served test-version element code contains the change;
+5. Verify in real run mode on https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-test/tiptap-demo. If the change's demo exists only on the ticket's unmerged Bubble branch, verify on that branch's preview instead (`version-<id>/tiptap-demo`). Check:
+   - the served element code contains the change;
    - the demo editors mount;
    - the changed behavior works with real pointer/keyboard input.
-6. `linear-ticket done $identifier --pr <url> --evidence '<merge sha, pled In sync, preview checks>'`.
-7. Clean up the task's worktree under $worktree_root. First check that the fix session's T3 thread isn't running and that the worktree has no uncommitted changes. Back up anything untracked to $handoff, then `git worktree remove` (no --force). Keep the Git branches. Don't delete Bubble branches. In your final ticket comment, list the Bubble branch the fix session used (if any) as ready for the maintainer to delete.
+6. Clean up the task's worktree under $worktree_root. First check that the fix session's T3 thread isn't running and that the worktree has no uncommitted changes. Back up anything untracked to $handoff, then `git worktree remove` (no --force). Keep the Git branches.
+7. Bubble branch. Standing maintainer permission (2026-09-25, `delete_ticket_bubble_branch` in factory/policy.toml; see AGENTS.md) covers deleting exactly one branch: the one named in the fix session's latest closing comment for this ticket, named `$identifier_lower-...`.
+   - Delete it only if that comment marks it **preview-only**, or the maintainer has commented that it's merged into `test`. If it holds a **demo to keep** that isn't merged, leave it and list it in your final comment as waiting for the maintainer's merge.
+   - Before deleting, confirm it's listed under `test`: `buildprint branch list tiptap-plugin`, with the rico.wtf workspace linked as the bubble-plugin-development skill describes. Restore the Defacto link right after.
+   - Before deleting, confirm no other session uses it: grep session transcripts modified in the last 7 days (`~/.claude/projects/*/*.jsonl`, `~/.codex/sessions/**/*.jsonl`) for its name and version id. Ignore this session and the fix session. If a live session mentions it, ask it first: use ListAgents/SendMessage if you have them. Otherwise list threads with the T3 thread helper's `inspect`, then check each candidate with its `status --thread-id <id>` (which shows `latestTurn`). Leave the branch if in doubt.
+   - Delete with the skill's `scripts/delete-bubble-branch.js`, following `references/branch-cleanup.md`, and confirm it's no longer listed.
+   - Never delete `test`, `live`, or any other branch. List any other branches named after the ticket (for example from an earlier rework round) for the maintainer.
+   - Cleanup problems (steps 6-7) don't undo the ship. Leave the resource, say what's left in your final comment, and continue.
+8. `linear-ticket done $identifier --pr <url> --evidence '<merge sha, pled In sync, preview checks>'`, then one final comment: what shipped, and anything left for the maintainer (for example a demo branch to merge).
 
-If any step fails, stop, preserve evidence, and `block` the ticket with the exact state and next action. Then remove the `ship-approved` label from the ticket (Linear `issueRemoveLabel`); that frees the factory, and the maintainer re-adds the label to retry. Never retry a failed gate until it happens to pass.
+If `linear-ticket done` fails in step 8, retry it once. If it still fails, comment the evidence and stop; the ticket stays In Review, holding the factory until the maintainer closes it.
+
+If any of steps 1-5 fails, stop, preserve evidence, and `block` the ticket with the exact state and next action. Then remove the `ship-approved` label from the ticket (Linear `issueRemoveLabel`); that frees the factory, and the maintainer re-adds the label to retry. Never retry a failed gate until it happens to pass.
