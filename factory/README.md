@@ -53,7 +53,7 @@ Every run (including dry runs and paused runs) reads Linear and the local T3 ser
 
 ## What's left for the maintainer
 
-- **Branches:** the factory keeps Git branches. Once a ticket is shipped, its ship session deletes the Bubble branch the fix session created for it (standing permission, `delete_ticket_bubble_branch` in the policy). It only does this when the fix session marked the branch **preview-only**, or you've commented that it's merged. A **demo to keep** stays until you merge it into `test`, and the ship session lists it for you. The factory deletes nothing else; other stale branches are yours (Bubble allows nine under `test`).
+- **Branches:** the factory keeps Git branches. Once a ticket is shipped, its ship session deletes the Bubble branch the fix session created for it (standing permission, `delete_ticket_bubble_branch` in the policy). It only does this when the fix session marked the branch **preview-only**, or you've commented that it's merged. A **demo to keep** stays until you merge it into `test`, and the ship session lists it for you. Adding `ship-approved` also accepts the fix session's marking, so check it in the closing comment first. The factory deletes nothing else; other stale branches are yours (Bubble allows nine under `test`).
 - **Blocked tickets:** the WTF team has no Blocked state. A blocked session comments the exact blocker and stops, and its ticket keeps holding the factory. Resolve it, then move the ticket on (or back to Todo for a rework round).
 
 ## Not yet automated
