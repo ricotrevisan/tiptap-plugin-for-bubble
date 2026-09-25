@@ -66,9 +66,9 @@ real mouse click at those coordinates.
 | L3 | Menus of editors inside a floating group and inside a popup paint above that container and work. After the popup closes, its menu is hidden. | 4 |
 | L4 | A modal opened after a menu is shown covers the menu, even after a popup at the same z-index has opened and closed first. Clicking where the menu was runs nothing. After the modal closes, the menu works again. | 7; later modals above menus |
 | L5 | Two copies of a reusable with the same menu ID each lease their own copy. Only the focused copy's menu shows, and its action goes to its own editor. | 2, 3, 8; menus never claimed across editors |
-| L6 | A menu ID already owned by another editor is reported once in the debugger. The second editor gets no menu. The owner's menu still works. | 8 |
+| L6 | A menu ID already owned by another editor is reported once in the debugger. The second editor holds no menu lease, and selecting text in it shows nothing, even after Tiptap's 250 ms show delay. The owner's menu still works. | 8 |
 | L7 | Over three cycles, the lab destroys and recreates editor A, switches a construction-time extension on and off, and turns the Floating Menu off and on. After each step the menu works with exactly one action per click. After destroy, the Bubble-owned groups are back in place with their original style/tabindex. At the end of each cycle every resource counter equals the baseline. Final teardown leaves no editors, placeholders or extra body children. | 6; restores Bubble styles, no leaked DOM/listeners |
-| L8 | When focus moves from editor A to editor B, or to an input, A's Bubble Menu and Floating Menu hide. Clicking a menu button still keeps that menu usable. | 2; menus never claimed across editors |
+| L8 | When focus moves from editor A to editor B, or to an input, A's Bubble Menu and Floating Menu hide. Inside the menu, clicking a `<button>`, clicking a non-focusable `<div>` button (as Bubble renders them), and typing in an input all keep the menu usable. | 2; menus never claimed across editors |
 | L9 | Collaboration (a local Hocuspocus server): three document switches, collaboration off, then on. Exactly one open connection while collaboration is on, and none while it's off or after teardown. Menus keep working. Resources return to the baseline. | 9; providers not leaked |
 
 The real-Bubble check covers the same contract on `tiptap-demo`:
@@ -115,3 +115,7 @@ local `initialize.js` served in the real page, both checks pass (see
   inventory before any cleanup decision.
 - A menu that is shown *while* a modal is already open still goes above that
   modal. This is by design: it takes the highest visible layer + 1.
+- If focus is already inside the menu (for example its link input) and the
+  user then clicks another editor, the menu stays visible. The editor was
+  already blurred, so Tiptap gets no blur event to hide on. This was already
+  the case before this PR.

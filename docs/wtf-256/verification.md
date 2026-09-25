@@ -97,6 +97,33 @@ All passed on 2026-09-25:
 - `CI=1 npm run test:browser`: 54 passed. That is 27 lab tests plus the
   existing 27, across Chromium, Firefox and WebKit.
 
+## Review
+
+- **Independent read-only review of `bbf79fd`: approve with findings.** It
+  confirmed both fixes against the installed Tiptap 3.31.3 source and the
+  bundled `dist.js`.
+- It also ran each fix alone in a throwaway copy:
+  - without the visible-layer filter, only L4 fails;
+  - with `appendTo: () => document.body` restored, only L8 fails.
+- It ran the real-Bubble check in both modes and got the results recorded
+  above.
+- Fixed in the next commit:
+  - CHANGELOG wording narrowed (menus hide when focus leaves *the editor*; a
+    closed popup no longer ends up under menus).
+  - L8 now covers a non-focusable `<div>` button and an input inside the menu.
+  - L6 asserts that the second editor holds no lease and waits past Tiptap's
+    250 ms show delay.
+  - L4 really opens and closes the popup.
+  - The check script parses `--local-initialize=` refs that contain `=`, and
+    reads the z-index of the popup it opened.
+  - The red record notes that `initialize.js` is identical at `321e20b` and
+    `f2c4f9f`.
+  - Documented as a known limitation: focus inside the menu, then another
+    editor. This was already the case before this PR. So is the listener
+    counter's bias toward false leaks (`once`/`AbortSignal` listeners).
+- **Drummer (static, nonblocking) review of `bbf79fd`:** no important or
+  blocker findings.
+
 ## Not covered (follow-ups)
 
 - A dedicated Bubble lab page and saved Buildprint project tests. The old lab

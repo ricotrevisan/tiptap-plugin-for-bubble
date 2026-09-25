@@ -1,6 +1,8 @@
 # WTF-256: red before the fix
 
-## Automated lab, origin/main initialize.js (321e20b), 2026-09-25
+## Automated lab, origin/main initialize.js, 2026-09-25
+
+initialize.js is identical at 321e20b (branch start) and f2c4f9f (PR base).
 
 Command (from lib/), with src/elements/tiptap-AAC/initialize.js temporarily
 replaced by `git show origin/main:src/elements/tiptap-AAC/initialize.js`:
