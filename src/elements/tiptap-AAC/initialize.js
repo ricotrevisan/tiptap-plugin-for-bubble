@@ -1858,6 +1858,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Node,
         Extension,
         mergeAttributes,
+        Plugin,
+        PluginKey,
         Document,
         HardBreak,
         Paragraph,
@@ -2153,6 +2155,99 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
         extensions.push(ImageExtension.configure({ inline: properties.image_inline || false, allowBase64: properties.allowBase64 }), Resizable);
     }
+    // Text typed at a link's right edge is plain text (WTF-262). Tiptap makes
+    // links "inclusive" while autolink is on, so that text used to join the
+    // link. Text typed as a link (after Set link with nothing selected, or over
+    // a selected link) keeps the link until the caret moves.
+    // Contract: docs/wtf-262/link-boundary-contract.md.
+    function linkWithPlainRightEdge() {
+        const typingLinkKey = new PluginKey("typingLink");
+        return Link.extend({
+            inclusive: () => false,
+            addKeyboardShortcuts() {
+                return {
+                    ...this.parent?.(),
+                    // At the end of a paragraph ArrowRight ends the link being
+                    // typed; the caret still moves if it can.
+                    ArrowRight: () => {
+                        const typing = typingLinkKey.getState(this.editor.state);
+                        const { $from, empty } = this.editor.state.selection;
+                        if (typing && empty && $from.pos === $from.end()) {
+                            this.editor.view.dispatch(this.editor.state.tr.removeStoredMark(typing.link));
+                        }
+                        return false;
+                    },
+                };
+            },
+            addProseMirrorPlugins() {
+                const linkType = this.type;
+                // The link on every character of a non-empty selection, if any.
+                // Inline nodes without text (hard breaks, mentions) are ignored.
+                const selectedLink = ({ doc, selection }) => {
+                    if (selection.empty) return null;
+                    let link = linkType.isInSet(selection.$from.nodeAfter?.marks || []);
+                    doc.nodesBetween(selection.from, selection.to, node => {
+                        if (link && node.isText && !link.isInSet(node.marks)) link = null;
+                    });
+                    return link;
+                };
+                return [...(this.parent?.() || []), new Plugin({
+                    key: typingLinkKey,
+                    state: {
+                        init: () => null,
+                        // Text the user is typing as a link: { link, from, to }.
+                        apply(tr, typing, oldState, newState) {
+                            const own = tr.getMeta(typingLinkKey);
+                            if (own) return own;
+                            if (!tr.docChanged) {
+                                // Moving the caret or dropping the stored link ends it.
+                                if (!typing || tr.selectionSet) return null;
+                                return tr.storedMarksSet && !typing.link.isInSet(tr.storedMarks || []) ? null : typing;
+                            }
+                            if (!newState.selection.empty) return null;
+                            // Paste, drop, cut, remote collaboration edits and IME
+                            // composition are not handled here.
+                            if (tr.getMeta("uiEvent") || tr.getMeta("addToHistory") === false || tr.getMeta("composition")) return null;
+                            // Only one text edit (typing, Backspace, an input rule); not
+                            // mentions, images or several changes at once.
+                            const step = tr.steps.length === 1 && tr.steps[0].toJSON();
+                            if (!step || step.stepType !== "replace" || (step.slice?.content || []).some(node => node.type !== "text")) return null;
+                            const $cursor = newState.selection.$from;
+                            const { selection, storedMarks } = oldState;
+                            let link, start;
+                            if (typing) {
+                                // Edits inside the link being typed keep it going.
+                                if (step.from < typing.from || step.to > typing.to) return null;
+                                ({ link } = typing);
+                                start = typing.from;
+                            } else {
+                                // Text typed at the caret with Set link's stored mark, or
+                                // typed over a whole selected link (it must replace it).
+                                if (step.from !== selection.from) return null;
+                                link = linkType.isInSet(storedMarks || [])
+                                    || (!selection.empty && step.to === selection.to && selectedLink(oldState));
+                                start = selection.from;
+                            }
+                            if (!link) return null;
+                            const from = tr.mapping.map(start, -1);
+                            if (from >= $cursor.pos || newState.doc.resolve(from).parent !== $cursor.parent) return null;
+                            return { link, from, to: $cursor.pos };
+                        },
+                    },
+                    appendTransaction(_transactions, _oldState, newState) {
+                        const typing = typingLinkKey.getState(newState);
+                        if (!typing || newState.storedMarks) return null;
+                        const { link, from, to } = typing;
+                        // Typing over a whole link drops it in ProseMirror; put it back.
+                        return newState.tr.addMark(from, to, link)
+                            .setStoredMarks(link.addToSet(newState.selection.$from.marks()))
+                            .setMeta(typingLinkKey, typing);
+                    },
+                })];
+            },
+        });
+    }
+
     if (properties.ext_link) {
         const linkConfig = {
             openOnClick: properties.link_openOnClick || false,
@@ -2172,7 +2267,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 .map(p => ({ scheme: p, optionalSlashes: true }));
             if (protocols.length > 0) linkConfig.protocols = protocols;
         }
-        extensions.push(Link.configure(linkConfig));
+        extensions.push(linkWithPlainRightEdge().configure(linkConfig));
     }
     if (properties.ext_placeholder) extensions.push(Placeholder.configure({
         placeholder: placeholder,

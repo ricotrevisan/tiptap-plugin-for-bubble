@@ -10,7 +10,7 @@ CI builds before running Playwright and uploads failure traces. The server binds
 
 The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
-`lifecycle.spec.mjs` runs nine scenarios in all three engines (27 browser tests):
+Twenty-one scenarios run in all three engines (61 browser tests; the IME scenario runs in Chromium only and is skipped in Firefox and WebKit):
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
@@ -21,6 +21,7 @@ The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded ini
 - Real **Find**, **Replace**, and **Replace all** actions work after toggling **Find & Replace**, while preserving the draft.
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
+- Links (WTF-262): text typed with the real keyboard after a link set from a toolbar-style button, or after a link at the end of a line, is plain text. So is IME composition there (Chromium). Typing inside a link, Set link with nothing selected (with Backspace, and ArrowRight to stop at the end of a line and move on), retyping a selected link, pasting over it, **Remove link**, autolink, and HTML/JSON round trips keep their behavior.
 
 `lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab. `lab.html` is a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area, resource counters, a Bubble-like autobinding record store, and the in-memory Liveblocks service. There are 15 cases in all three engines (45 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. The cases cover:
 - menu hit-testing and stacking;

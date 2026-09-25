@@ -14,6 +14,13 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 - The Marketplace **Demo** link now opens a public demo page (https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap). The old link had been removed and asked for a password.
 - New lifecycle lab, run on every change in Chromium, Firefox and WebKit. It checks hidden menus, stacking, clicks, multiple editors, rebuilds, leftover resources, autobinding saves, and collaboration connections, including Liveblocks and rejected tokens.
 
+### 🔗 Typing after a link no longer extends it
+
+- Text you type right after a link is plain text. Before, with **Autolink** on (the default), a word you linked with **Set link** swallowed everything typed after it.
+- Typing inside a link still edits it, and retyping a selected link keeps the link. **Set link** with nothing selected links the text you type next (Backspace included) until you move the caret. At the end of a paragraph, press → to stop. This only works if the editor keeps focus, for example from a keyboard shortcut. A toolbar click takes focus away, and clicking back into the editor moves the caret.
+- With the caret right after a link, the **link** state is now *no*, and **Set link** starts a new link there instead of removing the one before it. If a Link button is highlighted from the **link** state, it now lights up only inside a link.
+- **Remove link**, autolink, pasted content and saved HTML/JSON work as before. To make an existing link longer, select the text and use **Set link**.
+
 ## v4.12.0
 
 ### 🔔 Start a workflow when someone is mentioned
