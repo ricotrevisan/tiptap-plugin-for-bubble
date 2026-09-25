@@ -65,9 +65,9 @@ How it behaves:
 
 - The plugin hands the edit to Bubble 2200 ms after the last change. If the text didn't change, it hands over nothing.
 - When the editor loses focus, it hands over the edit right away, before your **isn't focused** workflow runs. Clicking a button blurs the editor, so a Save or Next button hands over the pending edit first.
-- Switching the group to another record loads that record. An edit that hadn't been handed over yet is dropped, never written into the new record. Switching by clicking a button saves first (the click blurs the editor).
+- Switching the group to another record loads that record. An edit that hadn't been handed over yet is dropped, never written into the new record. Switching by clicking a button hands the edit over first (the click blurs the editor).
 - If the Thing changes elsewhere, the editor loads the new text, even while focused. An edit that hadn't been handed over yet is dropped.
-- If a slow save comes back after newer typing, the editor keeps the newer text and saves it again.
+- If a slow save comes back after newer typing, the editor keeps the newer text and hands it over again.
 - **Update delay** (300 ms) doesn't control autobinding saves; **Autobinding save delay** does.
 - To restore an older version on purpose, use **Set content**. If you instead change the Thing back to text that exactly matches an earlier save, the editor treats it as a late echo and ignores it.
 
@@ -89,8 +89,10 @@ the database stored it.
 - **Content updated** means "handed over", not "stored".
 - A record switch that doesn't blur the editor (a delayed workflow, a keyboard shortcut) drops the unsent edit.
 
-So a Next or Back button needs nothing extra: its click hands over the edit
-before its workflow runs, and Bubble takes it from there.
+So switching records or groups on the same page with a button needs nothing
+extra. A button that goes to another page hands the edit over the same way, but
+this guide hasn't checked that Bubble finishes the database write before the
+page changes.
 
 What neither the plugin nor this guide provides is a confirmation from the
 server that the text is stored. If your app needs that before moving on, it

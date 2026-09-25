@@ -109,6 +109,8 @@ REST API by name) is a product decision for a follow-up.
   The recipe says so.
 - Liveblocks: left out on purpose until WTF-248 is verified in a real Bubble
   app.
+- **Go to page** with an autobinding write still in flight: not checked. The
+  recipe says so.
 - Record switch without a blur in real Bubble: not repeated here. It's covered
   by `autobinding-record-lifecycle.mjs` and WTF-260's browser checks.
 - Menus in a repeating group in real Bubble: covered by
@@ -144,6 +146,12 @@ blocking. Fixed in the next commit:
   clear the read-only view; "almost all" actions report running before ready
   (Select entire block is silent); what "restoring" means.
 - Removed unused Bubble labels from the test allowlist.
+
+Second pass on `20279f3`: approve with findings. It confirmed the refutation
+(Tiptap skips the update event when the document is unchanged). Fixed in the
+next commit: "Before leaving the page" now limits the claim to what was tested
+(same-page switches). Going to another page with a write still in flight is
+listed as unchecked. Two remaining "saves" became "hands over".
 
 ## Final checks (Node 24, from `lib/`)
 
