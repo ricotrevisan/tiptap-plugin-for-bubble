@@ -10,7 +10,7 @@
   small ProseMirror plugin keeps a link the user is *typing* going (after
   **Set link** with nothing selected, or when retyping a whole selected link),
   through Backspace and input rules, until the caret moves. ArrowRight at the
-  end of a paragraph ends it. Paste, drop, cut, remote collaboration edits,
+  end of a paragraph ends it (and still moves the caret if it can). Paste, drop, cut, remote collaboration edits,
   IME composition, non-text insertions and edits reaching back before the run
   are excluded. Retyping counts only when the typed text replaced the whole
   selection, so a stale selection can't relink text typed beside a link.
@@ -38,7 +38,7 @@
   and reaching before the run; IME composition meta; mention insertion;
   retyping and undo; paste and remote edits; Remove link; HTML/JSON round trips
   with custom target/rel.
-- `lib/tests/browser/link-boundary.spec.mjs`: eleven scenarios with real mouse
+- `lib/tests/browser/link-boundary.spec.mjs`: twelve scenarios with real mouse
   and keyboard in Chromium, Firefox and WebKit. IME composition (CDP) runs in
   Chromium only. The fixture runs **Set link** from a real button outside the
   editor, which takes focus away as a Bubble toolbar button does. Tests wait
@@ -68,10 +68,14 @@ With the `main` Link setup (`Link.configure(linkConfig)`):
   next-frame focus, which then reset the caret and dropped the stored mark. The
   tests now wait for focus (`focusAt`).
 
+- Review round 2 (ArrowRight at the end of a paragraph with more text after it
+  kept the caret in place): the new browser case fails on the `695df4d`
+  plugin in Chromium.
+
 With the fix: `npm test` passes, `npm run validate:plugin` passes,
-`npm run test:validator` 11/11, `npm run test:browser` 58 passed and 2 skipped
+`npm run test:validator` 11/11, `npm run test:browser` 61 passed and 2 skipped
 (IME outside Chromium). The full browser suite also passed `--repeat-each=4`
-(232 passed, 8 skipped).
+(244 passed, 8 skipped).
 
 ## Real Bubble
 

@@ -21,7 +21,8 @@ This was reproduced on the pushed development version in real Bubble run mode
 | Caret at a link's left edge, then type | Plain text (unchanged). |
 | **Set link** with nothing selected, then type | The typed text is the link, until the caret moves (click, arrow keys, Enter), or ArrowRight at the end of a paragraph. Then typing is plain again. From a Bubble button this needs the editor to keep focus (for example a keyboard-shortcut workflow); clicking back into the editor moves the caret. |
 | **Set link** with the caret right after a link | Starts a new link for the text typed next. (It used to remove the neighboring link, because the caret counted as inside it.) |
-| Backspace or an input rule inside a link being typed | The link keeps going. |
+| Backspace or an input rule inside a link being typed | The link keeps going. Deleting all of it ends it, so text typed next is plain. |
+| ArrowRight at the end of a paragraph ending in a link | Moves on as usual. (With Autolink on, Tiptap used to insert a space here to leave the link; that is no longer needed.) |
 | Select a whole link and type over it | The new text keeps the link, like the case above. |
 | An edit reaching back before a link being typed, a mention, or several changes at once | Ends the link being typed; no extra text is linked. |
 | Paste or drop over a selected link | Pasted content keeps its own formatting; the link is not reapplied (unchanged). |

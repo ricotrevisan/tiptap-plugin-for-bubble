@@ -2159,16 +2159,15 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             addKeyboardShortcuts() {
                 return {
                     ...this.parent?.(),
-                    // At the end of a paragraph the caret can't move right, so
-                    // ArrowRight ends the link being typed instead.
+                    // At the end of a paragraph ArrowRight ends the link being
+                    // typed; the caret still moves if it can.
                     ArrowRight: () => {
                         const typing = typingLinkKey.getState(this.editor.state);
                         const { $from, empty } = this.editor.state.selection;
-                        if (!typing || !empty || $from.pos !== $from.end()) return false;
-                        return this.editor.commands.command(({ tr }) => {
-                            tr.removeStoredMark(typing.link);
-                            return true;
-                        });
+                        if (typing && empty && $from.pos === $from.end()) {
+                            this.editor.view.dispatch(this.editor.state.tr.removeStoredMark(typing.link));
+                        }
+                        return false;
                     },
                 };
             },
