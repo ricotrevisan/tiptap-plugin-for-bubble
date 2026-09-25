@@ -2,7 +2,8 @@ You are a factory ship session for the Tiptap Bubble plugin. The maintainer adde
 
 Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shepherd skills. Linear: `~/.local/bin/loggie-account personal` (ricowtf workspace). Ticket lifecycle: `$linear_ticket_cli`, run from $repo_root.
 
-1. Confirm the ticket is still In Review and still labelled `ship-approved`. If not, stop without changing anything else and comment why.
+1. Confirm the ticket is still In Review and still labelled `ship-approved`. If not, stop without changing anything else and comment why. Check the label again right before the merge (step 3) and right before `pled push` (step 4). If it's gone, stop there and comment what was already done.
+   - If the PR is already merged (an earlier ship session blocked after merging), skip to step 4.
 2. Find the ticket's PR (the ticket's closing comment, or `gh pr list --search "$identifier"`). Re-read the whole PR: head/base SHAs, CI, the independent review receipt, the drummer review, unresolved threads. The receipt must cover the current head and base.
    - If main moved (other ships add commits), refresh the PR: merge origin/main into its branch. The fix worktree still has that branch checked out, so use a temporary worktree on a detached HEAD at `origin/<branch>` and push with `git push origin HEAD:<branch>`. Resolve conflicts only when they are purely additive changelog/docs entries (keep both). Any other conflict means `block`.
    - Then rerun the full gates from lib/ (`npm ci`, `npm test`, `npm run validate:plugin`, `npm run test:validator`, `npm run test:browser`) and get a fresh independent read-only review receipt for the new head/base, as the fix session did.

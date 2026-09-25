@@ -33,7 +33,7 @@ def labels(issue):
     return {label['name'] for label in issue['labels']['nodes']}
 
 
-def held_locks(issues, receipts, policy):
+def held_locks(issues, receipts, policy, running=frozenset()):
     """Factory sessions whose ticket hasn't reached a state that releases them.
 
     `issues` holds only open tickets, so a ticket that was completed, canceled
@@ -52,7 +52,7 @@ def held_locks(issues, receipts, policy):
         issue = by_id.get(receipt['identifier'])
         if not issue or issue['state']['name'] in release[receipt['kind']]:
             continue
-        if reworking(issue, receipt, policy) or receipt.get('withdrawn') or unapproved(issue, receipt, policy):
+        if reworking(issue, receipt, policy) or receipt.get('withdrawn') or unapproved(issue, receipt, policy, running):
             continue
         held.append(receipt)
     return held
@@ -63,13 +63,17 @@ def reworking(issue, receipt, policy):
             and issue['state']['name'] in policy['intake']['queue_states'])
 
 
-def unapproved(issue, receipt, policy):
-    """A ship whose label was withdrawn stops; it no longer holds the factory."""
-    return (receipt['kind'] == 'ship' and issue['state']['name'] == policy['states']['in_review']
-            and policy['promotion']['ship_label'] not in labels(issue))
+def unapproved(issue, receipt, policy, running=frozenset()):
+    """A ship that is no longer approved (label removed, or ticket sent back to
+    the queue) and whose session has stopped no longer holds the factory."""
+    if receipt['kind'] != 'ship' or receipt.get('threadId') in running:
+        return False
+    state = issue['state']['name']
+    return ((state == policy['states']['in_review'] and policy['promotion']['ship_label'] not in labels(issue))
+            or state in policy['intake']['queue_states'])
 
 
-def mark_reviewed(issues, receipts, policy):
+def mark_reviewed(issues, receipts, policy, running=frozenset()):
     """Record what the factory observed: a fix whose ticket reached In Review,
     and a ship whose label was withdrawn. Returns the receipts changed."""
     by_id = {i['identifier']: i for i in issues}
@@ -82,7 +86,7 @@ def mark_reviewed(issues, receipts, policy):
                 and issue['state']['name'] == policy['states']['in_review']):
             receipt['reachedReview'] = True
             changed.append(receipt)
-        elif receipt['kind'] == 'ship' and not receipt.get('withdrawn') and unapproved(issue, receipt, policy):
+        elif receipt['kind'] == 'ship' and not receipt.get('withdrawn') and unapproved(issue, receipt, policy, running):
             receipt['withdrawn'] = True
             changed.append(receipt)
     return changed
@@ -97,12 +101,12 @@ def claimed_by_someone_else(issue, viewer_id):
     return bool(issue.get('assignee')) and issue['assignee']['id'] != viewer_id
 
 
-def decide(issues, receipts, policy, dispatched_today=0, viewer_id=None):
+def decide(issues, receipts, policy, dispatched_today=0, viewer_id=None, running=frozenset()):
     """Return ('ship'|'fix', issue, reason) or (None, None, reason)."""
     if not policy.get('enabled', False):
         return None, None, 'policy disabled'
     states, intake, limits = policy['states'], policy['intake'], policy['limits']
-    held = held_locks(issues, receipts, policy)
+    held = held_locks(issues, receipts, policy, running)
     if len(held) >= limits['max_active']:
         return None, None, 'busy: ' + ', '.join(
             f"{r['identifier']} ({r['kind']}{'' if r.get('status') == 'started' else ', unfinished dispatch'})"
@@ -118,7 +122,7 @@ def decide(issues, receipts, policy, dispatched_today=0, viewer_id=None):
     # A label that was withdrawn and then added again ships again.
     by_id = {i['identifier']: i for i in issues}
     shipped = {r['identifier'] for r in receipts if r['kind'] == 'ship' and not r.get('withdrawn')
-               and not (r['identifier'] in by_id and unapproved(by_id[r['identifier']], r, policy))}
+               and not (r['identifier'] in by_id and unapproved(by_id[r['identifier']], r, policy, running))}
     ship_label = policy['promotion']['ship_label']
     to_ship = [i for i in issues if i['state']['name'] == states['in_review']
                and ship_label in labels(i) and i['identifier'] not in shipped]
@@ -195,6 +199,23 @@ def fetch_issues(policy):
 def comment(policy, issue, body):
     linear(policy, 'mutation($id: String!, $body: String!) { commentCreate(input: {issueId: $id, body: $body}) { success } }',
            {'id': issue['id'], 'body': body})
+
+
+def remove_label(policy, issue, name):
+    if name not in labels(issue):
+        return
+    found = linear(policy, 'query($name: String!) { issueLabels(filter: {name: {eq: $name}}) { nodes { id } } }',
+                   {'name': name})['issueLabels']['nodes']
+    for label in found:
+        linear(policy, 'mutation($id: String!, $label: String!) { issueRemoveLabel(id: $id, labelId: $label) { success } }',
+               {'id': issue['id'], 'label': label['id']})
+
+
+def running_threads(policy):
+    """T3 threads with a turn in progress; a ship session that is still
+    working keeps its lock even after its label is removed."""
+    threads = t3_client(policy, t3_helper(policy)).snapshot()['threads']
+    return frozenset(t['id'] for t in threads if (t.get('latestTurn') or {}).get('state') == 'running')
 
 
 def handoff_root(policy):
@@ -317,6 +338,9 @@ def dispatch(policy, kind, issue):
     thread_id = result['receipt']['threadId']
     receipt.update(status='started', threadId=thread_id, branch=branch, worktree=worktree)
     receipt_path.write_text(json.dumps(receipt, indent=2))
+    if kind == 'fix' and attempt > 1:
+        # Reworked code needs a fresh approval.
+        remove_label(policy, issue, policy['promotion']['ship_label'])
     comment(policy, issue, f"Factory started a {kind} session: T3 thread `{thread_id}`"
             + (f", branch `{branch}`, worktree `{worktree}`." if branch else '.'))
     return receipt
@@ -334,10 +358,11 @@ def dispatched_today(receipts):
 def status(policy):
     issues = {i['identifier']: i for i in fetch_issues(policy)[0]}
     receipts = load_receipts(policy)
-    mark_reviewed(list(issues.values()), receipts, policy)  # in memory: status never writes
-    held = {(r['identifier'], r['kind']) for r in held_locks(list(issues.values()), receipts, policy)}
     helper = t3_helper(policy)
     threads = {t['id']: t for t in t3_client(policy, helper).snapshot()['threads']}
+    running = frozenset(t for t, thread in threads.items() if (thread.get('latestTurn') or {}).get('state') == 'running')
+    mark_reviewed(list(issues.values()), receipts, policy, running)  # in memory: status never writes
+    held = {(r['identifier'], r['kind']) for r in held_locks(list(issues.values()), receipts, policy, running)}
     rows = []
     for r in receipts:
         thread = threads.get(r.get('threadId'), {})
@@ -366,14 +391,15 @@ def main():
         return
     receipts = load_receipts(policy)
     issues, viewer_id = fetch_issues(policy)
+    running = running_threads(policy)
     # Bookkeeping runs even while paused, so rework is recognized afterwards.
-    for receipt in mark_reviewed(issues, receipts, policy):
+    for receipt in mark_reviewed(issues, receipts, policy, running):
         if args.dispatch:  # a dry run never writes
             save_receipt(receipt)
     if (handoff_root(policy) / 'PAUSE').exists():
         print(json.dumps({'action': None, 'reason': 'paused'}))
         return
-    kind, issue, reason = decide(issues, receipts, policy, dispatched_today(receipts), viewer_id)
+    kind, issue, reason = decide(issues, receipts, policy, dispatched_today(receipts), viewer_id, running)
     decision = {'action': kind, 'ticket': issue and issue['identifier'], 'reason': reason,
                 'dryRun': not args.dispatch}
     if kind and args.dispatch:

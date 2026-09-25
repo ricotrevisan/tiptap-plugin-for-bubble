@@ -23,8 +23,8 @@ def receipt(identifier, kind='fix', at='2026-09-01T00:00:00+00:00', status='star
             'dispatchedAt': at, **extra}
 
 
-def decide(issues, receipts=(), policy=POLICY, today=0, viewer='me'):
-    kind, chosen, reason = factory.decide(issues, list(receipts), policy, today, viewer)
+def decide(issues, receipts=(), policy=POLICY, today=0, viewer='me', running=frozenset()):
+    kind, chosen, reason = factory.decide(issues, list(receipts), policy, today, viewer, running)
     return kind, chosen and chosen['identifier'], reason
 
 
@@ -107,6 +107,23 @@ class Decide(unittest.TestCase):
         self.assertEqual(decide([withdrawn, issue('WTF-2')], [ship])[:2], ('fix', 'WTF-2'))
         # The maintainer adds the label again: ship again.
         self.assertEqual(decide([approved, issue('WTF-2')], [ship])[:2], ('ship', 'WTF-1'))
+
+    def test_running_ship_keeps_its_lock_after_withdrawal(self):
+        withdrawn = issue('WTF-1', 'In Review', labels=())
+        ship = receipt('WTF-1', 'ship')
+        running = frozenset({'t-WTF-1'})
+        self.assertEqual(factory.mark_reviewed([withdrawn], [ship], POLICY, running), [])
+        self.assertIsNone(decide([withdrawn, issue('WTF-2')], [ship], running=running)[0])
+        # Re-adding the label while it runs doesn't start a second ship.
+        approved = issue('WTF-1', 'In Review', labels=('ship-approved',))
+        self.assertIsNone(decide([approved, issue('WTF-2')], [ship], running=running)[0])
+
+    def test_stopped_ship_for_a_ticket_sent_back_releases(self):
+        sent_back = issue('WTF-1', 'Todo', labels=('ship-approved',))
+        ship = receipt('WTF-1', 'ship')
+        self.assertIsNone(decide([sent_back], [ship], running=frozenset({'t-WTF-1'}))[0])
+        self.assertEqual(factory.mark_reviewed([sent_back], [ship], POLICY), [ship])
+        self.assertIsNone(decide([sent_back], [ship])[0], 'no ready-for-agent label: nothing to do')
 
     def test_review_backlog_limit(self):
         waiting = [issue(f'WTF-{n}', 'In Review') for n in range(1, 4)]
@@ -191,6 +208,14 @@ class Dispatch(unittest.TestCase):
         self.assertEqual((second['branch'], second['worktree'], second['attempt']),
                          (first['branch'], first['worktree'], 2))
         self.assertTrue(seen['title'].endswith('(rework 1)'))
+        # A leftover ship approval is withdrawn: reworked code needs a new one.
+        calls = []
+        linear = lambda policy, query, variables=None: calls.append(variables) or (
+            {'issueLabels': {'nodes': [{'id': 'label-1'}]}} if 'issueLabels' in query else {})
+        with mock.patch.object(factory, 'linear', linear):
+            factory.remove_label(self.policy, issue('WTF-5', labels=('ship-approved',)), 'ship-approved')
+            factory.remove_label(self.policy, issue('WTF-6'), 'ship-approved')
+        self.assertEqual(calls, [{'name': 'ship-approved'}, {'id': 'wtf-5', 'label': 'label-1'}])
         handoff = Path(self.policy['session']['handoff_root']) / 'WTF-5-fix'
         self.assertTrue((handoff / 'factory.1.json').exists() and (handoff / 'prompt.1.md').exists())
 
