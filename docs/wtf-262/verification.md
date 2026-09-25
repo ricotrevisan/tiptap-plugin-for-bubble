@@ -101,6 +101,41 @@ The fix itself can only run in Bubble after `pled push`. The ship session
 should repeat the last step on `version-03knn` (or on `test` after the branch is
 merged) and expect `<a …>word</a>XY`.
 
+## Deployment — development version (2026-09-25)
+
+- Main moved by one docs-only commit before the merge (`9d46395`, #51: v4.12.0
+  changelog). The ship session merged it into the PR branch as `6c78945`. Git
+  merged `CHANGELOG.md` without conflicts but put this entry under the released
+  `## v4.12.0`, so the entry was moved under a new `## Unreleased` heading.
+  `src/` and `lib/` stayed byte-identical to the reviewed head `625a9ba`.
+  Gates on `6c78945`: `npm test` ✅, `validate:plugin` ✅, `test:validator`
+  11/11, `test:browser` 61 passed and 2 skipped. CI ✅. There is a fresh
+  independent review receipt (approve) and a drummer review with no findings.
+- PR #53 was squash-merged as `4768496`, guarded on head `6c78945`.
+- Before the push, `pled status` showed only local changes (2 element fields).
+  Since the last baseline (`321e20b`), `src/` differed only in this PR's
+  `headers.html`, `initialize.js` and `plugin.json`. `pled push` completed, and
+  `pled status` then reported **In sync**. This commit records the resulting
+  `.src.json` baseline.
+- Real run mode (`tiptap-plugin`, Playwright Chromium with real mouse and
+  keyboard):
+  - `version-test/tiptap-demo` and `version-03knn/tiptap-demo`: the served
+    element code contains `linkWithPlainRightEdge` and the `typingLink` plugin
+    key. The page loads `dist-v4.11.1-wtf262-bdd8b03533e2.js`. All 10 demo
+    editors mounted and are editable.
+  - `version-03knn/tiptap-demo` (the customer's workflow): real click after
+    "word", Shift+ArrowLeft ×4 (selection `word`), click on the **Link**
+    toolbar button → `<a href="https://tiptap.dev">word</a>`. Click just past
+    the link and type `XY` → `<a …>word</a>XY here`, with XY as plain text.
+    Control: typing `Z` inside the link → `<a …>woZrd</a>`, so the text inside
+    still extends the link.
+  - `version-test/tiptap-demo`: typing ` example.org ` autolinked it. Click just
+    past the link and type `X` → `<a …>example.org</a>X`. Before the push,
+    this gave `example.orgX` inside the link.
+- Branch `wtf-262-links` (`03knn`) is a **demo to keep** and waits for the
+  maintainer to merge it into `test`. It was not changed or deleted. Nothing
+  was released to the Marketplace, and `test`/`live` were not edited.
+
 ## Not covered
 
 - **Set link** is a toggle: running it on a selection that is already a link
