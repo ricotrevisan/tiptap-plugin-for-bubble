@@ -9,8 +9,9 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 ### 🧭 Bubble Menu and Floating Menu hide and stack correctly
 
 - When you click from the editor into another editor, an input or any other focusable element, the editor's **Bubble Menu** and **Floating Menu** now hide. Before, they stayed visible and clickable until you clicked empty space.
+- A menu also hides when you leave an input inside that menu (for example a link URL field) for another editor or anywhere else on the page. Before, it stayed open until you used its editor again.
 - A popup that was opened and closed before no longer ends up under the menus. Before, once any popup on the page had been opened and closed, menus shown later were placed above that popup, so when it reopened from a menu button (for example to add a link) it appeared under the menu.
-- New lifecycle lab, run on every change in Chromium, Firefox and WebKit. It checks hidden menus, stacking, clicks, multiple editors, rebuilds, leftover resources and collaboration connections.
+- New lifecycle lab, run on every change in Chromium, Firefox and WebKit. It checks hidden menus, stacking, clicks, multiple editors, rebuilds, leftover resources, autobinding saves, and collaboration connections, including Liveblocks and rejected tokens.
 
 ## v4.12.0
 

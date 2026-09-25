@@ -2771,6 +2771,18 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         }
         hideMenuElement(node);
         hideMenuElement(lease.wrapper);
+        // Tiptap hides a menu only when its editor blurs. Once focus is inside
+        // the menu (for example a link input), leaving the menu for anything
+        // but its own editor must hide it too, or it stays open until the
+        // editor is used again.
+        const pluginKey = label === "BubbleMenu" ? "bubbleMenu" : "floatingMenu";
+        lease.wrapper.addEventListener("focusout", (event) => {
+            const editor = instance.data.editor;
+            const next = event.relatedTarget;
+            if (!lease.active || !editor || editor.isDestroyed) return;
+            if (next && (lease.wrapper.contains(next) || editor.view.dom.contains(next))) return;
+            editor.view.dispatch(editor.state.tr.setMeta(pluginKey, "hide"));
+        });
         options.extensions.push(extension.configure({
             element: lease.wrapper,
             appendTo: () => {
