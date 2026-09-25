@@ -12,3 +12,4 @@ plans
 
 lib/test-results/
 lib/playwright-report/
+__pycache__/
