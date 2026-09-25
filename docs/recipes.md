@@ -1,7 +1,8 @@
 # Recipes: saving, collaboration, menus and read-only text
 
-Short, tested setups for the questions that come up most on the forum. Each one
-is running on the demo page:
+Short, tested setups for the questions that come up most on the forum. The demo
+page shows each one in its "Save to your database", "Edit together, live" and
+"A Notion-like editor" sections:
 https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo (login `tippy` / `tappy`).
 
 Names in bold are what you'll see in the Bubble editor: the Tiptap
@@ -41,7 +42,7 @@ is not the Thing's HTML.
 How it behaves:
 
 - **Content updated** fires once the user pauses typing for **Update delay** (default 300 ms). Nothing is written until your workflow does it.
-- After you save, the Thing's HTML (your **Initial content**) becomes the same text. The editor keeps what it shows.
+- After you save, the Thing's HTML (your **Initial content**) changes and the editor reloads it. Normally that's the text already on screen, so nothing changes and no event fires. Anything typed between the click and the reload is replaced by the saved text (and **Content updated** fires). In our tests Bubble reloaded at once and nothing was lost.
 - If **Initial content** changes to something else, the editor loads it. Don't point **Initial content** at a value that changes while the user types.
 - Unsaved text is lost on reload.
 
@@ -62,13 +63,13 @@ Use this when the text should save itself, for example notes or a CMS page.
 
 How it behaves:
 
-- The plugin saves 2200 ms after the last edit. If the text didn't change, it doesn't save.
-- When the editor loses focus, it saves right away, before your **isn't focused** workflow runs. Clicking a button blurs the editor, so a Save or Next button hands over the pending edit first.
+- The plugin hands the edit to Bubble 2200 ms after the last change. If the text didn't change, it hands over nothing.
+- When the editor loses focus, it hands over the edit right away, before your **isn't focused** workflow runs. Clicking a button blurs the editor, so a Save or Next button hands over the pending edit first.
 - Switching the group to another record loads that record. An edit that hadn't been handed over yet is dropped, never written into the new record. Switching by clicking a button saves first (the click blurs the editor).
-- If the Thing changes elsewhere, the editor loads the new text, even while focused.
+- If the Thing changes elsewhere, the editor loads the new text, even while focused. An edit that hadn't been handed over yet is dropped.
 - If a slow save comes back after newer typing, the editor keeps the newer text and saves it again.
 - **Update delay** (300 ms) doesn't control autobinding saves; **Autobinding save delay** does.
-- To restore an older version on purpose, use **Set content**. Restoring text that exactly matches an earlier save looks like a late echo and is ignored.
+- To restore an older version on purpose, use **Set content**. If you instead change the Thing back to text that exactly matches an earlier save, the editor treats it as a late echo and ignores it.
 
 Don't also save the same field with a Save button. Two writers can overwrite
 each other.
@@ -88,11 +89,12 @@ the database stored it.
 - **Content updated** means "handed over", not "stored".
 - A record switch that doesn't blur the editor (a delayed workflow, a keyboard shortcut) drops the unsent edit.
 
-To avoid depending on timers, save explicitly as the first step of the
-navigation workflow (**Make changes to a thing** with **Content (HTML)**), then
-**Go to page**. That still isn't a confirmation from the server. If your app
-needs one, it has to come from Bubble's server, for example a backend workflow
-that reports back. Neither the plugin nor the demo page provides that.
+So a Next or Back button needs nothing extra: its click hands over the edit
+before its workflow runs, and Bubble takes it from there.
+
+What neither the plugin nor this guide provides is a confirmation from the
+server that the text is stored. If your app needs that before moving on, it
+has to come from Bubble's server side and is outside these recipes.
 
 ## Recipe: menus in reusables and repeating groups
 
@@ -112,8 +114,8 @@ How it behaves:
 - Changing a menu ID rebuilds the editor. Unsaved text is kept.
 
 Wait for the editor before running actions. Use the **Editor is ready** event,
-or check **Is ready**. Actions that run earlier are skipped and reported in the
-debugger.
+or check **Is ready**. Actions that run earlier are skipped, and almost all of
+them say so in the debugger.
 
 Demo: "A Notion-like editor" (a reusable with both menus).
 Tested by `lib/tests/menu-ownership-lifecycle.mjs`, which covers two reusables
@@ -133,7 +135,8 @@ To show saved HTML exactly like the editor:
 4. **Bubble Menu** and **Floating Menu**: no.
 5. **File uploads enabled**: no.
 
-When the Thing changes, the read-only view updates. To make it editable later,
+When the Thing changes, the read-only view updates. An empty value doesn't
+clear it; hide the view with a condition instead. To make it editable later,
 switch **This input is enabled** with a condition.
 
 Styles that are part of the text itself, such as **Set color** or **Set font
@@ -158,7 +161,7 @@ server.
    - **Document name**: one name per document, for example the Thing's unique ID.
    - **JWT key**: the state from step 1.
    - **user_name** and **cursor_color**: the current user's name and color.
-   - **Initial content**: only used when the room is empty.
+   - **Initial content**: only used when the room is empty. If two people open a brand-new document at the same moment, it can appear twice. Open new documents once first, or leave **Initial content** empty.
    - **File uploads enabled**: no (or yes, with **Attach files to** set).
    - Leave autobinding off. If it's on, the plugin ignores it and says so in the debugger.
 3. Show **Collaboration status**, **Collaboration synced?** and **Collaboration connected users** if you like.
@@ -183,7 +186,11 @@ in a real Bubble app ([verification](wtf-263/verification.md)).
 
 Same steps, with **Provider** custom, **Custom - URL** = your server's `wss://`
 address, the secret in **Custom collab document server secret**, and **Which
-document server secret to use** = Custom. This uses the same connection code as
+document server secret to use** = Custom. On the Tiptap element, **Doc Server
+ID** is added to the end of the address (`Custom - URL/Doc Server ID`), so use
+it only if your server expects that path. In **generate auth token**, **Doc
+Server ID** becomes the token's audience; leave it empty unless your server
+checks one. This uses the same connection code as
 Tiptap Cloud, but it hasn't been checked end to end in a real Bubble app for
 this guide.
 
@@ -193,7 +200,7 @@ Not covered yet. Its setup hasn't been verified in a real Bubble app.
 
 ### Saving through Tiptap Cloud webhooks
 
-This doesn't work in Bubble yet. Tiptap Cloud's "document saved" webhook sends
+We couldn't find a way to make this work in Bubble. Tiptap Cloud's "document saved" webhook sends
 the document as a JSON object (`tiptapJson`). **convert webhook payload to
 HTML** needs it as text, and Bubble can't pass it on:
 

@@ -30,7 +30,7 @@
 
 - `recipes-docs-contract.mjs` before the docs: failed at `README links the
   canonical demo page` ([red-before-docs.txt](red-before-docs.txt)). After:
-  `PASS recipes docs contract (80 bold terms, 5 recipes)`.
+  `PASS recipes docs contract (82 bold terms, 5 recipes)`.
 - The docs test also failed while drafting on four bold terms (`bold` in the
   intro, and three names wrapped across lines). The wrap was a test bug
   (Markdown reads a line break as a space); the intro was rewritten.
@@ -45,6 +45,9 @@
   created from `test`. Savepoint before changes: `1790343414572`.
 - Preview: https://tiptap-plugin.bubbleapps.io/version-73knr/tiptap-demo
   (login `tippy` / `tappy`). Plugin: development version, unchanged.
+- Branch status: **demo to keep**. It adds new user-visible demo sections, so
+  the maintainer must merge it into `test`. Until then the recipes' "Save to
+  your database" and "Edit together, live" sections exist only on this branch.
 - Added reusables `demo-saving` and `demo-collaboration` to `tiptap-demo`
   after `demo-outputs`. Their BubbleScript is in [fixture/](fixture/). Every
   new Tiptap element sets **File uploads enabled** to no.
@@ -111,8 +114,36 @@ REST API by name) is a product decision for a follow-up.
 - Menus in a repeating group in real Bubble: covered by
   `menu-ownership-lifecycle.mjs` (two containers with the same menu ID); the
   demo page shows menus in a reusable only.
-- Server-confirmed save before navigation: the recipes say the plugin can't
-  provide it; no pattern was built.
+- Server-confirmed save before navigation: the recipes say neither the plugin
+  nor the guide provides it; no pattern was built.
+- Two people opening a brand-new collaborative document at the same moment can
+  both seed **Initial content** (found by review with offline providers). The
+  recipe warns about it; the plugin is unchanged.
+- The **convert webhook payload to HTML** help text still says to pass
+  "Request Data's body". Changing it is a `src/` change for a follow-up.
+
+## Review
+
+Independent read-only review of `523eff4`: approve with findings, none
+blocking. Fixed in the next commit:
+
+- Demo branch marked **demo to keep** above.
+- "Before leaving the page" no longer suggests a second writer next to
+  autobinding. It says a button click hands the edit over, and that a server
+  confirmation isn't provided.
+- Save button: "the editor keeps what it shows" was too broad. The test now
+  types during the round trip. It asserts that the reload replaces that typing,
+  that an identical reload fires nothing, and that a different one fires
+  **Content updated** once. (The reviewer expected an event on the identical
+  reload; the test shows none.) The docs say the same.
+- Warning about double **Initial content** in a brand-new room.
+- Custom server: what **Doc Server ID** does there (URL path, token audience).
+- Webhook wording: "we couldn't find a way" rather than "doesn't work".
+- Smaller wording fixes: an external change also drops an unsent edit;
+  "handed over" instead of "saves" for autobinding; an empty value doesn't
+  clear the read-only view; "almost all" actions report running before ready
+  (Select entire block is silent); what "restoring" means.
+- Removed unused Bubble labels from the test allowlist.
 
 ## Final checks (Node 24, from `lib/`)
 
