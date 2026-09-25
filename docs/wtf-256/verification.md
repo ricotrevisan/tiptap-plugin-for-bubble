@@ -121,6 +121,16 @@ All passed on 2026-09-25:
   - Documented as a known limitation: focus inside the menu, then another
     editor. This was already the case before this PR. So is the listener
     counter's bias toward false leaks (`once`/`AbortSignal` listeners).
+- **Re-review of `0e44f16`: approve.**
+  - All seven findings were confirmed resolved.
+  - Both single-fix mutations still fail only L4 and only L8.
+  - 54/54 browser tests passed.
+  - Its three nits are fixed in the next commit:
+    - L8 now also focuses the in-menu input without a mousedown. That path
+      reaches Tiptap's "focus moved into the menu" check instead of
+      `preventHide`. It also asserts the typed value.
+    - A duplicated comment phrase in `lab.html` is removed.
+    - The check script gives a clear error if no popup opened.
 - **Drummer (static, nonblocking) review of `bbf79fd`:** no important or
   blocker findings.
 

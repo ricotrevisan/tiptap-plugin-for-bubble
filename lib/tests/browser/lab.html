@@ -49,10 +49,10 @@
 </div>
 <div id="modal"><button id="modal-button" style="margin: 200px auto; display: block">Modal</button></div>
 <script>
-// Resource counters. Installed before the runtime. Listeners added with
+// Resource counters, installed before the runtime so every listener, observer
+// and socket the plugin or Tiptap creates is tracked. Listeners added with
 // { once: true } or removed through an AbortSignal would show up as leaks
-// (a false failure, never a false pass). Installed before the runtime so every listener, observer
-// and socket the plugin or Tiptap creates is tracked.
+// (a false failure, never a false pass).
 (() => {
   const listeners = new Map();
   const key = (type, listener, options) => [type, !!(typeof options === 'boolean' ? options : options?.capture)];
