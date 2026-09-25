@@ -48,7 +48,7 @@ systemctl --user enable --now tiptap-factory.timer
 journalctl --user -u tiptap-factory.service -n 20     # decisions and errors
 ```
 
-A failed dispatch exits non-zero and shows in the journal. If it failed after creating its handoff directory, the next run fails too, until that directory is inspected and removed. That's deliberate: never start duplicate work.
+A failed dispatch exits non-zero and shows in the journal. Its `starting` receipt keeps every later run reporting "busy … unfinished dispatch" until someone inspects it. That's deliberate: never start duplicate work.
 
 ## What's left for the maintainer
 
