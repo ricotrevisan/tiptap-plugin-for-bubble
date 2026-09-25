@@ -97,6 +97,22 @@ arise.
 files, 73 function bodies), `npm run test:validator`, `npm run test:browser`
 (24 passed across Chromium, Firefox and WebKit). All passed.
 
+## Deployment — development version (2026-09-25)
+
+- PR #46 was squash-merged as `69b0610`. `main`'s tree is identical to the
+  reviewed head `7897ed7`.
+- Before the push, `pled status` showed only local changes (one element
+  field). `pled push` completed, and `pled status` then reported **In sync**.
+  This commit records the resulting `.src.json` baseline.
+- Real run mode (`tiptap-plugin`, `version-test/tiptap-demo`):
+  - The served test-version element code contains `disposeCollabResources`
+    and `ROOM_CONNECTION_ERROR`, and not the old `_leaveCollabRoom`.
+  - All 10 demo editors mounted.
+  - Real keyboard typing in the first demo editor updated the Bubble states
+    (character count, Is focused, Can undo).
+- No Bubble branch was created, edited or deleted. Nothing was released to
+  the Marketplace.
+
 ## Not yet verified
 
 Real Liveblocks network verification in Bubble (two browser sessions,
