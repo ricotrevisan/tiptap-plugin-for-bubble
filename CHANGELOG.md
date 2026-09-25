@@ -9,7 +9,8 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 ### 🔗 Typing after a link no longer extends it
 
 - Text you type right after a link is plain text. Before, with **Autolink** on (the default), a word you linked with **Set link** swallowed everything typed after it.
-- Typing inside a link still edits it. **Set link** with nothing selected still links the text you type next, until you move the caret. Retyping a selected link keeps the link.
+- Typing inside a link still edits it, and retyping a selected link keeps the link. **Set link** with nothing selected links the text you type next (Backspace included) until you move the caret. At the end of a paragraph, press → to stop. This only works if the editor keeps focus, for example from a keyboard shortcut. A toolbar click takes focus away, and clicking back into the editor moves the caret.
+- With the caret right after a link, the **link** state is now *no*, and **Set link** starts a new link there instead of removing the one before it. If a Link button is highlighted from the **link** state, it now lights up only inside a link.
 - **Remove link**, autolink, pasted content and saved HTML/JSON work as before. To make an existing link longer, select the text and use **Set link**.
 
 ### 🔔 Start a workflow when someone is mentioned

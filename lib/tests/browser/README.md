@@ -10,7 +10,7 @@ CI builds before running Playwright and uploads failure traces. The server binds
 
 The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
-Eighteen scenarios run in all three engines (54 browser tests total):
+Twenty scenarios run in all three engines (58 browser tests; the IME scenario runs in Chromium only and is skipped in Firefox and WebKit):
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
@@ -21,7 +21,7 @@ Eighteen scenarios run in all three engines (54 browser tests total):
 - Real **Find**, **Replace**, and **Replace all** actions work after toggling **Find & Replace**, while preserving the draft.
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
-- Links (WTF-262): text typed with the real keyboard after a link set from a toolbar-style button, or after a link at the end of a line, is plain text. Typing inside a link, Set link with nothing selected, retyping a selected link, pasting over it, **Remove link**, autolink, and HTML/JSON round trips keep their behavior.
+- Links (WTF-262): text typed with the real keyboard after a link set from a toolbar-style button, or after a link at the end of a line, is plain text. So is IME composition there (Chromium). Typing inside a link, Set link with nothing selected (with Backspace, and ArrowRight to stop at the end of a line), retyping a selected link, pasting over it, **Remove link**, autolink, and HTML/JSON round trips keep their behavior.
 
 `publishAutobinding` is an explicit fixture output recorder. With autobinding disabled, typing must not call it. Tests observe adapter outputs without simulating persistence. Bubble reset remains disabled; the teardown test invokes the internal lifecycle function directly. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
 

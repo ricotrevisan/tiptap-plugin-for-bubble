@@ -7,11 +7,13 @@
   `autolink` option. The plugin's **Autolink** field defaults to yes, so links
   were inclusive and text typed at their right edge joined them.
 - Fix (`src/elements/tiptap-AAC/initialize.js`): links are never inclusive. A
-  small ProseMirror plugin keeps links the user is *typing* (after **Set link**
-  with nothing selected, or when retyping a whole selected link) until the
-  caret moves. Paste, drop, cut and remote collaboration edits are excluded.
-  Typing counts as retyping only when it replaced the selected link text, so
-  a stale selection can't relink text typed next to a link.
+  small ProseMirror plugin keeps a link the user is *typing* going (after
+  **Set link** with nothing selected, or when retyping a whole selected link),
+  through Backspace and input rules, until the caret moves. ArrowRight at the
+  end of a paragraph ends it. Paste, drop, cut, remote collaboration edits,
+  IME composition, non-text insertions and edits reaching back before the run
+  are excluded. Retyping counts only when the typed text replaced the whole
+  selection, so a stale selection can't relink text typed beside a link.
 
 ## Runtime bundle
 
@@ -30,14 +32,17 @@
 
 - `lib/tests/link-boundary-lifecycle.mjs` (in `npm test`) runs the real decoded
   initialize/update/Set link/Remove link/Set content bodies on the built bundle.
-  It covers: autolink on and off; right edge; end of line; inside and left
-  edge; the stale-selection race; Set link with nothing selected; retyping and
-  undo; paste and remote edits; Remove link; HTML/JSON round trips with custom
-  target/rel.
-- `lib/tests/browser/link-boundary.spec.mjs`: nine scenarios in Chromium,
-  Firefox and WebKit with real mouse clicks and keyboard input. The fixture
-  runs **Set link** from a real button outside the editor, which takes focus
-  away as a Bubble toolbar button does.
+  It covers: autolink on and off; right edge (text and `isActive`); end of
+  line; inside and left edge; the stale-selection race; Set link with nothing
+  selected; Backspace; ArrowRight at the end of a paragraph; input rules inside
+  and reaching before the run; IME composition meta; mention insertion;
+  retyping and undo; paste and remote edits; Remove link; HTML/JSON round trips
+  with custom target/rel.
+- `lib/tests/browser/link-boundary.spec.mjs`: eleven scenarios with real mouse
+  and keyboard in Chromium, Firefox and WebKit. IME composition (CDP) runs in
+  Chromium only. The fixture runs **Set link** from a real button outside the
+  editor, which takes focus away as a Bubble toolbar button does. Tests wait
+  for Tiptap's next-frame focus before typing.
 
 ### Red → green
 
@@ -57,9 +62,16 @@ With the `main` Link setup (`Link.configure(linkConfig)`):
   link. The plugin now requires the typed text to replace the selection, and
   the lifecycle test covers it (case 4).
 
+- Review round 1 (Backspace): with the `28aa68d` plugin, the lifecycle test
+  fails `fixing a typo keeps the new link` (`' guid' !== ' guide'`).
+- CI on `28aa68d` failed once in Chromium: Set link ran before Tiptap's
+  next-frame focus, which then reset the caret and dropped the stored mark. The
+  tests now wait for focus (`focusAt`).
+
 With the fix: `npm test` passes, `npm run validate:plugin` passes,
-`npm run test:validator` 11/11, `npm run test:browser` 54/54. The full browser
-suite also passed `--repeat-each=4` (216/216).
+`npm run test:validator` 11/11, `npm run test:browser` 58 passed and 2 skipped
+(IME outside Chromium). The full browser suite also passed `--repeat-each=4`
+(232 passed, 8 skipped).
 
 ## Real Bubble
 
@@ -90,4 +102,8 @@ merged) and expect `<a …>word</a>XY`.
 - **Set link** is a toggle: running it on a selection that is already a link
   removes the link instead of changing its URL. That is existing behavior,
   outside this ticket.
-- IME composition at a link's edge was not exercised.
+- IME composition *while typing a new link* is left to ProseMirror (only its
+  stored mark applies). Only composition at an existing link's right edge has a
+  browser test.
+- The collaboration exclusion is tested with y-tiptap's `addToHistory: false`
+  meta, not with a live collaboration session.
