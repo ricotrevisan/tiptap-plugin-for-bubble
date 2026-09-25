@@ -6,10 +6,10 @@ A scheduled loop on `lab` that takes this project's Linear tickets through fix, 
 
 | Linear | Who | What happens |
 | --- | --- | --- |
-| Backlog/Todo + `ready-for-agent` | Maintainer (triage) | The queue. Todo comes before Backlog, then Linear priority, then oldest. |
+| Backlog/Todo + `ready-for-agent` | Maintainer (triage) | The queue. Todo comes before Backlog, then Linear priority, then oldest. Tickets assigned to someone else, or blocked by an open ticket, are skipped. |
 | In Progress | Fix session | Worktree + branch from `origin/main`, regression test first, fix, full gates, PR, independent review receipt + drummer review. |
-| In Review | Maintainer | Reads the PR and the ticket's closing comment. Add **`ship-approved`** to ship, or comment to send it back. |
-| In Review + `ship-approved` | Ship session | Guarded merge, `pled push` to the development version, check on `tiptap-demo`, baseline commit, Done, cleanup. |
+| In Review | Maintainer | Reads the PR and the ticket's closing comment. Add **`ship-approved`** to ship. To send it back, comment what to change and move the ticket to Todo: the next run starts a rework session on the same branch and PR. |
+| In Review + `ship-approved` | Ship session | Refreshes the PR if main moved (re-gated and re-reviewed), guarded merge, `pled push` of only this ticket, check on `tiptap-demo`, baseline commit, Done, removes the worktree. |
 | Anything blocked | Maintainer | Sessions post one comment with the exact blocker and stop. The WTF team has no Blocked state, so the ticket keeps its state and keeps holding the factory until someone acts. |
 
 The factory never releases to the Marketplace, edits Bubble `test`/`live`, or picks up tickets labelled `ready-for-human`, `requires-subscription`, `needs-info`, `needs-triage`, `wontfix` or `security`. Rules live in [`policy.toml`](policy.toml). The session instructions are [`prompts/fix.md`](prompts/fix.md) and [`prompts/ship.md`](prompts/ship.md).
@@ -29,7 +29,11 @@ python3 factory/factory_next.py status       # factory sessions; "stalled" = hol
 touch ~/.t3/task-handoffs/tiptap-factory/PAUSE   # stop dispatching (rm to resume)
 ```
 
-Each dispatch writes `~/.t3/task-handoffs/tiptap-factory/<ticket>-<fix|ship>/`: the rendered prompt, the T3 thread receipt, and `factory.json`, which is the lock. It also comments on the ticket with the thread, branch and worktree. A ticket is never dispatched twice for the same kind. To redo one, delete its directory after checking its thread and worktree.
+Each dispatch writes `~/.t3/task-handoffs/tiptap-factory/<ticket>-<fix|ship>/`: `factory.json` (the lock), the rendered prompt and the T3 thread receipt. It also comments on the ticket with the thread, branch and worktree.
+
+- `factory.json` is written before anything else happens. If a dispatch dies partway, its status stays `starting` and the whole factory stays stopped. Check whether the T3 thread started and whether the worktree exists, then either fix `factory.json` or delete the directory.
+- A fix is dispatched once per ticket, plus once per rework round (earlier receipts are kept as `factory.1.json`, …).
+- A ship is dispatched once. To retry a blocked ship, delete its `-ship` directory.
 
 Sessions run as Claude Code, `claude-opus-5-5`, medium effort, full access (`[session.model]` in the policy).
 
@@ -45,6 +49,11 @@ journalctl --user -u tiptap-factory.service -n 20     # decisions and errors
 ```
 
 A failed dispatch exits non-zero and shows in the journal. If it failed after creating its handoff directory, the next run fails too, until that directory is inspected and removed. That's deliberate: never start duplicate work.
+
+## What's left for the maintainer
+
+- **Branches:** the factory keeps Git branches, and never deletes Bubble branches. Ship sessions list the ticket's Bubble branch in their final comment; delete it when you're done with it (Bubble allows nine under `test`).
+- **Blocked tickets:** the WTF team has no Blocked state. A blocked session comments the exact blocker and stops, and its ticket keeps holding the factory. Resolve it, then move the ticket on (or back to Todo for a rework round).
 
 ## Not yet automated
 

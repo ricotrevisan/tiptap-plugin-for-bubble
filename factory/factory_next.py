@@ -34,27 +34,66 @@ def labels(issue):
 
 
 def held_locks(issues, receipts, policy):
-    """Factory sessions whose ticket hasn't reached a state that releases them."""
+    """Factory sessions whose ticket hasn't reached a state that releases them.
+
+    `issues` holds only open tickets, so a ticket that was completed, canceled
+    or moved out of the project releases its lock. A fix also releases it once
+    the ticket was seen in review and then moved back to the queue (rework). A
+    dispatch that never finished holds the factory until someone inspects it.
+    """
     by_id = {issue['identifier']: issue for issue in issues}
     release = {'fix': policy['states']['releases_fix_lock'],
                'ship': policy['states']['releases_ship_lock']}
     held = []
     for receipt in receipts:
-        issue = by_id.get(receipt['identifier'])
-        # A ticket that left the project no longer holds the factory.
-        if issue and issue['state']['name'] not in release[receipt['kind']]:
+        if receipt.get('status') != 'started':
             held.append(receipt)
+            continue
+        issue = by_id.get(receipt['identifier'])
+        if not issue or issue['state']['name'] in release[receipt['kind']]:
+            continue
+        if reworking(issue, receipt, policy):
+            continue
+        held.append(receipt)
     return held
 
 
-def decide(issues, receipts, policy, dispatched_today=0):
+def reworking(issue, receipt, policy):
+    return (receipt['kind'] == 'fix' and receipt.get('reachedReview')
+            and issue['state']['name'] in policy['intake']['queue_states'])
+
+
+def mark_reviewed(issues, receipts, policy):
+    """Record fix receipts whose ticket is now In Review; returns those changed."""
+    in_review = {i['identifier'] for i in issues if i['state']['name'] == policy['states']['in_review']}
+    changed = []
+    for receipt in receipts:
+        if (receipt['kind'] == 'fix' and receipt.get('status') == 'started'
+                and not receipt.get('reachedReview') and receipt['identifier'] in in_review):
+            receipt['reachedReview'] = True
+            changed.append(receipt)
+    return changed
+
+
+def blocked(issue):
+    return any(relation['type'] == 'blocks' and relation['issue']['state']['type'] not in ('completed', 'canceled')
+               for relation in issue.get('inverseRelations', {}).get('nodes', []))
+
+
+def claimed_by_someone_else(issue, viewer_id):
+    return bool(issue.get('assignee')) and issue['assignee']['id'] != viewer_id
+
+
+def decide(issues, receipts, policy, dispatched_today=0, viewer_id=None):
     """Return ('ship'|'fix', issue, reason) or (None, None, reason)."""
     if not policy.get('enabled', False):
         return None, None, 'policy disabled'
     states, intake, limits = policy['states'], policy['intake'], policy['limits']
     held = held_locks(issues, receipts, policy)
     if len(held) >= limits['max_active']:
-        return None, None, 'busy: ' + ', '.join(f"{r['identifier']} ({r['kind']})" for r in held)
+        return None, None, 'busy: ' + ', '.join(
+            f"{r['identifier']} ({r['kind']}{'' if r.get('status') == 'started' else ', unfinished dispatch'})"
+            for r in held)
     # Someone (human or agent) working outside the factory also holds the slot.
     in_progress = [i['identifier'] for i in issues if i['state']['name'] == states['in_progress']
                    and i['identifier'] not in {r['identifier'] for r in held}]
@@ -75,14 +114,19 @@ def decide(issues, receipts, policy, dispatched_today=0):
     if len(waiting) >= limits['max_waiting_review']:
         return None, None, f'{len(waiting)} tickets wait for review'
 
-    fixed = {r['identifier'] for r in receipts if r['kind'] == 'fix'}
+    # A reviewed ticket moved back to the queue is dispatched again (rework).
+    by_id = {i['identifier']: i for i in issues}
+    fixed = {r['identifier'] for r in receipts if r['kind'] == 'fix'
+             and not (r['identifier'] in by_id and reworking(by_id[r['identifier']], r, policy))}
     blocked_labels = set(intake['human_only_labels'])
     queue = [i for i in issues
              if i['state']['name'] in intake['queue_states']
              and intake['ready_label'] in labels(i)
              and not labels(i) & blocked_labels
              and i['identifier'] not in intake.get('exclude', [])
-             and i['identifier'] not in fixed]
+             and i['identifier'] not in fixed
+             and not blocked(i)
+             and not claimed_by_someone_else(i, viewer_id)]
     if not queue:
         return None, None, 'queue empty'
     issue = sorted(queue, key=sort_key(policy))[0]
@@ -115,15 +159,22 @@ def linear(policy, query, variables=None):
 
 
 def fetch_issues(policy):
+    """Open tickets in the project, plus the API user's ID."""
     data = linear(policy, '''query($id: String!) {
-        organization { urlKey }
-        project(id: $id) { issues(first: 250) { nodes {
-            id identifier title url priority createdAt
-            state { name } labels { nodes { name } } } } } }''',
+        organization { urlKey } viewer { id }
+        project(id: $id) { issues(first: 100, filter: {state: {type: {nin: ["completed", "canceled"]}}}) {
+            pageInfo { hasNextPage }
+            nodes { id identifier title url priority createdAt assignee { id }
+                state { name } labels(first: 20) { nodes { name } }
+                inverseRelations(first: 20) { nodes { type issue { identifier state { type } } } } } } } }''',
                   {'id': policy['linear']['project_id']})
     if data['organization']['urlKey'] != policy['linear']['workspace_url_key']:
         raise RuntimeError('Linear connection points at the wrong workspace')
-    return data['project']['issues']['nodes']
+    issues = data['project']['issues']
+    if issues['pageInfo']['hasNextPage']:
+        # A lock whose ticket fell off the page would silently release.
+        raise RuntimeError('More than 100 open tickets: add pagination before dispatching')
+    return issues['nodes'], data['viewer']['id']
 
 
 def comment(policy, issue, body):
@@ -136,10 +187,23 @@ def handoff_root(policy):
 
 
 def load_receipts(policy):
+    """One receipt per dispatch directory. A directory without a readable
+    receipt is an unfinished dispatch and counts as a held lock."""
     receipts = []
-    for path in sorted(handoff_root(policy).glob('*/factory.json')):
-        receipts.append(json.loads(path.read_text()))
+    for directory in sorted(p for p in handoff_root(policy).glob('*-*') if p.is_dir()):
+        identifier, _, kind = directory.name.rpartition('-')
+        try:
+            receipt = json.loads((directory / 'factory.json').read_text())
+        except (OSError, ValueError):
+            receipt = dict(identifier=identifier, kind=kind, status='unknown', dispatchedAt=now())
+        receipt['directory'] = str(directory)
+        receipts.append(receipt)
     return receipts
+
+
+def save_receipt(receipt):
+    data = {key: value for key, value in receipt.items() if key != 'directory'}
+    (Path(receipt['directory']) / 'factory.json').write_text(json.dumps(data, indent=2))
 
 
 def t3_helper(policy):
@@ -168,9 +232,25 @@ def dispatch(policy, kind, issue):
     session = policy['session']
     identifier = issue['identifier']
     directory = handoff_root(policy) / f'{identifier}-{kind}'
-    directory.mkdir(parents=True, exist_ok=False)  # never dispatch the same work twice
+    previous = directory / 'factory.json'
+    attempt = 1
+    if kind == 'fix' and previous.exists():
+        # Rework of a reviewed ticket: keep earlier receipts for the record.
+        attempt = 2
+        while (directory / f'factory.{attempt - 1}.json').exists():
+            attempt += 1
+        for name in ('factory', 'thread-receipt', 'prompt'):
+            for suffix in ('.json', '.md'):
+                if (directory / f'{name}{suffix}').exists():
+                    (directory / f'{name}{suffix}').rename(directory / f'{name}.{attempt - 1}{suffix}')
+    else:
+        directory.mkdir(parents=True, exist_ok=False)  # never dispatch the same work twice
+    receipt_path = directory / 'factory.json'
+    receipt = dict(identifier=identifier, kind=kind, status='starting', attempt=attempt, dispatchedAt=now())
+    # Written before any side effect: an interrupted dispatch keeps the factory locked.
+    receipt_path.write_text(json.dumps(receipt, indent=2))
     values = dict(identifier=identifier, identifier_lower=identifier.lower(),
-                  title=issue['title'], url=issue['url'])
+                  title=issue['title'], url=issue['url'], handoff=str(directory))
     worktree = branch = None
     if kind == 'fix':
         repo = session['repo_root']
@@ -178,7 +258,13 @@ def dispatch(policy, kind, issue):
         base = git('rev-parse', 'origin/main', cwd=repo)
         branch = branch_name(issue)
         worktree = str(Path(session['worktree_root']) / branch.split('/', 1)[1])
-        git('worktree', 'add', '--quiet', '--no-track', '-b', branch, worktree, base, cwd=repo)
+        if Path(worktree).exists():
+            pass  # rework: continue in the ticket's existing worktree
+        elif subprocess.run(['git', 'rev-parse', '--verify', '--quiet', 'refs/heads/' + branch], cwd=repo,
+                            capture_output=True).returncode == 0:
+            git('worktree', 'add', '--quiet', worktree, branch, cwd=repo)
+        else:
+            git('worktree', 'add', '--quiet', '--no-track', '-b', branch, worktree, base, cwd=repo)
         values.update(worktree=worktree, branch=branch, base_sha=base[:7])
     prompt_file = directory / 'prompt.md'
     prompt_file.write_text(render(policy, kind, **values))
@@ -196,15 +282,16 @@ def dispatch(policy, kind, issue):
                 thread['runtimeMode'] = session['runtime_mode']
         return state
     client.snapshot = with_factory_settings
-    title = f"{identifier} — {'ship' if kind == 'ship' else issue['title']}"[:80]
+    title = f"{identifier} — {'ship' if kind == 'ship' else issue['title']}"[:70]
+    if attempt > 1:
+        title += f' (rework {attempt - 1})'
     result = helper.start(client, argparse.Namespace(
         workspace=session['repo_root'], worktree=worktree, branch=branch, title=title,
         source_thread=session['source_thread'], prompt_file=str(prompt_file), prompt=None,
         receipt=str(directory / 'thread-receipt.json')))
     thread_id = result['receipt']['threadId']
-    receipt = dict(identifier=identifier, kind=kind, threadId=thread_id, branch=branch,
-                   worktree=worktree, dispatchedAt=now())
-    (directory / 'factory.json').write_text(json.dumps(receipt, indent=2))
+    receipt.update(status='started', threadId=thread_id, branch=branch, worktree=worktree)
+    receipt_path.write_text(json.dumps(receipt, indent=2))
     comment(policy, issue, f"Factory started a {kind} session: T3 thread `{thread_id}`"
             + (f", branch `{branch}`, worktree `{worktree}`." if branch else '.'))
     return receipt
@@ -220,14 +307,15 @@ def dispatched_today(receipts):
 
 
 def status(policy):
-    issues = {i['identifier']: i for i in fetch_issues(policy)}
+    issues = {i['identifier']: i for i in fetch_issues(policy)[0]}
     receipts = load_receipts(policy)
+    mark_reviewed(list(issues.values()), receipts, policy)  # in memory: status never writes
     held = {(r['identifier'], r['kind']) for r in held_locks(list(issues.values()), receipts, policy)}
     helper = t3_helper(policy)
     threads = {t['id']: t for t in t3_client(policy, helper).snapshot()['threads']}
     rows = []
     for r in receipts:
-        thread = threads.get(r['threadId'], {})
+        thread = threads.get(r.get('threadId'), {})
         turn = (thread.get('latestTurn') or {}).get('state')
         updated = thread.get('updatedAt') or r['dispatchedAt']
         idle_hours = (datetime.datetime.now(datetime.timezone.utc)
@@ -235,7 +323,8 @@ def status(policy):
         holding = (r['identifier'], r['kind']) in held
         rows.append(dict(ticket=r['identifier'], kind=r['kind'],
                          state=issues.get(r['identifier'], {}).get('state', {}).get('name'),
-                         thread=r['threadId'], turn=turn, idleHours=round(idle_hours, 1),
+                         status=r.get('status'), thread=r.get('threadId'), turn=turn,
+                         idleHours=round(idle_hours, 1),
                          holdsFactory=holding,
                          stalled=holding and turn != 'running' and idle_hours >= STALL_HOURS))
     return rows
@@ -254,7 +343,11 @@ def main():
         print(json.dumps({'action': None, 'reason': 'paused'}))
         return
     receipts = load_receipts(policy)
-    kind, issue, reason = decide(fetch_issues(policy), receipts, policy, dispatched_today(receipts))
+    issues, viewer_id = fetch_issues(policy)
+    for receipt in mark_reviewed(issues, receipts, policy):
+        if args.dispatch:  # a dry run never writes
+            save_receipt(receipt)
+    kind, issue, reason = decide(issues, receipts, policy, dispatched_today(receipts), viewer_id)
     decision = {'action': kind, 'ticket': issue and issue['identifier'], 'reason': reason,
                 'dryRun': not args.dispatch}
     if kind and args.dispatch:

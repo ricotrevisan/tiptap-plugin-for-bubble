@@ -1,7 +1,10 @@
 import copy
 import string
+import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
 
 import factory_next as factory
 
@@ -14,12 +17,13 @@ def issue(identifier, state='Todo', labels=('ready-for-agent',), priority=3, cre
             'labels': {'nodes': [{'name': name} for name in labels]}}
 
 
-def receipt(identifier, kind='fix', at='2026-09-01T00:00:00+00:00'):
-    return {'identifier': identifier, 'kind': kind, 'threadId': 't-' + identifier, 'dispatchedAt': at}
+def receipt(identifier, kind='fix', at='2026-09-01T00:00:00+00:00', status='started', **extra):
+    return {'identifier': identifier, 'kind': kind, 'status': status, 'threadId': 't-' + identifier,
+            'dispatchedAt': at, **extra}
 
 
-def decide(issues, receipts=(), policy=POLICY, today=0):
-    kind, chosen, reason = factory.decide(issues, list(receipts), policy, today)
+def decide(issues, receipts=(), policy=POLICY, today=0, viewer='me'):
+    kind, chosen, reason = factory.decide(issues, list(receipts), policy, today, viewer)
     return kind, chosen and chosen['identifier'], reason
 
 
@@ -49,12 +53,47 @@ class Decide(unittest.TestCase):
         # Work started outside the factory holds it too.
         self.assertIsNone(decide([issue('WTF-1', 'In Progress', labels=()), issue('WTF-2')])[0])
 
+    def test_unfinished_dispatch_holds_the_factory(self):
+        # Interrupted before the session was recorded: fail closed until inspected.
+        for status in ('starting', 'unknown'):
+            kind, _, reason = decide([issue('WTF-1', 'In Review'), issue('WTF-2')], [receipt('WTF-1', status=status)])
+            self.assertIsNone(kind)
+            self.assertIn('unfinished dispatch', reason)
+        # Even when its ticket has left the open set.
+        self.assertIsNone(decide([issue('WTF-2')], [receipt('WTF-1', status='starting')])[0])
+
+    def test_closed_ticket_releases_its_lock(self):
+        self.assertEqual(decide([issue('WTF-2')], [receipt('WTF-1')])[:2], ('fix', 'WTF-2'))
+
+    def test_rework_after_review(self):
+        todo = [issue('WTF-1'), issue('WTF-2', priority=4)]
+        # Dispatched, not yet started: holds, and isn't picked again.
+        self.assertIsNone(decide(todo, [receipt('WTF-1')])[0])
+        # Seen in review, then moved back to Todo: picked again for rework.
+        reviewed = receipt('WTF-1')
+        self.assertEqual([r['identifier'] for r in factory.mark_reviewed([issue('WTF-1', 'In Review')], [reviewed], POLICY)],
+                         ['WTF-1'])
+        self.assertEqual(decide(todo, [reviewed])[:2], ('fix', 'WTF-1'))
+        self.assertEqual(factory.mark_reviewed([issue('WTF-1', 'In Review')], [reviewed], POLICY), [], 'marked once')
+
+    def test_skips_blocked_and_claimed_tickets(self):
+        blocker = {'type': 'blocks', 'issue': {'identifier': 'WTF-9', 'state': {'type': 'started'}}}
+        done_blocker = {'type': 'blocks', 'issue': {'identifier': 'WTF-8', 'state': {'type': 'completed'}}}
+        related = {'type': 'related', 'issue': {'identifier': 'WTF-7', 'state': {'type': 'started'}}}
+        a, b, c = issue('WTF-1'), issue('WTF-2'), issue('WTF-3')
+        a['inverseRelations'] = {'nodes': [blocker]}
+        b['inverseRelations'] = {'nodes': [done_blocker, related]}
+        c['assignee'] = {'id': 'someone-else'}
+        self.assertEqual(decide([a, b, c])[:2], ('fix', 'WTF-2'))
+        c['assignee'] = {'id': 'me'}
+        self.assertEqual(decide([a, c])[:2], ('fix', 'WTF-3'))
+
     def test_ship_label_wins_and_holds_until_done(self):
         issues = [issue('WTF-1', 'In Review', labels=('ship-approved',)), issue('WTF-2')]
         self.assertEqual(decide(issues)[:2], ('ship', 'WTF-1'))
         shipping = [receipt('WTF-1', 'ship')]
         self.assertIsNone(decide(issues, shipping)[0], 'a blocked ship keeps the factory stopped')
-        issues[0]['state']['name'] = 'Done'
+        del issues[0]  # Done tickets aren't fetched
         self.assertEqual(decide(issues, shipping)[:2], ('fix', 'WTF-2'))
 
     def test_review_backlog_limit(self):
@@ -69,6 +108,61 @@ class Decide(unittest.TestCase):
         self.assertIsNone(decide([issue('WTF-1')], policy=policy)[0])
 
 
+class Dispatch(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.policy = copy.deepcopy(POLICY)
+        self.policy['session']['handoff_root'] = self.tmp.name
+        self.comments = []
+        patches = [mock.patch.object(factory, 'comment', lambda policy, issue, body: self.comments.append(body)),
+                   mock.patch.object(factory, 't3_client', lambda policy, helper: FakeClient())]
+        for patch in patches:
+            patch.start()
+            self.addCleanup(patch.stop)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def helper(self, fail=False):
+        seen = {}
+
+        def start(client, args):
+            source = next(t for t in client.snapshot()['threads'] if t['id'] == args.source_thread)
+            seen.update(model=source['modelSelection'], runtime=source['runtimeMode'], title=args.title)
+            if fail:
+                raise RuntimeError('T3 HTTP 500')
+            return {'receipt': {'threadId': 'thread-1'}}
+        return mock.patch.object(factory, 't3_helper', lambda policy: SimpleNamespace(start=start)), seen
+
+    def test_ship_session_uses_policy_model_and_records_the_lock(self):
+        patch, seen = self.helper()
+        with patch:
+            factory.dispatch(self.policy, 'ship', issue('WTF-1', 'In Review', labels=('ship-approved',)))
+        self.assertEqual(seen['model'], self.policy['session']['model'])
+        self.assertEqual(seen['runtime'], 'full-access')
+        receipts = factory.load_receipts(self.policy)
+        self.assertEqual([(r['identifier'], r['kind'], r['status'], r['threadId']) for r in receipts],
+                         [('WTF-1', 'ship', 'started', 'thread-1')])
+        self.assertIn('thread-1', self.comments[0])
+        with self.assertRaises(FileExistsError):
+            factory.dispatch(self.policy, 'ship', issue('WTF-1', 'In Review'))
+
+    def test_failed_start_keeps_the_factory_locked(self):
+        patch, _ = self.helper(fail=True)
+        with patch, self.assertRaises(RuntimeError):
+            factory.dispatch(self.policy, 'ship', issue('WTF-1', 'In Review', labels=('ship-approved',)))
+        receipts = factory.load_receipts(self.policy)
+        self.assertEqual(receipts[0]['status'], 'starting')
+        self.assertIsNone(decide([issue('WTF-2')], receipts, self.policy)[0])
+        self.assertEqual(self.comments, [])
+
+
+class FakeClient:
+    def snapshot(self):
+        return {'threads': [{'id': POLICY['session']['source_thread'], 'modelSelection': {'model': 'other'},
+                             'runtimeMode': 'approval-required'}]}
+
+
 class Helpers(unittest.TestCase):
     def test_branch_name(self):
         self.assertEqual(factory.branch_name(issue('WTF-262', labels=('Bug',),
@@ -78,7 +172,7 @@ class Helpers(unittest.TestCase):
 
     def test_prompts_render_with_every_placeholder(self):
         values = dict(identifier='WTF-1', identifier_lower='wtf-1', title='T', url='U',
-                      worktree='W', branch='B', base_sha='abc1234')
+                      worktree='W', branch='B', base_sha='abc1234', handoff='H')
         for name in ('fix', 'ship'):
             text = factory.render(POLICY, name, **values)
             self.assertNotIn('$', text.replace('$identifier', ''), name)
