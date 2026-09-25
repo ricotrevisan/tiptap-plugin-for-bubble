@@ -16,7 +16,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 ### 🔄 Liveblocks reports its real connection and sync state
 
 - With **Liveblocks** as the collaboration provider, **Collab status**, **Collab synced**, **Collab connected users**, and the **collab synced** event now follow the live room. A slow first load still marks the document synced and fills an empty room with the initial content. A dropped connection shows as not synced until it reconnects.
-- Switching rooms, changing settings, or removing the editor leaves the old Liveblocks room and releases its listeners and shared document exactly once.
+- Switching rooms, changing collaboration settings, turning collaboration off, or resetting the element leaves the old Liveblocks room and releases its listeners and shared document exactly once.
 
 ## v4.11.1
 

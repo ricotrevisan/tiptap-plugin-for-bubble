@@ -1179,7 +1179,11 @@ try {
             const publishUsers = () => {
                 if (Provider) instance.publishState("collab_connected_users", Provider.awareness.getStates().size);
             };
+            // Report one error per connection attempt, without the raw payload:
+            // provider messages can contain room names or credentials.
+            let errorReported = false;
             const publishRoomStatus = (status) => {
+                if (status === "connected") errorReported = false;
                 publishUsers();
                 instance.data.publishCollabStatus(status === "connected" || status === "disconnected" ? status : "connecting");
                 if (status !== "connected" && instance.data.collabHasSynced) publishSynced(false);
@@ -1197,7 +1201,13 @@ try {
             own(room.subscribe("others", current(publishUsers)));
             own(room.subscribe("my-presence", current(publishUsers)));
             own(room.subscribe("error", current((error) => {
-                context.reportDebugger("Liveblocks connection error: " + (error?.message || error));
+                if (errorReported) return;
+                errorReported = true;
+                const code = error?.context?.code;
+                const message = "Liveblocks connection error" + (code === undefined ? "" : " (code " + code + ")") +
+                    ". Check the public API key and the room's permissions.";
+                instance.data.debug(message);
+                context.reportDebugger(message);
             })));
 
             const yDoc = instance.data._collabDocument;

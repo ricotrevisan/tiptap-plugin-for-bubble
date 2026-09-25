@@ -14,7 +14,8 @@
     the only path.
   - room `others` / `my-presence` → **Collab connected users** (the provider's
     awareness state count, including this session; same as Hocuspocus).
-  - room `error` → reported to the Bubble debugger.
+  - room `error` → one fixed debugger message per connection attempt, with
+    only the Liveblocks error code. The raw message can contain room names.
   All callbacks are guarded by the collaboration generation, so a replaced
   session can't publish into its successor.
 - Ownership: the room's `leave` and every subscription go on
@@ -46,8 +47,12 @@ with two editor sessions:
 4. Four room switches plus a return to the first room: one `leave` per switch,
    one live session per editor, no content crossing rooms, and the first room's
    shared state reloads.
-5. Late status/others callbacks from a replaced room change no state.
-6. Repeated teardown: every room left once, zero listeners remaining, and
+5. Callbacks already queued by a replaced room (status, others, presence,
+   error, delivered after unsubscribe) change no state. With the generation
+   guard removed, this fails.
+6. Connection errors: reported once per attempt, sanitized, and again after
+   a reconnect.
+7. Repeated teardown: every room left once, zero listeners remaining, and
    `destroy()` called exactly once on each provider-owned Y.Doc.
 
 `setup-failure-atomicity.mjs` case 5 now uses the fake service. It covers both
@@ -60,6 +65,25 @@ the real provider.
 Red → green: with the `main` `initialize.js`, `liveblocks-lifecycle.mjs` fails
 at the first status assertion, and `setup-failure-atomicity.mjs` fails with
 `provider-owned Y.Doc destroyed exactly once` (actual 2).
+
+## Review
+
+An independent read-only reviewer approved head `317c84d`. They found no
+blocking issues. Addressed in the follow-up commit:
+
+- the stale-callback test didn't exercise the generation guard (the fake now
+  delivers late callbacks);
+- raw error text went to the debugger, possibly repeatedly (now sanitized and
+  deduplicated);
+- the changelog overstated cleanup on element removal. Cleanup runs on update,
+  reset or failed setup; nothing detects a silently removed element. That was
+  already true for every provider.
+
+Recorded, not changed: the fake models a simpler room than Liveblocks. It
+doesn't keep self/others through reconnect, doesn't reference-count rooms
+per client, and throws on a second `leave()` to make double disposal fail
+loudly. The plugin creates one client per setup, so room sharing doesn't
+arise.
 
 ## Final checks (Node 24, from `lib/`)
 
