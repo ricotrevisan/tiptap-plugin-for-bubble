@@ -113,9 +113,9 @@ files, 73 function bodies), `npm run test:validator`, `npm run test:browser`
 - No Bubble branch was created, edited or deleted. Nothing was released to
   the Marketplace.
 
-## Not yet verified
+## Not verified (waived)
 
 Real Liveblocks network verification in Bubble (two browser sessions,
-reconnect, repeated room switch) needs a Liveblocks public key. None is
-available in the Dev vault, and the plugin has not been pushed to the
-development version for this change.
+reconnect, repeated room switch) was not run; no Liveblocks public key is
+available. The user waived this requirement on 2026-09-25 and closed the
+ticket on the strength of the provider-level tests above.
