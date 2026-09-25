@@ -15,7 +15,7 @@ Plugin-specific facts:
 
 ## Software factory
 
-Tickets labelled `ready-for-agent` are worked one at a time by scheduled T3 sessions, and `ship-approved` ships them. Rules and commands are in `factory/README.md` and `factory/policy.toml`. A factory session follows the prompt it was given, which limits what it may do.
+Tickets labelled `ready-for-agent` are worked one at a time by scheduled T3 sessions, and `ship-approved` ships them. Rules and commands are in `factory/README.md` and `factory/policy.toml`. A factory session follows the prompt it was given, which limits what it may do. Standing permissions recorded in `factory/policy.toml` are the maintainer's authorization for exactly the resources they name. For example, a ship session deleting its own ticket's preview-only Bubble branch counts as the immediate confirmation the bubble-plugin-development skill requires, provided the session derives and checks the exact branch at run time.
 
 ## Agent skills
 
