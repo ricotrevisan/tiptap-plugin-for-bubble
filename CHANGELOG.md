@@ -12,6 +12,8 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 - A popup that was opened and closed before no longer ends up under the menus. Before, once any popup on the page had been opened and closed, menus shown later were placed above that popup, so when it reopened from a menu button (for example to add a link) it appeared under the menu.
 - New lifecycle lab, run on every change in Chromium, Firefox and WebKit. It checks hidden menus, stacking, clicks, multiple editors, rebuilds, leftover resources and collaboration connections.
 
+## v4.12.0
+
 ### 🔔 Start a workflow when someone is mentioned
 
 - New **Mention created** event fires once when a user picks someone from the mention list. Use it to notify the mentioned person without comparing Content (JSON).
