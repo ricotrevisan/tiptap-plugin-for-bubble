@@ -1,10 +1,21 @@
-"""Helpers restricted to the disposable WTF-260 Bubble fixture and records."""
+"""Helpers restricted to the disposable WTF-260 Bubble fixture and records.
+
+The fixture page is wtf-260-autobinding in the tiptap-plugin app (recreated in
+WTF-256 on Bubble branch wtf-256-lab, then merged into test). Configure with:
+  WTF260_VERSION    Bubble version, e.g. test (default) or 73kof
+  WTF260_WORKSPACE  a Buildprint workspace of tiptap-plugin (required for
+                    database reads; `buildprint data` runs inside it)
+Open the session first: python3 open-autobinding-fixture.py
+"""
 import json
+import os
 import pathlib
 import subprocess
 import time
 
-PREVIEW = 'https://tiptap-plugin.bubbleapps.io/version-33jpy/wtf-260-autobinding'
+VERSION = os.environ.get('WTF260_VERSION', 'test')
+PREVIEW = f'https://tiptap-plugin.bubbleapps.io/version-{VERSION}/wtf-260-autobinding'
+WORKSPACE = os.environ.get('WTF260_WORKSPACE')
 RECORD_A = '1789047006074x991054080173902500'
 RECORD_B = '1789047009959x299667751052360450'
 BASE = ['agent-browser', '--session', 'wtf260', '--json']
@@ -48,8 +59,10 @@ def wait_ready(record_id=None):
 
 def database_html(record_id):
     assert record_id in (RECORD_A, RECORD_B)
-    result = subprocess.run(['buildprint', 'data', 'fetch', record_id, '--app', 'tiptap-plugin',
-                             '--version', '33jpy', '--json'], capture_output=True, text=True, check=True)
+    if not WORKSPACE:
+        raise RuntimeError('Set WTF260_WORKSPACE to a Buildprint workspace of tiptap-plugin')
+    result = subprocess.run(['buildprint', 'data', 'fetch', record_id, '--version', VERSION, '--json'],
+                            cwd=WORKSPACE, capture_output=True, text=True, check=True)
     data = json.loads(result.stdout)
     assert data['ok'], data
     doc = next(x for x in data['result']['docs'] if x['_id'] == record_id)

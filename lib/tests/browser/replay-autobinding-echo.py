@@ -16,8 +16,9 @@ def browser(*args):
     if not result['success']: raise RuntimeError(result.get('error'))
     return result['data']
 def evaluate(js): return browser('eval', js).get('result')
+from autobinding_test_support import PREVIEW
 url = evaluate('location.href')
-assert '/version-33jpy/wtf-260-autobinding' in url, url
+assert url.split('?')[0] == PREVIEW, url
 browser('find', 'role', 'button', 'click', '--name', f'Delay {args.delay}', '--exact')
 browser('find', 'role', 'button', 'click', '--name', 'Record A', '--exact')
 time.sleep(.5)

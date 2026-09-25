@@ -9,7 +9,8 @@ Bubble Menu / Floating Menu groups behave on a Bubble-shaped page. It has two la
    and keyboard input, and the real decoded `initialize.js`/`update.js`/actions
    running on the built `dist.js`.
 2. **Real Bubble** (before and after a `pled push`):
-   - The `lifecycle-lab` page on the Bubble branch `wtf-256-lab` (`73kof`)
+   - The `lifecycle-lab` page on `test`
+     (https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-test/lifecycle-lab)
      has:
      - editors with Bubble and Floating Menus;
      - an input inside a menu;
@@ -17,14 +18,38 @@ Bubble Menu / Floating Menu groups behave on a Bubble-shaped page. It has two la
      - two copies of a reusable that share a menu ID;
      - a counter per menu workflow.
 
-     Source: `docs/wtf-256/bubble-lab/`.
+     It was built on the Bubble branch `wtf-256-lab` and merged into `test`
+     on 2026-09-25. Source: `docs/wtf-256/bubble-lab/`.
    - Five **saved Buildprint tests** (`tests/lifecycle_lab/` in the Bubble
      workspace) drive it with real mouse and keyboard input. Run them with
-     `buildprint test run lifecycle_lab` from a clone of the branch.
+     `buildprint test run lifecycle_lab` from a clone of `test`.
    - `lib/tests/browser/check-bubble-lab.mjs` runs 20 checks on that page.
      `check-demo-menu-lifecycle.mjs` runs 3 on `tiptap-demo`.
    - With `--local-initialize=<ref>`, both scripts preview an unpushed
      `initialize.js` in the real page without changing Bubble.
+   - **Autobinding against the real database:** the WTF-260 fixture page
+     `wtf-260-autobinding` is back on `test`, now with its autobinding field
+     set. The probes in `lib/tests/browser/*.py` type into it and read the
+     stored `Doc` records through Buildprint:
+     - convergence at save delays 0, 300 and 2200 ms;
+     - a held older write;
+     - a save in flight across navigation;
+     - a pending edit across a record switch;
+     - a stale-echo replay.
+
+     Run `python3 open-autobinding-fixture.py` first; it resets the two
+     disposable records. Set `WTF260_WORKSPACE` to a Buildprint clone of
+     `test`.
+3. **Real Tiptap Cloud** (opt-in, not in CI): `tiptap-cloud.spec.mjs` runs the
+   plugin's Tiptap Cloud provider against the real service.
+   - C1: two sessions share a document, with carets and a menu action.
+   - C2: a rejected token gets five attempts, then recovers with a valid
+     token.
+
+   Tokens are signed locally for one document and expire after 15 minutes.
+   The document is deleted afterwards. Credentials come from the 1Password
+   item `tiptap-cloud` (see the spec header); without them the spec is
+   skipped.
 
 The fast Node tests (`menu-ownership-lifecycle.mjs`,
 `floating-menu-hidden-guard.mjs`, …) remain the first layer.
@@ -141,14 +166,12 @@ the local `initialize.js` served in the real page, every check passes (see
 
 ## Not covered
 
-- **Real-Bubble autobinding with the database.** L11/L12 use a record store in
-  the page. That store models Bubble's echo only at write completion; real
-  Bubble also echoes the value optimistically first (docs/wtf-260/README.md).
-  The Python probes from WTF-260 cover Bubble's database, and they need their
-  own fixture branch.
-- **Real Liveblocks, and real Tiptap Cloud authentication.** L13/L14 use the
-  installed providers against local stand-ins.
+- **Real Liveblocks.** There is no Liveblocks key; L13 uses the installed
+  provider against the in-memory service.
+- **The WTF-256 menu fixes combined with real-database autobinding.** The
+  Python probes run the deployed plugin, and the fixes don't touch
+  autobinding. The lab's L11/L12 record store models Bubble's echo only when
+  a write completes; real Bubble also echoes the value optimistically first.
 - A menu that is shown *while* a modal is already open still goes above that
   modal. This is by design: it takes the highest visible layer + 1.
-- Page inventory: see [page-inventory.md](page-inventory.md). No page was
-  deleted.
+- Page inventory: see [page-inventory.md](page-inventory.md).

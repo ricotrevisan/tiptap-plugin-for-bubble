@@ -7,7 +7,13 @@ A fresh inventory of the Bubble app's pages. The August inventory in the ticket
   `zzz_collab`, `collab_*`, `minimal-*`, `multi-*`, …);
 - `code_highlight`, `html_styler*` and `react`.
 
-Nothing was deleted by this ticket.
+Maintainer decisions on 2026-09-25, all applied:
+- delete `test`;
+- merge the lab branch into `test`;
+- point the Marketplace demo link at the `nocode-to-knowcode` demo;
+- rebuild `code_highlight` in `nocode-to-knowcode`.
+
+See "Applied changes" at the end.
 
 ## Method
 
@@ -38,8 +44,9 @@ without the run-mode login.
 | `index` | App shell; two buttons go to `tiptap-demo`. Its text is an old plugin description. | 0 | 2 | Keep |
 | `404`, `reset_pw` | Bubble system pages | 0 | 0 | Keep |
 | `tiptap-demo` | Canonical user demo (AGENTS.md); 9 demo reusables | 11 | 0 | Keep |
-| `lifecycle-lab` (branch `wtf-256-lab`) | WTF-256 lifecycle lab: real-Bubble test surface plus 4 saved Buildprint tests | 7 | 8 | Keep; merge into `test` when approved |
-| `test` | One legacy Bubble **Rich Text Editor** (built-in plugin) input, no Tiptap. It was kept in August for a "coexistence with the legacy RTE" decision that was never made. | 0 | 0 | **Investigate** (owner decision) |
+| `lifecycle-lab` | WTF-256 lifecycle lab: real-Bubble test surface plus 5 saved Buildprint tests | 7 | 9 | Keep (merged into `test`) |
+| `wtf-260-autobinding` | WTF-260 autobinding fixture, used by the real-database probes | 1 | 8 | Keep (recreated and merged into `test`) |
+| `test` | One legacy Bubble **Rich Text Editor** (built-in plugin) input, no Tiptap | 0 | 0 | **Deleted** (maintainer) |
 | `1t-modern-rows`, `1t-modern-test`, `1t-slimselect-check` | 1T Dropdown plugin fixtures | 0 | 1 / 3 / 0 | Protect (other project) |
 | `bubbleex-*` (22 pages) | BubbleEx controlled fixtures. `bubbleex-i36-target` is the link target of `bubbleex-i36-text-only-link`. | 0 | 0 | Protect (other project) |
 | `modern-dropdown-demo`, `modern-popover`, `modern-popover-reuse-check` | Modern Dropdown demos and fixtures | 0 | 3 / 0 / 0 | Protect (other project) |
@@ -49,12 +56,8 @@ Tiptap-owned pages: `index`, `tiptap-demo`, `test`, and `lifecycle-lab` on the
 branch. The other 31 belong to other plugin projects and shouldn't be cleaned
 up as part of Tiptap work.
 
-**No page is proposed for deletion.**
-- The only open Tiptap candidate is `test`. Delete it only if the maintainer
-  decides that coexistence with the legacy Rich Text Editor isn't something
-  we promise.
-- The August "merge then delete" pages are already gone. Their scenarios are
-  now in the automated lab (see `lifecycle-lab.md`).
+The August "merge then delete" pages were already gone. Their scenarios are
+now in the automated lab (see `lifecycle-lab.md`).
 
 ## Broken external references (found by the scan)
 
@@ -71,3 +74,32 @@ decision, so it's left for the maintainer.
 Old branch links found in other repos' notes (`version-83ie9`,
 `version-33jpy`, …) point to branches that no longer exist. They are
 historical records and were not changed.
+
+## Applied changes (2026-09-25)
+
+- **`test` page deleted and lab pages added.** Both were done on the Bubble
+  branch `wtf-256-lab`, which was then merged into `test` with Buildprint:
+  - savepoint on `test`: `1790370879548`;
+  - clean merge, no conflicts.
+
+  After the merge, on `version-test`:
+  - `/test` returns 404;
+  - `lifecycle-lab`, `wtf-260-autobinding` and `tiptap-demo` return 200;
+  - the 5 Buildprint tests are active on `test`.
+
+  The deleted page's source is kept in `docs/wtf-256/deleted-test-page/`,
+  and in the savepoint.
+- **Marketplace demo link.** `src/plugin.json` `demo_page`, the Demo line in
+  the plugin description, and the README all point to
+  https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap. That page is
+  public: 200 anonymously, 10 editors, no page errors. The change reaches the
+  Marketplace with the next `pled push`.
+- **`code_highlight`.** The page's source was recovered from the Buildprint
+  snapshot of `test` taken 2026-08-21 and saved in
+  `docs/wtf-256/code-highlight-2026-08-21/`. Its sample text came from a
+  `Doc` record in this app, which the rebuilt page will embed.
+
+  The rebuild in `nocode-to-knowcode` is waiting on Buildprint access to that
+  app: Bubble returns 401 until `connect@getbuildprints.com` is invited as an
+  editor collaborator. After that, the Code syntax highlighter plugin's demo
+  link needs updating in that plugin, outside this repository.

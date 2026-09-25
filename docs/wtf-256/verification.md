@@ -92,7 +92,7 @@ Full record: [red-before-fix.txt](red-before-fix.txt).
 | `check-demo-menu-lifecycle.mjs` on `tiptap-demo` | 2 of 3 fail (menu lingers; z-index 2003 over a popup at 2002) | 3/3 with `--local-initialize=origin/main` |
 | Saved Buildprint tests on `wtf-256-lab` | `menu_hides_on_focus_move` and `menu_below_closed_popup` fail at their bug checks; the other three pass | green expected after `pled push` (they run the deployed plugin) |
 
-## Bubble changes (all on my branch `wtf-256-lab`, `73kof`)
+## Bubble changes (made on my branch `wtf-256-lab`, `73kof`; merged into `test` in round 3)
 
 - **Branch:** created from `test` with Buildprint. There were six other
   branches under `test`, so this is the seventh of nine.
@@ -182,6 +182,11 @@ All passed on 2026-09-25, round 2, after the review fixes:
 - `CI=1 npm run test:browser`: 72 passed. That is 45 lab tests plus the
   existing 27, across Chromium, Firefox and WebKit.
 
+Round 3 gates: the same commands passed, and `CI=1 npm run test:browser`
+reported 72 passed and 6 skipped (the opt-in Tiptap Cloud spec). With this
+branch's `initialize.js` served in, `check-bubble-lab.mjs` passed 20/20 on the
+merged `version-test/lifecycle-lab`.
+
 Round 1 gates, at `039fa6d`, had the same results with 54 browser tests.
 
 ## Review
@@ -239,19 +244,63 @@ Round 1 gates, at `039fa6d`, had the same results with 54 browser tests.
   (tabIndex 0), not `<div>`s. The docs now describe the lab's `<div>` button
   as a clickable group or icon.
 
+## Round 3 (maintainer decisions, 2026-09-25)
+
+The maintainer answered the round-2 questions:
+
+1. Demo link → a `nocode-to-knowcode` page.
+2. Delete `test`.
+3. Merge the lab branch.
+4. Rebuild `code_highlight` in `nocode-to-knowcode`.
+5. Real-database autobinding: do it.
+6. Liveblocks: no key.
+7. Tiptap Cloud: use the 1Password item `tiptap-cloud`.
+
+- **Demo link:** `src/plugin.json` `demo_page`, the description's Demo line,
+  and the README now point to
+  https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap. It loads
+  anonymously (200), with 10 editors and no page errors.
+- **Real-database autobinding:** the WTF-260 fixture page was recreated on
+  `wtf-256-lab` from `docs/wtf-260/fixture`.
+  - The saved source lacked the element's autobinding setting
+    (`autoBinding: true, bindField: "html_text"`). It is fixed both in the
+    repo and in Bubble.
+  - The Python probes now take `WTF260_VERSION` and `WTF260_WORKSPACE`, since
+    the current Buildprint CLI reads data inside a workspace.
+  - `open-autobinding-fixture.py` opens the session and resets the two
+    disposable records to canonical HTML. Record B had non-canonical stored
+    HTML with a leading space, which an editor never reproduces.
+  - The navigation probe now waits for the record switch (about 0.4 s)
+    instead of sleeping for 0.5 s.
+  - All eight probes pass against the real database on the deployed plugin:
+    - convergence at 0, 300 and 2200 ms (5 trials each, plus a reload);
+    - a held older write, with a corrective write;
+    - a save in flight across navigation;
+    - a pending edit across a record switch;
+    - stale-echo replay at 0 and 300 ms.
+
+    Log: [autobinding-real-bubble.txt](autobinding-real-bubble.txt). After
+    the merge, convergence at 300 ms also passed on `version-test`.
+- **Real Tiptap Cloud:** `lib/tests/browser/tiptap-cloud.spec.mjs` (opt-in).
+  - It passed 6/6 across Chromium, Firefox and WebKit.
+  - Without credentials all 6 are skipped, which is what happens in CI.
+- **`test` page deleted and branch merged:** see
+  [page-inventory.md](page-inventory.md), "Applied changes".
+  - Savepoint on `test`: `1790370879548`.
+  - Clean merge.
+  - `/test` returns 404, and the lab pages and `tiptap-demo` return 200.
+  - All 5 Buildprint tests are active on `test`.
+- **`code_highlight`:** source recovered from the 2026-08-21 snapshot. The
+  rebuild waits on Buildprint access to `nocode-to-knowcode`.
+
 ## Not covered (follow-ups)
 
-- Real-Bubble autobinding with the database, real Liveblocks, and real Tiptap
-  Cloud authentication. L11–L14 run the plugin against local stand-ins.
-- Deciding the `test` page (legacy Rich Text Editor coexistence) and the
-  Marketplace `demo_page` link, which is dead. See
-  [page-inventory.md](page-inventory.md).
-- Merging `wtf-256-lab` into `test` is up to the maintainer. The lab page and
-  its tests should live on `test` if they are to be the standard pre-release
-  surface.
+- Real Liveblocks (no key).
+- The `code_highlight` rebuild, until Buildprint can access
+  `nocode-to-knowcode`.
 - After `pled push`:
   - from `lib/`, run `node tests/browser/check-bubble-lab.mjs` and
     `node tests/browser/check-demo-menu-lifecycle.mjs`;
-  - from a clone of `wtf-256-lab`, run `buildprint test run lifecycle_lab`.
+  - from a clone of `test`, run `buildprint test run lifecycle_lab`.
 
   All should pass.

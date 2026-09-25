@@ -2,7 +2,7 @@
 
 A full-featured rich text editor for [Bubble.io](https://bubble.io) built on [Tiptap v3](https://tiptap.dev). Drop it into any Bubble app and get a modern editing experience — formatting, tables, images, collaboration, and 55+ editor actions — without writing a line of code inside Bubble.
 
-**[Install the plugin](https://bubble.io/plugin/rich-text-editor-tiptapdev-1670612027178x122079323974008830)** · **[Live demo](https://tiptap-demo.bubbleapps.io/version-test/doc/demo)**
+**[Install the plugin](https://bubble.io/plugin/rich-text-editor-tiptapdev-1670612027178x122079323974008830)** · **[Live demo](https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap)**
 
 ---
 
