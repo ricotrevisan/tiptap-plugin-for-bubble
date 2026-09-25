@@ -31,6 +31,9 @@ releases_ship_lock = ["Done", "Canceled", "Duplicate"]
 # Maintainer's approval to merge the PR, pled push the development version and
 # verify it. Marketplace releases are never done by the factory.
 ship_label = "ship-approved"
+# Standing maintainer permission (2026-09-25): after a ticket is Done, its ship
+# session deletes the Bubble branch the fix session created for that ticket.
+delete_ticket_bubble_branch = true
 
 [limits]
 # One ticket at a time: the plugin development version, the dev app's data and

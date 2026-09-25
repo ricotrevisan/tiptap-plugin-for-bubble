@@ -17,6 +17,12 @@ Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shep
    - the demo editors mount;
    - the changed behavior works with real pointer/keyboard input.
 6. `linear-ticket done $identifier --pr <url> --evidence '<merge sha, pled In sync, preview checks>'`.
-7. Clean up the task's worktree under $worktree_root. First check that the fix session's T3 thread isn't running and that the worktree has no uncommitted changes. Back up anything untracked to $handoff, then `git worktree remove` (no --force). Keep the Git branches. Don't delete Bubble branches. In your final ticket comment, list the Bubble branch the fix session used (if any) as ready for the maintainer to delete.
+7. Clean up the task's worktree under $worktree_root. First check that the fix session's T3 thread isn't running and that the worktree has no uncommitted changes. Back up anything untracked to $handoff, then `git worktree remove` (no --force). Keep the Git branches.
+8. Delete the ticket's Bubble branch. The maintainer gave standing permission (2026-09-25, `delete_ticket_bubble_branch` in factory/policy.toml) to delete, after the ticket is Done, the Bubble branch the fix session created for this ticket. That permission covers exactly one branch and nothing else.
+   - Find it in the fix session's closing comment. It's named after the ticket (`$identifier_lower-...`).
+   - Confirm it's in the `tiptap-plugin` branch list under `test`. With the rico.wtf Buildprint workspace linked (see the bubble-plugin-development skill), run `buildprint branch list tiptap-plugin`. Restore the Defacto link afterwards.
+   - Check that no other active T3 session uses it: search recent session transcripts for its name and version id, and ask any live session that mentions it.
+   - Delete it with the skill's `scripts/delete-bubble-branch.js`, following `references/branch-cleanup.md`, and confirm it's no longer listed.
+   - Never delete `test`, `live`, or any branch you can't tie to this ticket. If in doubt, leave it and list it in your final comment.
 
 If any step fails, stop, preserve evidence, and `block` the ticket with the exact state and next action. Then remove the `ship-approved` label from the ticket (Linear `issueRemoveLabel`); that frees the factory, and the maintainer re-adds the label to retry. Never retry a failed gate until it happens to pass.
