@@ -337,8 +337,8 @@ The maintainer answered the round-2 questions:
     `version-test/lifecycle-lab` (7 of 20 failed before the push).
 - Not run by the ship session: `buildprint test run lifecycle_lab` from a
   clone of `test`.
-- No Bubble `test`/`live` change and no Marketplace release. The new demo
-  link and description reach the Marketplace listing with the next release.
+- No Bubble `test`/`live` change and no Marketplace release. The Marketplace
+  listing's demo link and description were not checked.
 
 ## Not covered (follow-ups)
 
