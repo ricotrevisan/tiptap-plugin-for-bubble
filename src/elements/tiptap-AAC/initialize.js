@@ -488,6 +488,11 @@ try {
             nextSibling: node.nextSibling,
             placeholder: document.createComment("Tiptap menu position"),
             wrapper: document.createElement("div"),
+            // Tiptap skips hiding on blur when the menu's parent contains the
+            // newly focused element. Shown directly in <body>, that is every
+            // element, so a menu stayed visible after focus moved to another
+            // editor or input. This box holds only the menu and has no layout.
+            portal: document.createElement("div"),
             style: node.getAttribute("style"),
             tabindex: node.getAttribute("tabindex"),
             active: true,
@@ -498,6 +503,8 @@ try {
         lease.parent.insertBefore(lease.wrapper, node);
         lease.wrapper.appendChild(node);
         lease.wrapper.style.position = "absolute";
+        lease.portal.style.display = "contents";
+        lease.portal.setAttribute("data-tiptap-menu-portal", "");
         node.style.position = "relative";
         node.style.left = "0";
         node.style.top = "0";
@@ -519,6 +526,7 @@ try {
                 else node.setAttribute(name, value);
             }
             lease.wrapper.remove();
+            lease.portal.remove();
             lease.placeholder.remove();
             lease.active = false;
             menuOwners.delete(node);
@@ -2808,11 +2816,17 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 // Bubble renders its page and floating groups as top-level stacking
                 // contexts. Once Tiptap appends a menu to <body>, the menu can be
                 // logically visible and interactive but still paint underneath the
-                // editor. Put it just above the highest current body child instead of
+                // editor. Put it just above the highest visible body layer instead of
                 // using a permanent global maximum that would cover later popups.
+                // Hidden layers (a closed popup) don't count: the menu would cover
+                // them when they open again.
                 const highestBodyZIndex = Array.from(document.body.children)
-                    .filter((child) => child !== lease.wrapper)
-                    .map((child) => Number.parseInt(window.getComputedStyle(child).zIndex, 10))
+                    .filter((child) => child !== lease.portal)
+                    .map((child) => child.hasAttribute("data-tiptap-menu-portal") ? child.firstElementChild : child)
+                    .filter(Boolean)
+                    .map((child) => window.getComputedStyle(child))
+                    .filter((style) => style.display !== "none" && style.visibility !== "hidden")
+                    .map((style) => Number.parseInt(style.zIndex, 10))
                     .filter(Number.isFinite)
                     .reduce((highest, zIndex) => Math.max(highest, zIndex), 0);
 
@@ -2829,6 +2843,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 lease.wrapper.style.pointerEvents = "none";
                 el.style.zIndex = originalZIndex;
                 lease.restorePosition();
+                lease.portal.remove();
             },
         };
     }
@@ -2851,9 +2866,33 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         }
         hideMenuElement(node);
         hideMenuElement(lease.wrapper);
+        // Tiptap hides a menu only when its editor blurs. Once focus is inside
+        // the menu (for example a link input), leaving the menu for anything
+        // but its own editor must hide it too, or it stays open until the
+        // editor is used again.
+        const pluginKey = label === "BubbleMenu" ? "bubbleMenu" : "floatingMenu";
+        lease.wrapper.addEventListener("focusout", (event) => {
+            const next = event.relatedTarget;
+            // Tiptap's hide() sets visibility before removing the menu, and
+            // Chromium fires focusout during that removal. Hiding again from
+            // inside hide() throws and loses the transaction's update.
+            if (!lease.active || lease.wrapper.style.visibility === "hidden") return;
+            const editor = instance.data.editor;
+            if (!editor || editor.isDestroyed) return;
+            if (next && (lease.wrapper.contains(next) || editor.view.dom.contains(next))) return;
+            // Never dispatch from inside another transaction or DOM removal.
+            queueMicrotask(() => {
+                if (!lease.active || editor.isDestroyed || instance.data.editor !== editor) return;
+                if (lease.wrapper.contains(document.activeElement) || editor.view.hasFocus()) return;
+                editor.view.dispatch(editor.state.tr.setMeta(pluginKey, "hide"));
+            });
+        });
         options.extensions.push(extension.configure({
             element: lease.wrapper,
-            appendTo: () => document.body,
+            appendTo: () => {
+                if (lease.active) document.body.appendChild(lease.portal);
+                return lease.portal;
+            },
             options: menuInteractionGuards(node, lease),
         }));
     }

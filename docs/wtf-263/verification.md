@@ -233,3 +233,23 @@ Maintainer: replace every `tiptap.rico.wtf` reference with `whoistyping.wtf`.
   The check compares NFKC-normalized text, so styled letters count. Green
   after.
 - The label's "(has free tier)" note was kept as it was.
+
+### Merge with main (WTF-256)
+
+Main moved to `92592c3`, and the PR had a merge conflict. That's also why the
+last two pushes started no `pull_request` CI run. WTF-256 records the
+maintainer's answer "Demo link → a `nocode-to-knowcode` page": the Marketplace
+`demo_page`, the description's Demo line and the README "Live demo" now point
+to the public https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap,
+which needs no password. Resolution:
+
+- Main's public demo link is kept for the Marketplace and README (the
+  maintainer's latest decision on those links).
+- The whoistyping.wtf replacements are kept.
+- The README also links the recipes, and says they run on the development demo
+  page (login tippy / tappy), where their sections live.
+- `recipes-docs-contract.mjs` now expects the public demo for the README and
+  the Marketplace, the development demo for the recipes, and neither old demo
+  anywhere.
+- CHANGELOG keeps both Unreleased sections.
+- Gates after this merge: `npm test` (22 scripts), `validate:plugin`, `test:validator` (11), `test:browser` (105 passed).

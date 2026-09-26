@@ -86,6 +86,8 @@ export default page("bpmsmqwc", {
 					layout: { collapseWhenHidden: false, minHeight: 240, alignSelf: "stretch" },
 					appearance: { htmlId: "wtf260-editor" },
 					properties: {
+						autoBinding: true,
+						bindField: "html_text",
 						autobinding_record_id: dynamicText(parentThing().uniqueId()),
 						collab_active: false,
 						ext_mention: false,
