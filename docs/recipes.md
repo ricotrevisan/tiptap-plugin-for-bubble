@@ -177,8 +177,8 @@ How it behaves:
 Keep a copy in your database with a Save button: **Make changes to a thing**,
 HTML = Tiptap's **Content (HTML)**. Add **Only when** Tiptap's **Is ready** is
 yes and **Collaboration synced?** is yes. Before the shared document has
-loaded, the editor can still show the starting text, and saving then would
-overwrite your copy with it. Show that copy anywhere with the read-only recipe
+loaded, the editor is empty, and after a lost connection it may be missing
+other people's latest edits. Saving then would overwrite your copy. Show that copy anywhere with the read-only recipe
 above.
 
 Demo: "Edit together, live". Open it in two browsers.

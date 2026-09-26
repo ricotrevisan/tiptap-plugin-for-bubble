@@ -35,7 +35,7 @@
 
 - `recipes-docs-contract.mjs` before the docs: failed at `README links the
   canonical demo page` ([red-before-docs.txt](red-before-docs.txt)). After:
-  `PASS recipes docs contract (84 bold terms, 5 recipes)`.
+  `PASS recipes docs contract (85 bold terms, 5 recipes)`.
 - The docs test also failed while drafting on four bold terms (`bold` in the
   intro, and three names wrapped across lines). The wrap was a test bug
   (Markdown reads a line break as a space); the intro was rewritten.
@@ -258,8 +258,10 @@ which needs no password. Resolution:
 ### Save a copy waits for sync (drummer review of `977c789`)
 
 - Finding (important, valid): the collaboration **Save a copy** only waited
-  for **Is ready**. Before the shared document syncs, the editor can still show
-  the starting text, so a click then would overwrite the database copy.
+  for **Is ready**. Before the first sync the editor is empty (the starting
+  text is only added after sync, into an empty room), and after a dropped
+  connection it may lack collaborators' latest edits. A click then would
+  overwrite the database copy. (Wording corrected after the independent review.)
 - Red first: a new contract assertion requires the collaboration recipe to say
   **Only when** **Is ready** and **Collaboration synced?**. It failed on the
   old text ([red-before-synced-save.txt](red-before-synced-save.txt)); green
