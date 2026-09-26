@@ -30,7 +30,7 @@
 
 - `recipes-docs-contract.mjs` before the docs: failed at `README links the
   canonical demo page` ([red-before-docs.txt](red-before-docs.txt)). After:
-  `PASS recipes docs contract (82 bold terms, 5 recipes)`.
+  `PASS recipes docs contract (84 bold terms, 5 recipes)`.
 - The docs test also failed while drafting on four bold terms (`bold` in the
   intro, and three names wrapped across lines). The wrap was a test bug
   (Markdown reads a line break as a space); the intro was rewritten.
@@ -45,9 +45,8 @@
   created from `test`. Savepoint before changes: `1790343414572`.
 - Preview: https://tiptap-plugin.bubbleapps.io/version-73knr/tiptap-demo
   (login `tippy` / `tappy`). Plugin: development version, unchanged.
-- Branch status: **demo to keep**. It adds new user-visible demo sections, so
-  the maintainer must merge it into `test`. Until then the recipes' "Save to
-  your database" and "Edit together, live" sections exist only on this branch.
+- Branch status: **demo to keep**, merged into `test` on 2026-09-26 with the
+  maintainer's authorization (see "Rework round 1" below).
 - Added reusables `demo-saving` and `demo-collaboration` to `tiptap-demo`
   after `demo-outputs`. Their BubbleScript is in [fixture/](fixture/). Every
   new Tiptap element sets **File uploads enabled** to no.
@@ -105,10 +104,11 @@ REST API by name) is a product decision for a follow-up.
 
 ## Not verified
 
-- Custom Hocuspocus server in real Bubble (`collab.rico.wtf` returned 503).
-  The recipe says so.
-- Liveblocks: left out on purpose until WTF-248 is verified in a real Bubble
-  app.
+- Hocuspocus server (`collab.whoistyping.wtf`) end to end in real Bubble: no
+  valid project credentials available (see "Rework round 1"). The recipe
+  says so.
+- Liveblocks: excluded from these recipes and their tests (maintainer,
+  2026-09-26).
 - **Go to page** with an autobinding write still in flight: not checked. The
   recipe says so.
 - Record switch without a blur in real Bubble: not repeated here. It's covered
@@ -155,7 +155,60 @@ listed as unchecked. Two remaining "saves" became "hands over".
 
 ## Final checks (Node 24, from `lib/`)
 
-`npm ci`, `npm test` (21 scripts), `npm run validate:plugin` (5
+`npm ci`, `npm test` (22 scripts), `npm run validate:plugin` (5
 metadata files, 73 function bodies), `npm run test:validator` (11 tests),
 `npm run test:browser` (27 passed across Chromium, Firefox and WebKit), and
 `git diff --check`. All passed.
+
+## Rework round 1 (2026-09-26)
+
+Maintainer feedback:
+- Liveblocks is excluded from tests.
+- The Hocuspocus server is `collab.whoistyping.wtf`.
+- Change the plugin's demo links.
+- Merging branches into `test` on `tiptap-plugin` is authorized.
+
+Changes:
+- Merged `origin/main` (WTF-262) into the branch. Resolved conflicts: both
+  Unreleased CHANGELOG entries are kept, and `npm test` runs main's list plus
+  the two new tests.
+- `src/plugin.json`: `demo_page` and the description's demo link now point to
+  the canonical demo page (with the tippy/tappy login). Red first: the new
+  assertion failed on the old file with `plugin demo page is the canonical
+  demo` ([red-before-plugin-demo-links.txt](red-before-plugin-demo-links.txt)).
+  These reach Bubble when the ship session runs `pled push`.
+- Recipes:
+  - The Hocuspocus section now covers whoistyping.wtf: **Custom - URL**
+    `wss://collab.whoistyping.wtf`, **Doc Server ID** = the project's
+    Document Server ID (added as the URL path), and the secret in **Custom
+    collab document server secret**. This follows the portal's own Bubble
+    help (`RicoTrevisan/hocuspocus`).
+  - Liveblocks is stated as outside the recipes and their tests.
+
+Hocuspocus check (not verified end to end):
+- `https://collab.whoistyping.wtf` answers "Welcome to Hocuspocus!".
+- A direct Node connection to `wss://collab.whoistyping.wtf/yWHcOw05` (the
+  older 1Password `tiptap` item's server path), signed with that item's
+  document server secret, got `permission-denied`.
+- A temporary probe page on `wtf-263-recipes` (provider custom, same path,
+  token from **generate auth token** with the app's **Custom collab document
+  server secret**) connected, then failed authentication.
+- The probe page was deleted afterwards.
+- A valid whoistyping.wtf project (its Document Server ID and secret) is
+  needed to finish this check.
+
+Demo merged into `test`:
+- Buildprint has no branch-merge command, so exactly this branch's changes
+  were applied to `test`: the reusables `demo-saving` and
+  `demo-collaboration`, and their two instances on `tiptap-demo`. `test` had
+  moved on through other work; nothing else was touched.
+- Savepoint before the change: `1790393693225`.
+- Real run mode, `version-test/tiptap-demo`:
+  - both sections render (15 editors);
+  - collaboration connected and synced;
+  - the autobind edit reached the read-only view 2215 ms after the last
+    keystroke;
+  - Save wrote the database.
+- Demo records were reset afterwards.
+- Branch `wtf-263-recipes` (`73knr`) still exists; it is merged, so the ship
+  session may delete it.

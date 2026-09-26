@@ -184,21 +184,29 @@ Tested by `lib/tests/document-ownership-lifecycle.mjs`,
 `lib/tests/collaboration-auth-lifecycle.mjs`; the two-browser setup was checked
 in a real Bubble app ([verification](wtf-263/verification.md)).
 
-### Your own Hocuspocus server
+### A Hocuspocus server (whoistyping.wtf or your own)
 
-Same steps, with **Provider** custom, **Custom - URL** = your server's `wss://`
-address, the secret in **Custom collab document server secret**, and **Which
-document server secret to use** = Custom. On the Tiptap element, **Doc Server
-ID** is added to the end of the address (`Custom - URL/Doc Server ID`), so use
-it only if your server expects that path. In **generate auth token**, **Doc
-Server ID** becomes the token's audience; leave it empty unless your server
-checks one. This uses the same connection code as
-Tiptap Cloud, but it hasn't been checked end to end in a real Bubble app for
-this guide.
+The hosted server at [whoistyping.wtf](https://whoistyping.wtf) gives each
+project a Document Server ID and a Document Server Secret. Its address is
+`wss://collab.whoistyping.wtf`.
+
+Same steps as Tiptap Cloud, with these differences:
+
+- Plugin settings: put the project's secret in **Custom collab document server secret**.
+- **generate auth token**: **Which document server secret to use** = Custom.
+- Tiptap element: **Provider** custom, **Custom - URL** = `wss://collab.whoistyping.wtf`, **Doc Server ID** = the project's Document Server ID.
+
+The plugin connects to `Custom - URL/Doc Server ID`, so on your own server,
+fill in **Doc Server ID** only if the server expects that path. In **generate
+auth token**, **Doc Server ID** becomes the token's audience; whoistyping.wtf
+doesn't check it.
+
+This uses the same connection code as Tiptap Cloud, but it hasn't been checked
+end to end in a real Bubble app for this guide.
 
 ### Liveblocks
 
-Not covered yet. Its setup hasn't been verified in a real Bubble app.
+Liveblocks is outside these recipes and their tests.
 
 ### Saving through Tiptap Cloud webhooks
 
