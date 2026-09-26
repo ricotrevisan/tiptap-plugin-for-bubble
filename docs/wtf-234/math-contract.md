@@ -18,7 +18,10 @@ covered by `lib/tests/math-lifecycle.mjs` unless it says otherwise.
    typeset when it arrives. If KaTeX can't be loaded, they keep showing raw
    LaTeX, the editor keeps working, and the Bubble debugger gets one message.
    A failed stylesheet or script is removed, so the next Mathematics editor
-   tries again. Formulas that left the page while waiting are not kept.
+   tries again. When KaTeX does arrive, each Mathematics editor typesets its
+   own formulas again, including editors whose attempt failed earlier and
+   editors built before Bubble attached them to the page. KaTeX's MathML copy
+   stays hidden even if its stylesheet fails.
 4. Changing the toggle on a live editor rebuilds it and keeps unsaved content,
    like the other construction-time toggles (AI Toolkit, Find & Replace,
    Table of Contents). Turning it off keeps formulas as their LaTeX text.

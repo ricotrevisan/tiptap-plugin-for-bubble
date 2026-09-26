@@ -250,6 +250,17 @@ try {
             color: #cc0000;
         }
 
+        /* KaTeX's stylesheet hides its MathML copy; keep it hidden if that file fails. */
+        .tiptap-mathematics-render .katex-mathml {
+            position: absolute;
+            clip: rect(1px, 1px, 1px, 1px);
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            padding: 0;
+            border: 0;
+        }
+
 		ul[data-type="taskList"] {
             list-style: none;
             padding: 0;
@@ -2363,6 +2374,20 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     // it stays readable outside the editor. Added before CustomDiv so block
     // math keeps its own <div> parse rule.
     if (properties.ext_math) {
+        if (!window.katex) {
+            // Formulas rendered before KaTeX arrived show their LaTeX: typeset
+            // this editor's formulas once it does (also after a failed attempt
+            // and a later editor's successful one, or if the editor was detached).
+            window.tiptap.whenKatexLoaded().then((katex) => {
+                const editor = instance.data.editor;
+                if (!editor || editor.isDestroyed) return;
+                for (const element of editor.view.dom.querySelectorAll(".tiptap-mathematics-render")) {
+                    const block = element.dataset.type === "block-math";
+                    const target = block ? element.querySelector(".block-math-inner") : element;
+                    if (target) katex.render(element.getAttribute("data-latex") || "", target, { throwOnError: false, displayMode: block });
+                }
+            });
+        }
         window.tiptap.loadKatex().catch((error) => {
             context.reportDebugger("Mathematics: KaTeX could not be loaded, so formulas show their LaTeX source. " + error.message);
         });

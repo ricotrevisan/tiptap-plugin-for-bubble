@@ -28,7 +28,10 @@
 ## Runtime bundle and KaTeX
 
 - KaTeX is **not** bundled. The build aliases the extension's `katex` import to
-  `lib/katex-runtime.js`. `window.tiptap.loadKatex()` adds, once per page:
+  `lib/katex-runtime.js`. Without KaTeX its `render` writes the raw LaTeX.
+  When `window.tiptap.whenKatexLoaded()` resolves, each Mathematics editor
+  typesets its own formulas again (`initialize.js`).
+  `window.tiptap.loadKatex()` adds, once per page:
   - `https://cdn.jsdelivr.net/npm/katex@0.16.29/dist/katex.min.css`
     `sha384-aKaoM0KVxt5vkmTHL4GAGXO2P1JTsTJ73egG6+Brhf70Apf9rfPzegvgcWGBk3cS`
   - `https://cdn.jsdelivr.net/npm/katex@0.16.29/dist/katex.min.js`
@@ -36,16 +39,16 @@
 
   Both files were downloaded from jsDelivr and compared byte for byte with the
   npm package `katex@0.16.29` (the dev dependency the tests use) before hashing.
-- Size: `dist.js` 1,450,671 → 1,457,186 bytes (+6.5 KB: the extension and the
+- Size: `dist.js` 1,450,671 → 1,456,994 bytes (+6.3 KB: the extension and the
   loader). Bundling KaTeX would have added 273 KB for every app.
 - Released as a new versioned asset:
-  `pled upload lib/dist-v4.12.0-wtf234-269214671df0.js` → asset `AHU`,
-  `//meta-q.cdn.bubble.io/f1790434538694x836245020299430300/dist-v4.12.0-wtf234-269214671df0.js`.
+  `pled upload lib/dist-v4.12.0-wtf234-626460eb494e.js` → asset `AHV`,
+  `//meta-q.cdn.bubble.io/f1790436179042x322397172739226100/dist-v4.12.0-wtf234-626460eb494e.js`.
   SHA-256 of the CDN download equals the local build:
-  `269214671df0864eb1c3d002e2fefb417153cd96bfac161730c7af84a3477359`.
-  `headers.html` points at it. Asset `AHT`
-  (`dist-v4.12.0-wtf234-844adbe3c1f8.js`) is the first upload, before review
-  round 1; nothing uses it. `pled push` was **not** run (not authorized for
+  `626460eb494e349e1b76bdef4177e031cfb8b8ce87bbd170c0b23a6fe0f5ddac`.
+  `headers.html` points at it. Assets `AHT` (`…844adbe3c1f8.js`) and `AHU`
+  (`…269214671df0.js`) are earlier uploads from before review rounds 1 and 2;
+  nothing uses them. `pled push` was **not** run (not authorized for
   fix sessions); before this session's upload, `pled status` showed only local
   changes (not remote-ahead).
 
@@ -94,11 +97,25 @@
     waits a task, because node views render before they're attached; the new
     assertion "formulas waiting since the blocked load are typeset" guards
     that.
+  - (Superseded in round 2, below.)
   - A failed stylesheet stayed in the page, so it was never retried. It is
     now removed like the script. With the round-0 loader the updated test
     doesn't finish; it is killed (exit 137).
   - A formula element without `data-latex` became an empty formula. It now
     uses its text.
+
+- Review round 2 (independent re-review, head `feaa39e`, approve with low
+  findings):
+  - An editor built before Bubble attached its canvas was never typeset: its
+    formulas were pruned or skipped. The new test "an editor built while
+    detached is typeset" failed on `feaa39e` and passes now. The page-wide wait
+    list is gone; each editor typesets its own formulas when KaTeX arrives.
+    That also removes the list's memory concern.
+  - If the stylesheet failed while the script loaded, KaTeX's hidden MathML
+    copy showed next to each formula. The editor stylesheet now keeps it
+    hidden.
+  - `check-bubble-math.mjs` mounts a bare editor, not the element, so it now
+    loads KaTeX first. It was rerun on bundle `626460eb494e` and passed.
 
 ### Gates (Node 24, from `lib/`)
 
@@ -113,9 +130,13 @@ once. Its mouse click put the caret at 14 instead of 13, and that spec doesn't
 turn on Mathematics. It passed on rerun (`--repeat-each=3`, Firefox, 33
 passed).
 
+After round 2: `npm test`, `validate:plugin`, `test:validator` 11/11 and
+`test:browser` (124 passed, 8 skipped) all pass.
+
 ## Real Bubble
 
-- `node tests/browser/check-bubble-math.mjs --local-bundle=e185dc5` on
+- `node tests/browser/check-bubble-math.mjs --local-bundle=e185dc5` (bundle
+  `626460eb494e`) on
   `https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo` (run mode,
   real jsDelivr, this checkout's `dist.js` served in place of the pushed
   bundle; nothing in Bubble changed). A Mathematics editor mounted inside the
@@ -163,5 +184,7 @@ passed).
   (the extension defines no plain-text form).
 - In the editor, formulas only render after KaTeX arrives from jsDelivr. If a
   site blocks jsDelivr, formulas stay as LaTeX text.
+- If the page already has another KaTeX on `window.katex`, it is used as is,
+  with the pinned 0.16.29 stylesheet.
 - Pasting HTML from other math editors that don't use `data-latex` (for
   example MathML) isn't converted.
