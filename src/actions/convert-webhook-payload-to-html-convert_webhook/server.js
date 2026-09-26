@@ -11,7 +11,7 @@ try {
     global.navigator = dom.window.navigator;
 
     // ── 2. Import Tiptap libraries ───────────────────────────────────
-    const { generateHTML, mergeAttributes } = require("@tiptap/core");
+    const { generateHTML, mergeAttributes, Node } = require("@tiptap/core");
     const { StarterKit } = require("@tiptap/starter-kit");
 
     // Extensions beyond StarterKit that the plugin supports
@@ -48,6 +48,21 @@ try {
         },
     });
 
+    // Mathematics (WTF-234): the editor's inlineMath/blockMath HTML, with the raw
+    // LaTeX as text. Defined here so the action needs neither KaTeX nor a new package.
+    const mathNode = (name, group, tag, type) => Node.create({
+        name,
+        group,
+        inline: group === "inline",
+        atom: true,
+        addAttributes() {
+            return { latex: { default: "", renderHTML: (attributes) => ({ "data-latex": attributes.latex }) } };
+        },
+        renderHTML({ node, HTMLAttributes }) {
+            return [tag, mergeAttributes(HTMLAttributes, { "data-type": type }), node.attrs.latex || ""];
+        },
+    });
+
     // ── 3. Build the extensions array ────────────────────────────────
     // This mirrors the extensions available in the client-side editor so
     // that every node/mark type can be serialized to HTML correctly.
@@ -73,6 +88,8 @@ try {
         Details,
         DetailsContent,
         DetailsSummary,
+        mathNode("inlineMath", "inline", "span", "inline-math"),
+        mathNode("blockMath", "block", "div", "block-math"),
     ];
 
     // ── 4. Parse the input ───────────────────────────────────────────

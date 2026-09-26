@@ -16,6 +16,7 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 - **Tables** — Insert, resize, merge/split cells, toggle header rows and columns
 - **Media** — Images (inline or block) and YouTube embeds
 - **Links** — With custom styling and configurable protocols
+- **Math** — LaTeX formulas inline or as blocks, edited from your own Bubble popup
 - **Menus** — Top toolbar, bubble menu (on text selection), and floating menu
 - **Real-time collaboration** — Via Tiptap Cloud, custom Hocuspocus server, or Liveblocks, with cursor labels, connection status, and JWT auth
 - **Output formats** — HTML, plain text, and JSON — all exposed as Bubble states
@@ -147,6 +148,36 @@ an exhausted connection. Changing credentials, provider/document/endpoint, or a
 construction-time extension/menu configuration starts a fresh budget. Disabling
 collaboration can still start a local editor. Raw authentication reasons are not
 logged because providers may include credentials or document identifiers.
+
+## Mathematics (LaTeX)
+
+Turn on **Mathematics** (Extensions section). It is off by default; while it is
+off, nothing changes and no math files are loaded.
+
+- **Typing:** `$$x^2$$` becomes a formula inside the line. `$$$x^2$$$` on an
+  empty line becomes a formula block. Single dollar signs stay text, so prices
+  like `$5` are safe. Saved text is never converted when it loads.
+- **Actions:** **Insert inline math** and **Insert block math** (LaTeX, without
+  dollar signs) insert at the cursor. **Update math** (LaTeX) changes the selected
+  formula, and **Delete math** deletes it. Both do nothing when no formula is
+  selected.
+- **Editing in your own popup:** clicking a formula in an editable editor selects
+  it and fires **Math clicked**. **Selected math LaTeX** and **Selected math type**
+  (`inline` or `block`) are set before the event, and follow the selection (click
+  or arrow keys) the rest of the time. Pre-fill a popup input from Selected math
+  LaTeX, then run Update math. In read-only mode a click does nothing.
+- **Output:** formulas are stored as
+  `<span data-type="inline-math" data-latex="…">…</span>` and
+  `<div data-type="block-math" data-latex="…">…</div>`, with the LaTeX as the
+  element's text. They load back into the editor; anywhere else (an HTML element,
+  an email, **Convert webhook payload to HTML**) the LaTeX shows as text.
+- **Invalid LaTeX** shows its source in red. It never stops saving.
+- **Collaboration:** turn Mathematics on in every editor that opens the same
+  shared document. An editor with it off can't hold formulas and removes them
+  from the shared document for everyone.
+- **Rendering:** KaTeX 0.16.29 and its fonts load from jsDelivr with SRI, only on
+  pages with a Mathematics editor. Formulas show their LaTeX until KaTeX arrives,
+  or if it's blocked.
 
 ## Library management
 
