@@ -2,15 +2,15 @@
 import json
 import time
 from autobinding_test_support import (begin, browser, click, state, database_html,
-    network_probe, wait_settled, reload_and_verify, RECORD_A, RECORD_B)
+    network_probe, wait_settled, reload_and_verify, wait_ready, RECORD_A, RECORD_B)
 
 backup = begin(300)
 network_probe()
-click('Record B'); time.sleep(.5)
+click('Record B'); wait_ready(RECORD_B); time.sleep(.5)
 b = state()
 assert b['id'] == RECORD_B
 assert database_html(RECORD_B) == b['html']
-click('Record A'); time.sleep(.5)
+click('Record A'); wait_ready(RECORD_A); time.sleep(.5)
 a_before = database_html(RECORD_A)
 click('Switch to B in 1 second')
 started = time.monotonic()

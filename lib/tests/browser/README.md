@@ -23,6 +23,25 @@ Twenty-one scenarios run in all three engines (61 browser tests; the IME scenari
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
 - Links (WTF-262): text typed with the real keyboard after a link set from a toolbar-style button, or after a link at the end of a line, is plain text. So is IME composition there (Chromium). Typing inside a link, Set link with nothing selected (with Backspace, and ArrowRight to stop at the end of a line and move on), retyping a selected link, pasting over it, **Remove link**, autolink, and HTML/JSON round trips keep their behavior.
 
+`lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab. `lab.html` is a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area, resource counters, a Bubble-like autobinding record store, and the in-memory Liveblocks service. There are 15 cases in all three engines (45 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. The cases cover:
+- menu hit-testing and stacking;
+- exact-once actions and multi-editor isolation;
+- rebuild leaks;
+- autobinding convergence, record switches and blur;
+- Hocuspocus, Liveblocks and rejected-token lifecycles.
+
+The collaboration cases start local Hocuspocus servers. The token case waits out the plugin's real 15-second backoff.
+
+Two real-Bubble checks are not Playwright tests and are not in CI:
+- `check-bubble-lab.mjs` runs on the `lifecycle-lab` page.
+- `check-demo-menu-lifecycle.mjs` runs on `tiptap-demo`.
+
+Add `--local-initialize=<git ref>` to preview this checkout's `initialize.js` there before a `pled push` (see `real-bubble.mjs`).
+
+`tiptap-cloud.spec.mjs` runs the plugin's Tiptap Cloud provider against the real Tiptap Cloud: two shared sessions, and a rejected token that recovers. It is skipped unless `TIPTAP_CLOUD_APP_ID`, `TIPTAP_CLOUD_SECRET` and `TIPTAP_CLOUD_API_TOKEN` are set; see its header for the 1Password references. CI has no credentials, so it reports skipped there.
+
+The WTF-260 real-database autobinding probes (`*.py`) run against the `wtf-260-autobinding` page on `test`. Set `WTF260_WORKSPACE` to a Buildprint clone of `test`, then run `python3 open-autobinding-fixture.py`, then any probe.
+
 `publishAutobinding` is an explicit fixture output recorder. With autobinding disabled, typing must not call it. Tests observe adapter outputs without simulating persistence. Bubble reset remains disabled; the teardown test invokes the internal lifecycle function directly. Unsupported instance/context methods fail. Properties are explicit scenario inputs; no schema defaults or dynamic expressions are evaluated.
 
 Real Bubble still must verify property resolution, scheduling, workflows, uploads, persistence, repeating-group lifecycle and app-specific layout. For actual Bubble verification set File uploads enabled explicitly as documented in AGENTS.md. No file-upload behavior is simulated here.
