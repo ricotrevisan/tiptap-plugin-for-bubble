@@ -2370,6 +2370,21 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             renderHTML({ node, HTMLAttributes }) {
                 return [tag, mergeAttributes(HTMLAttributes, { "data-type": type }), node.attrs.latex || ""];
             },
+            addProseMirrorPlugins() {
+                // Read-only: the browser would still select a clicked formula, and
+                // ProseMirror would turn that into a formula selection.
+                return [...(this.parent?.() || []), new Plugin({
+                    props: {
+                        handleDOMEvents: {
+                            mousedown: (view, event) => {
+                                if (view.editable || !event.target.closest?.(`[data-type="${type}"]`)) return false;
+                                event.preventDefault();
+                                return true;
+                            },
+                        },
+                    },
+                })];
+            },
         }).configure({
             katexOptions: { throwOnError: false, ...katexOptions },
             onClick: (node, pos) => instance.data.clickMath(pos),
