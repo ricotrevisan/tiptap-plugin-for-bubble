@@ -254,3 +254,22 @@ which needs no password. Resolution:
   anywhere.
 - CHANGELOG keeps both Unreleased sections.
 - Gates after this merge: `npm test` (22 scripts), `validate:plugin`, `test:validator` (11), `test:browser` (105 passed).
+
+### Save a copy waits for sync (drummer review of `977c789`)
+
+- Finding (important, valid): the collaboration **Save a copy** only waited
+  for **Is ready**. Before the shared document syncs, the editor can still show
+  the starting text, so a click then would overwrite the database copy.
+- Red first: a new contract assertion requires the collaboration recipe to say
+  **Only when** **Is ready** and **Collaboration synced?**. It failed on the
+  old text ([red-before-synced-save.txt](red-before-synced-save.txt)); green
+  after the recipe was fixed.
+- Bubble: the `Save a copy clicked` condition is now `is_ready and
+  collab_synced`, on `wtf-263-recipes` and on `test` (savepoint
+  `1790417151846`). The fixture copy is updated.
+- Real run mode, `version-test/tiptap-demo`: with the document synced, typing
+  then Save a copy updated the database copy, and the read-only view showed
+  it. The unsynced case wasn't reproduced in real Bubble: the browser tool's
+  request blocking doesn't affect websockets, and going offline would also
+  block the database write. It relies on the Bubble condition, which
+  Buildprint validated.
