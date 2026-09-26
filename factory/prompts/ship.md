@@ -11,11 +11,17 @@ Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shep
 3. Merge per pr-shepherd step 5: a two-minute quiet window, then `gh pr merge --squash --match-head-commit <sha>`. Read back the merge commit.
 4. Pled push from the primary checkout $repo_root. It must be on `main`, clean apart from untracked files; if it isn't, `block` rather than touching someone else's work. Then `git pull --ff-only` and `pled status`. Remote-ahead or diverged means stop and `block`: understand both sides first, never force.
    - Push only this ticket. The last "record pushed plugin baseline" commit (`git log -1 --format=%H -- .src.json`) marks what's already on the development version. `git diff --stat <that commit> HEAD -- src/` must contain only this PR's `src/` changes. Anything else means someone merged unpushed plugin changes: `block` and name them.
+   - Just before `pled push`, record the lifecycle lab baseline (see step 5): run the three lab checks and save their results.
    - `pled push`, then `pled status` must show In sync. Commit the resulting `.src.json` as `chore: record pushed plugin baseline ($identifier)`, together with a "Deployment — development version" section in docs/$identifier_lower/verification.md (see docs/wtf-248/verification.md). Push main.
 5. Verify in real run mode on https://tippy:tappy@tiptap-plugin.bubbleapps.io/version-test/tiptap-demo. If the change's demo exists only on the ticket's unmerged Bubble branch, verify on that branch's preview instead (`version-<id>/tiptap-demo`). Check:
    - the served element code contains the change;
    - the demo editors mount;
    - the changed behavior works with real pointer/keyboard input.
+
+   Then run the lifecycle lab regression checks again (docs/wtf-256/lifecycle-lab.md), the same three as the step 4 baseline:
+   - From lib/ in a fresh worktree of main (after `npm ci`): `node tests/browser/check-bubble-lab.mjs` and `node tests/browser/check-demo-menu-lifecycle.mjs`. Both use the run-mode login and change nothing.
+   - From a Buildprint clone of `test`: `buildprint test run lifecycle_lab`. It needs the rico.wtf workspace. Use a named profile (`buildprint profile create ricowtf ...`), never `buildprint link`, and switch back to `default` (Defacto) right after. The CLI state is shared with other sessions.
+   - A check that passed in the baseline and fails now is a regression from this push: `block` with both results. A check that already failed in the baseline goes in your final comment and doesn't block.
 6. Clean up the task's worktree under $worktree_root. First check that the fix session's T3 thread isn't running and that the worktree has no uncommitted changes. Back up anything untracked to $handoff, then `git worktree remove` (no --force). Keep the Git branches.
 7. Bubble branch. Standing maintainer permission (2026-09-25, `delete_ticket_bubble_branch` in factory/policy.toml; see AGENTS.md) covers deleting exactly one branch: the one named in the fix session's latest closing comment for this ticket, named `$identifier_lower-...`.
    - Delete it only if that comment marks it **preview-only**, or the maintainer has commented that it's merged into `test`. If it holds a **demo to keep** that isn't merged, leave it and list it in your final comment as waiting for the maintainer's merge.
@@ -24,7 +30,7 @@ Read AGENTS.md, factory/README.md, and the bubble-plugin-development and pr-shep
    - Delete with the skill's `scripts/delete-bubble-branch.js`, following `references/branch-cleanup.md`, and confirm it's no longer listed.
    - Never delete `test`, `live`, or any other branch. List any other branches named after the ticket (for example from an earlier rework round) for the maintainer.
    - Cleanup problems (steps 6-7) don't undo the ship. Leave the resource, say what's left in your final comment, and continue.
-8. `linear-ticket done $identifier --pr <url> --evidence '<merge sha, pled In sync, preview checks>'`, then one final comment: what shipped, and anything left for the maintainer (for example a demo branch to merge).
+8. `linear-ticket done $identifier --pr <url> --evidence '<merge sha, pled In sync, preview checks, lab checks before/after>'`, then one final comment: what shipped, and anything left for the maintainer (for example a demo branch to merge).
 
 If `linear-ticket done` fails in step 8, retry it once. If it still fails, comment the evidence and stop; the ticket stays In Review, holding the factory until the maintainer closes it.
 
