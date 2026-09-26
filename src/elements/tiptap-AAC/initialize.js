@@ -2367,6 +2367,16 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             context.reportDebugger("Mathematics: KaTeX could not be loaded, so formulas show their LaTeX source. " + error.message);
         });
         const mathNode = (extension, tag, type, katexOptions) => extension.extend({
+            addAttributes() {
+                return {
+                    latex: {
+                        default: "",
+                        // HTML without data-latex (for example edited by hand) keeps its text as the formula.
+                        parseHTML: (element) => element.getAttribute("data-latex") ?? element.textContent ?? "",
+                        renderHTML: (attributes) => ({ "data-latex": attributes.latex }),
+                    },
+                };
+            },
             renderHTML({ node, HTMLAttributes }) {
                 return [tag, mergeAttributes(HTMLAttributes, { "data-type": type }), node.attrs.latex || ""];
             },

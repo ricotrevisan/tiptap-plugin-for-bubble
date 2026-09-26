@@ -172,6 +172,9 @@ off, nothing changes and no math files are loaded.
   element's text. They load back into the editor; anywhere else (an HTML element,
   an email, **Convert webhook payload to HTML**) the LaTeX shows as text.
 - **Invalid LaTeX** shows its source in red. It never stops saving.
+- **Collaboration:** turn Mathematics on in every editor that opens the same
+  shared document. An editor with it off can't hold formulas and removes them
+  from the shared document for everyone.
 - **Rendering:** KaTeX 0.16.29 and its fonts load from jsDelivr with SRI, only on
   pages with a Mathematics editor. Formulas show their LaTeX until KaTeX arrives,
   or if it's blocked.

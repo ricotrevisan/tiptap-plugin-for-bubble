@@ -570,9 +570,19 @@
       "caption": "Blockquote",
       "doc": ""
     },
-    "delete_math": {
-      "caption": "Delete math",
-      "doc": "Deletes the selected formula (inline or block). Does nothing when no formula is selected. Needs Mathematics on."
+    "insert_inline_math": {
+      "caption": "Insert inline math",
+      "doc": "Inserts a formula at the cursor, inside the line of text. If text is selected, the formula goes before it; the text stays. Needs Mathematics on.",
+      "fields": {
+        "insert_inline_math_latex": {
+          "caption": "LaTeX",
+          "doc": "The formula, for example x^2 or \\frac{a}{b}. Without dollar signs.",
+          "editor": "DynamicValue",
+          "name": "latex",
+          "rank": 0,
+          "value": "text"
+        }
+      }
     },
     "insert_block_math": {
       "caption": "Insert block math",
@@ -581,20 +591,6 @@
         "insert_block_math_latex": {
           "caption": "LaTeX",
           "doc": "The formula, for example \\sum_{i=1}^n i. Without dollar signs.",
-          "editor": "DynamicValue",
-          "name": "latex",
-          "rank": 0,
-          "value": "text"
-        }
-      }
-    },
-    "insert_inline_math": {
-      "caption": "Insert inline math",
-      "doc": "Inserts a formula at the cursor, inside the line of text. Needs Mathematics on.",
-      "fields": {
-        "insert_inline_math_latex": {
-          "caption": "LaTeX",
-          "doc": "The formula, for example x^2 or \\frac{a}{b}. Without dollar signs.",
           "editor": "DynamicValue",
           "name": "latex",
           "rank": 0,
@@ -615,6 +611,10 @@
           "value": "text"
         }
       }
+    },
+    "delete_math": {
+      "caption": "Delete math",
+      "doc": "Deletes the selected formula (inline or block). Does nothing when no formula is selected. Needs Mathematics on."
     }
   },
   "add_hover_pressed": true,
@@ -632,13 +632,13 @@
   "events": {
     "mention_created": {
       "caption": "Mention created",
-      "doc": "Fires once when a user picks someone from the mention list and the mention is added. Read Created mention ID, Created mention label and Created mention trigger character in this event. Does not fire for pasted or dropped mentions, undo/redo, initial content, Set content, autobinding loads, resets, or changes from other collaborators. Picking the same person again fires again.",
-      "name": "mention_created"
+      "name": "mention_created",
+      "doc": "Fires once when a user picks someone from the mention list and the mention is added. Read Created mention ID, Created mention label and Created mention trigger character in this event. Does not fire for pasted or dropped mentions, undo/redo, initial content, Set content, autobinding loads, resets, or changes from other collaborators. Picking the same person again fires again."
     },
     "image_deleted": {
       "caption": "Image deleted",
-      "doc": "Fires once per edit when one or more image URLs lose their last reference in this document. Read Removed image URLs in this event. Covers loaded and inserted images, keyboard and multi-image edits, undo insertion and redo deletion. Undo restoring an image does not fire. Undo/redo are evaluated as edits, even when history crosses a previous Set content or Clear contents action. Set content, Clear contents, initial content changes, record switches, resets and rebuilds do not fire. Yjs-origin changes (remote collaboration and collaborative undo/redo) do not fire. Notification only: no stored file is deleted. Do not delete shared files from this event without checking other documents, collaborators and undo history.",
-      "name": "image_deleted"
+      "name": "image_deleted",
+      "doc": "Fires once per edit when one or more image URLs lose their last reference in this document. Read Removed image URLs in this event. Covers loaded and inserted images, keyboard and multi-image edits, undo insertion and redo deletion. Undo restoring an image does not fire. Undo/redo are evaluated as edits, even when history crosses a previous Set content or Clear contents action. Set content, Clear contents, initial content changes, record switches, resets and rebuilds do not fire. Yjs-origin changes (remote collaboration and collaborative undo/redo) do not fire. Notification only: no stored file is deleted. Do not delete shared files from this event without checking other documents, collaborators and undo history."
     },
     "ABl": {
       "caption": "is focused",
@@ -689,22 +689,22 @@
   "fields": {
     "autobinding_save_delay": {
       "caption": "Autobinding save delay",
-      "default_val": 2200,
-      "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding.",
-      "editor": "DynamicValue",
       "name": "autobinding_save_delay",
+      "editor": "DynamicValue",
+      "value": "number",
       "optional": true,
+      "default_val": 2200,
       "rank": 4.6,
-      "value": "number"
+      "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding."
     },
     "autobinding_record_id": {
       "caption": "Autobinding record ID",
-      "doc": "For an autobound editor that switches records, bind this to the same parent Thing's unique ID. A change cancels the previous record's pending edit and loads the new record, even when their text is identical. To save the final pending edit, keep the old Thing bound until Content updated fires before switching. This event means the save was submitted, not that the database confirmed it. Leave blank for an editor permanently bound to one record.",
-      "editor": "DynamicValue",
       "name": "autobinding_record_id",
+      "editor": "DynamicValue",
+      "value": "text",
       "optional": true,
       "rank": 4.5,
-      "value": "text"
+      "doc": "For an autobound editor that switches records, bind this to the same parent Thing's unique ID. A change cancels the previous record's pending edit and loads the new record, even when their text is identical. To save the final pending edit, keep the old Thing bound until Content updated fires before switching. This event means the save was submitted, not that the database confirmed it. Leave blank for an editor permanently bound to one record."
     },
     "AGH": {
       "caption": "Element types",
@@ -2599,20 +2599,20 @@
       "rank": 214,
       "value": "text"
     },
-    "ext_math": {
-      "caption": "Mathematics",
-      "default_val": false,
-      "doc": "Shows LaTeX formulas, inline (in a line of text) or as their own block. Type $$x^2$$ for an inline formula, or $$$x^2$$$ on an empty line for a block. Clicking a formula selects it and fires Math clicked, so you can edit it in your own popup with Update math. Formulas are saved in the HTML with their LaTeX. Off by default; when off, no math files are loaded.",
-      "editor": "DynamicValue",
-      "name": "ext_math",
-      "rank": 203,
-      "value": "boolean"
-    },
     "ext_math_label": {
       "caption": "----- Mathematics (LaTeX) -----",
       "editor": "Label",
       "name": "ext_math_label",
       "rank": 202
+    },
+    "ext_math": {
+      "caption": "Mathematics",
+      "default_val": false,
+      "doc": "Shows LaTeX formulas, inline (in a line of text) or as their own block. Type $$x^2$$ for an inline formula, or $$$x^2$$$ on an empty line for a block. Clicking a formula selects it and fires Math clicked, so you can edit it in your own popup with Update math. Formulas are saved in the HTML with their LaTeX. Off by default; when off, no math files are loaded. With collaboration, turn it on in every editor that opens the same document: an editor with Mathematics off removes the formulas from the shared document for everyone.",
+      "editor": "DynamicValue",
+      "name": "ext_math",
+      "rank": 203,
+      "value": "boolean"
     }
   },
   "has_reset_fn": false,

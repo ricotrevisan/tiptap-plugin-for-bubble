@@ -36,14 +36,16 @@
 
   Both files were downloaded from jsDelivr and compared byte for byte with the
   npm package `katex@0.16.29` (the dev dependency the tests use) before hashing.
-- Size: `dist.js` 1,450,671 → 1,457,014 bytes (+6.3 KB: the extension and the
+- Size: `dist.js` 1,450,671 → 1,457,186 bytes (+6.5 KB: the extension and the
   loader). Bundling KaTeX would have added 273 KB for every app.
 - Released as a new versioned asset:
-  `pled upload lib/dist-v4.12.0-wtf234-844adbe3c1f8.js` → asset `AHT`,
-  `//meta-q.cdn.bubble.io/f1790431752601x176783390168029120/dist-v4.12.0-wtf234-844adbe3c1f8.js`.
+  `pled upload lib/dist-v4.12.0-wtf234-269214671df0.js` → asset `AHU`,
+  `//meta-q.cdn.bubble.io/f1790434538694x836245020299430300/dist-v4.12.0-wtf234-269214671df0.js`.
   SHA-256 of the CDN download equals the local build:
-  `844adbe3c1f8a0d9410f8ee73711f8b4dccb984e3db5e08277573bed7771352a`.
-  `headers.html` points at it. `pled push` was **not** run (not authorized for
+  `269214671df0864eb1c3d002e2fefb417153cd96bfac161730c7af84a3477359`.
+  `headers.html` points at it. Asset `AHT`
+  (`dist-v4.12.0-wtf234-844adbe3c1f8.js`) is the first upload, before review
+  round 1; nothing uses it. `pled push` was **not** run (not authorized for
   fix sessions); before this session's upload, `pled status` showed only local
   changes (not remote-ahead).
 
@@ -62,6 +64,8 @@
   (contentHTML and autobinding), read-only clicks, toggling on/off with
   content kept, and actions with the toggle off.
 - `lib/tests/webhook-html-node18-compatibility.mjs`: case 18.
+- Case 12's "no selection change" needs a real browser: the node test only
+  sends a click event, so it checks the event, not the mousedown guard.
 - `lib/tests/browser/math.spec.mjs` (Chromium, Firefox, WebKit; 6 scenarios,
   18 tests): real KaTeX CSS/fonts, real mouse clicks, arrow keys, keyboard
   typing and read-only clicks. See `lib/tests/browser/README.md`.
@@ -84,12 +88,30 @@
     (the states showed `\pi r^2`, `inline`); the extension's click hook alone
     doesn't stop the browser's selection. Swallowing the mousedown fixes it.
 
+- Review round 1 (independent review and drummer, head `9736bb2`):
+  - The loader kept every formula rendered while KaTeX was blocked. Entries
+    are now keyed by element and dropped once they leave the page. Pruning
+    waits a task, because node views render before they're attached; the new
+    assertion "formulas waiting since the blocked load are typeset" guards
+    that.
+  - A failed stylesheet stayed in the page, so it was never retried. It is
+    now removed like the script. With the round-0 loader the updated test
+    doesn't finish; it is killed (exit 137).
+  - A formula element without `data-latex` became an empty formula. It now
+    uses its text.
+
 ### Gates (Node 24, from `lib/`)
 
 `npm ci`, `npm test` (21 scripts), `npm run validate:plugin` (5 metadata
 files, 77 function bodies), `npm run test:validator` (11/11),
 `npm run test:browser` (124 passed, 8 skipped: IME outside Chromium, Tiptap
 Cloud without credentials). All passed.
+
+After review round 1 the same gates passed, except one browser test: 123
+passed, and the WTF-262 Firefox case "typing inside a link extends it" failed
+once. Its mouse click put the caret at 14 instead of 13, and that spec doesn't
+turn on Mathematics. It passed on rerun (`--repeat-each=3`, Firefox, 33
+passed).
 
 ## Real Bubble
 
@@ -129,6 +151,13 @@ Cloud without credentials). All passed.
    selection.
 
 ## Not covered
+
+- Collaboration: an editor with Mathematics off that opens a shared document
+  with formulas removes them for everyone. y-tiptap drops node types the
+  schema lacks, as it does for any other extension. This is documented (field
+  doc, README, changelog), not prevented.
+- **Insert inline math** with text selected inserts before the selection and
+  keeps the text (the extension's command). The action doc says so.
 
 - Formulas count as no text in **Content (text)**, character and word counts
   (the extension defines no plain-text form).

@@ -17,9 +17,16 @@ covered by `lib/tests/math-lifecycle.mjs` unless it says otherwise.
 3. Formulas that render before KaTeX has arrived show their raw LaTeX and are
    typeset when it arrives. If KaTeX can't be loaded, they keep showing raw
    LaTeX, the editor keeps working, and the Bubble debugger gets one message.
+   A failed stylesheet or script is removed, so the next Mathematics editor
+   tries again. Formulas that left the page while waiting are not kept.
 4. Changing the toggle on a live editor rebuilds it and keeps unsaved content,
    like the other construction-time toggles (AI Toolkit, Find & Replace,
-   Table of Contents).
+   Table of Contents). Turning it off keeps formulas as their LaTeX text.
+   With collaboration this does not apply: an editor without math nodes
+   can't hold formulas, and the collaboration binding removes them from the
+   shared document (as for any node type an editor lacks). The field doc,
+   README and changelog tell developers to turn Mathematics on in every editor
+   sharing a document.
 
 ## Content
 
@@ -29,7 +36,8 @@ covered by `lib/tests/math-lifecycle.mjs` unless it says otherwise.
    `<span data-type="inline-math" data-latex="…">…</span>` and
    `<div data-type="block-math" data-latex="…">…</div>`. The element's text is
    the raw LaTeX, so HTML shown outside the editor (a Bubble HTML element,
-   emails) shows the source instead of nothing. Only `data-latex` is read back.
+   emails) shows the source instead of nothing. `data-latex` is read back; an
+   element without it uses its text as the LaTeX.
 6. Invalid LaTeX (`throwOnError: false`) shows its source in red inside the
    editor. Nothing throws, and the content is still saved (`contentHTML`
    updates, autobinding saves).
@@ -52,6 +60,8 @@ covered by `lib/tests/math-lifecycle.mjs` unless it says otherwise.
 11. Clicking a formula in an editable editor selects it, publishes both
     states, then fires **Math clicked** once.
 12. In a read-only editor a click does nothing: no selection change, no event.
+    (The node test covers the event; the selection part needs a real browser,
+    `math.spec.mjs`.)
 13. Each editor on the page publishes and fires only for itself.
 
 ## Actions
