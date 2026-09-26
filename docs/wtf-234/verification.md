@@ -48,9 +48,14 @@
   `626460eb494e349e1b76bdef4177e031cfb8b8ce87bbd170c0b23a6fe0f5ddac`.
   `headers.html` points at it. Assets `AHT` (`…844adbe3c1f8.js`) and `AHU`
   (`…269214671df0.js`) are earlier uploads from before review rounds 1 and 2;
-  nothing uses them. `pled push` was **not** run (not authorized for
-  fix sessions); before this session's upload, `pled status` showed only local
-  changes (not remote-ahead).
+  nothing uses them. `pled push` was **not** run by the fix session; before its
+  upload, `pled status` showed only local changes (not remote-ahead).
+- After the maintainer authorized the push in the thread, `pled push` was run
+  from `76f9094`: `pled status` reads **In sync**, and the development version
+  serves the new bundle (`version-test` loads
+  `dist-v4.12.0-wtf234-626460eb494e.js` and the element code includes the math
+  changes). The pushed baseline is recorded on the branch in `87aed155`
+  (`.src.json`).
 
 ## Tests
 
@@ -161,28 +166,54 @@ After rounds 2 and 3 (each): `npm test`, `validate:plugin`, `test:validator` 11/
   - `\frac{` rendered as `rgb(204, 0, 0)` text.
 
   Screenshot: `bubble-math-render.png`.
-- The element's new field, actions, states and event can't be used in Bubble
-  before `pled push`: Buildprint rejects the demo with `BSP2001 Unknown
-  property "ext_math" for 1670612027178x122079323974008830_current-AAC`, and
-  its copy of the plugin definition is read-only (`BSP7001`).
-- Bubble branch `wtf-234-math` was created from `test` for the demo. Nothing
-  has been applied to it yet. The demo is ready in `bubble-demo/`: a
-  `demo-math` reusable (editor with Mathematics on and **File uploads
-  enabled = no**, Insert inline/block formula buttons, a Selected formula
-  readout, and a popup whose input starts from Selected math LaTeX, with Save =
-  Update math, Delete = Delete math, Cancel), its six workflows, and the
-  `tiptap-demo` placement (`tiptap-demo-page.diff`). With the plugin schema
-  extended locally, `buildprint check` reported no other errors.
+- After `pled push`, the prepared demo was applied to the Bubble branch
+  `wtf-234-math` (33kpl, from `test`): the `demo-math` reusable, its six
+  workflows, and the `tiptap-demo` placement. `buildprint check` first reported
+  two blockers in the prepared demo, both fixed in
+  `docs/wtf-234/bubble-demo/demo-math/reusable.ts`:
+  - **BSP6001 Type of content is required.** The editor element was missing the
+    Mentions property `mention_list_type` (required by the pushed plugin). It is
+    now `dataTypeRef("User")`. (`demo-docs` has the same omission, but it is not
+    re-checked because it is unchanged.)
+  - **BSP3003 the two new states must be referenced canonically.** The readout,
+    popup title and popup input now pass the state ids
+    (`{ id: "get_selected_math_type" }`, `{ id: "get_selected_math_latex" }`).
+  With those fixed, `buildprint check` passes for all 16 changed files, a
+  savepoint was created, and `buildprint apply` applied 48 changes (11
+  semantic) to the branch. The 8 lifecycle-lab tests were unchanged.
+- Verified on the branch preview
+  `https://tiptap-plugin.bubbleapps.io/version-33kpl/tiptap-demo` (run mode,
+  real mouse and keyboard, real jsDelivr KaTeX): the demo editor renders the
+  inline and block formulas with KaTeX; clicking a formula publishes
+  **Selected math type**/**Selected math LaTeX** and fires **Math clicked**,
+  opening the popup with the LaTeX in its input; editing and **Save** runs
+  Update math and re-renders the formula and closes the popup; **Insert inline
+  formula** and **Insert block formula** insert; **Delete math** removes the
+  selected formula; `$5 or $10` stays text. Screenshot:
+  `bubble-math-demo.png`. The demo is a **demo to keep** (a user-visible
+  feature) on branch `wtf-234-math`.
+- Before `pled push`, Buildprint rejected the demo with `BSP2001 Unknown
+  property "ext_math" for 1670612027178x122079323974008830_current-AAC` and
+  its copy of the plugin definition was read-only (`BSP7001`). After the push
+  and a `buildprint sync`, the workspace schema has `ext_math` and the check
+  accepts the element.
+- Bubble branch `wtf-234-math` was created from `test` for the demo. The demo
+  source is in `bubble-demo/`: a `demo-math` reusable (editor with Mathematics
+  on and **File uploads enabled = no**, Insert inline/block formula buttons, a
+  Selected formula readout, and a popup whose input starts from Selected math
+  LaTeX, with Save = Update math, Delete = Delete math, Cancel), its six
+  workflows, and the `tiptap-demo` placement (`tiptap-demo-page.diff`). It is
+  applied to the branch (see above).
 
-## After `pled push` (ship)
+## Demo branch state (after `pled push`)
 
-1. Clone `wtf-234-math`, copy `bubble-demo/demo-math` to
-   `reusable-elements/demo-math`, apply `tiptap-demo-page.diff`,
-   `buildprint check`, savepoint, `buildprint apply`.
-2. On `version-<id>/tiptap-demo`, with real mouse and keyboard: type `$$x^2$$`;
-   click a formula → the popup opens with its LaTeX; Save a change; Delete;
-   Insert inline/block formula; invalid LaTeX is red; the readout follows the
-   selection.
+The ship session's steps 1–2 are already done: the `demo-math` reusable and the
+`tiptap-demo` placement are applied to the Bubble branch `wtf-234-math`
+(33kpl) and verified there (see above). What remains for ship:
+
+1. Merge the Bubble branch into `test` (the demo is a **demo to keep**).
+2. Merge the PR, then delete the branch in the ship session's ticket-scoped
+   cleanup.
 
 ## Not covered
 

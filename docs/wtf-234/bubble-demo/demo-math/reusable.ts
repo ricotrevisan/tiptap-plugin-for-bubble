@@ -1,4 +1,4 @@
-import { plugin, button, dynamicText, element, fontVariable, group, input, popup, reusable, text, thisElement } from "@buildprint/bubblescript";
+import { plugin, button, dataTypeRef, dynamicText, element, fontVariable, group, input, popup, reusable, text, thisElement } from "@buildprint/bubblescript";
 
 export default reusable("bpmthrus", {
 	type: "group",
@@ -55,6 +55,7 @@ export default reusable("bpmthrus", {
 							properties: {
 								ext_math: true,
 								file_upload_condition: false,
+								mention_list_type: dataTypeRef("User"),
 								h1_margin: "0 0 0.75rem 0",
 								h1_size: "2rem",
 								h2_margin: "1.25rem 0 0.5rem 0",
@@ -75,7 +76,7 @@ export default reusable("bpmthrus", {
 									layout: { height: "fit", alignSelf: "flex-start", width: "fill" },
 									typography: { color: "#0F172A", fontFamily: fontVariable("app"), fontWeight: 700, fontSize: 15, lineHeight: 1.4 },
 								}),
-								text("bpmthrdt", dynamicText("Selected formula: ", element("Math editor").state("selected_math_type"), " ", element("Math editor").state("selected_math_latex"), ""), {
+								text("bpmthrdt", dynamicText("Selected formula: ", element("Math editor").state("selected_math_type", { id: "get_selected_math_type" }), " ", element("Math editor").state("selected_math_latex", { id: "get_selected_math_latex" }), ""), {
 									name: "Selected formula",
 									layout: { height: "fit", alignSelf: "flex-start", width: "fill" },
 									typography: { color: "#334155", fontFamily: fontVariable("app"), fontSize: 15, lineHeight: 1.5 },
@@ -109,7 +110,7 @@ export default reusable("bpmthrus", {
 			layout: { collapseWhenHidden: false, container: "column", gap: 16, height: "fit", hidden: true, padding: 28, width: "fill", maxWidth: 520 },
 			appearance: { background: "#FFFFFF", borderRadius: 16 },
 			children: [
-				text("bpmthptt", dynamicText("Edit ", element("Math editor").state("selected_math_type"), " formula"), {
+				text("bpmthptt", dynamicText("Edit ", element("Math editor").state("selected_math_type", { id: "get_selected_math_type" }), " formula"), {
 					name: "Popup title",
 					layout: { height: "fit", width: "fill" },
 					typography: { color: "#0F172A", fontFamily: fontVariable("app"), fontWeight: 800, fontSize: 22, lineHeight: 1.5 },
@@ -117,7 +118,7 @@ export default reusable("bpmthrus", {
 				}),
 				input("bpmthinp", {
 					name: "LaTeX input",
-					value: dynamicText("", element("Math editor").state("selected_math_latex"), ""),
+					value: dynamicText("", element("Math editor").state("selected_math_latex", { id: "get_selected_math_latex" }), ""),
 					placeholder: "LaTeX, for example \\frac{a}{b}",
 					layout: { height: 44, padding: "0 12px", alignSelf: "stretch", width: "fill" },
 					appearance: { background: "#FFFFFF", border: "1px solid #CBD5E1", borderRadius: 10 },
