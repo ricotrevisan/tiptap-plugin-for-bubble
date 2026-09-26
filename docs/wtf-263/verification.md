@@ -158,7 +158,8 @@ listed as unchecked. Two remaining "saves" became "hands over".
 `npm ci`, `npm test` (22 scripts), `npm run validate:plugin` (5
 metadata files, 73 function bodies), `npm run test:validator` (11 tests),
 `npm run test:browser` (27 passed across Chromium, Firefox and WebKit), and
-`git diff --check`. All passed.
+`git diff --check`. All passed. After merging main in rework round 1:
+`npm test` (22 scripts) and `npm run test:browser` (61 passed) also pass.
 
 ## Rework round 1 (2026-09-26)
 
