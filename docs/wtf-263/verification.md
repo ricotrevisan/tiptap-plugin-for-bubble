@@ -5,8 +5,9 @@
 - New user guide: [docs/recipes.md](../recipes.md). README links it and the
   canonical demo page (`tiptap-plugin` / `tiptap-demo`) instead of the old
   `tiptap-demo` app.
-- Plugin change: only `src/plugin.json` metadata (`demo_page` and the
-  description's demo link now point to the canonical demo). It reaches Bubble
+- Plugin change: only text. `src/plugin.json` metadata (`demo_page`, the
+  description's demo link, and whoistyping.wtf links), plus two
+  collaboration help texts in `AAC.json`/`fields.txt`. It reaches Bubble
   only through the ship session's `pled push`. `lib/index.js` and the element
   code are untouched, so no new CDN asset or header change is needed.
 - New tests:
@@ -216,3 +217,19 @@ Demo merged into `test`:
 - Demo records were reset afterwards.
 - Branch `wtf-263-recipes` (`73knr`) still exists; it is merged, so the ship
   session may delete it.
+
+## Rework round 2 (2026-09-26): whoistyping.wtf
+
+Maintainer: replace every `tiptap.rico.wtf` reference with `whoistyping.wtf`.
+
+- Replaced in `src/plugin.json` (description, 2 links), `AAC.json` (the
+  collaboration help label and the **Doc Server ID** help, both in styled bold
+  letters, which were kept) and `fields.txt` (the same label).
+- `.src.json` still has the old text: it is Pled's record of the pushed plugin
+  and updates with the ship session's `pled push`. The `rico.wtf` in
+  `factory/prompts/ship.md` is the Buildprint workspace name, not the site.
+- Red first: the new assertion failed with `src/plugin.json no longer points at
+  tiptap.rico.wtf` ([red-before-whoistyping.txt](red-before-whoistyping.txt)).
+  The check compares NFKC-normalized text, so styled letters count. Green
+  after.
+- The label's "(has free tier)" note was kept as it was.

@@ -12,6 +12,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 - They explain who owns the document in each setup, and what **Content updated** means in each (handed to Bubble, not stored).
 - The demo page has two new sections, "Save to your database" and "Edit together, live", that run these recipes.
 - The README and the plugin's Marketplace demo link now point to the current demo page.
+- The hosted collaboration server moved: the Marketplace description, the collaboration help text and the **Doc Server ID** help now point to [whoistyping.wtf](https://whoistyping.wtf) instead of tiptap.rico.wtf.
 - We couldn't find a way to save through Tiptap Cloud webhooks in Bubble: Bubble wouldn't pass the webhook's document object to **convert webhook payload to HTML**. The recipes show a Save-a-copy button instead.
 
 ### 🔗 Typing after a link no longer extends it
