@@ -2373,21 +2373,11 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     // red instead of throwing. Stored HTML also carries the raw LaTeX as text so
     // it stays readable outside the editor. Added before CustomDiv so block
     // math keeps its own <div> parse rule.
+    const mathKatexOptions = {
+        inline: { throwOnError: false },
+        block: { throwOnError: false, displayMode: true },
+    };
     if (properties.ext_math) {
-        if (!window.katex) {
-            // Formulas rendered before KaTeX arrived show their LaTeX: typeset
-            // this editor's formulas once it does (also after a failed attempt
-            // and a later editor's successful one, or if the editor was detached).
-            window.tiptap.whenKatexLoaded().then((katex) => {
-                const editor = instance.data.editor;
-                if (!editor || editor.isDestroyed) return;
-                for (const element of editor.view.dom.querySelectorAll(".tiptap-mathematics-render")) {
-                    const block = element.dataset.type === "block-math";
-                    const target = block ? element.querySelector(".block-math-inner") : element;
-                    if (target) katex.render(element.getAttribute("data-latex") || "", target, { throwOnError: false, displayMode: block });
-                }
-            });
-        }
         window.tiptap.loadKatex().catch((error) => {
             context.reportDebugger("Mathematics: KaTeX could not be loaded, so formulas show their LaTeX source. " + error.message);
         });
@@ -2421,12 +2411,12 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 })];
             },
         }).configure({
-            katexOptions: { throwOnError: false, ...katexOptions },
+            katexOptions,
             onClick: (node, pos) => instance.data.clickMath(pos),
         });
         extensions.push(
-            mathNode(InlineMath, "span", "inline-math", {}),
-            mathNode(BlockMath, "div", "block-math", { displayMode: true }),
+            mathNode(InlineMath, "span", "inline-math", mathKatexOptions.inline),
+            mathNode(BlockMath, "div", "block-math", mathKatexOptions.block),
         );
     }
 
@@ -3020,6 +3010,31 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     instance.data.editor = new Editor(options);
     instance.data.isEditorSetup = true;
+    if (properties.ext_math && !window.katex) {
+        // Formulas rendered before KaTeX arrived show their LaTeX: typeset them
+        // once it does (also after a failed attempt and a later editor's
+        // successful one, or if the editor was detached). A rebuilt editor
+        // registers its own callback.
+        const editor = instance.data.editor;
+        window.tiptap.whenKatexLoaded().then((katex) => {
+            if (instance.data.editor !== editor || editor.isDestroyed) return;
+            for (const element of editor.view.dom.querySelectorAll(".tiptap-mathematics-render")) {
+                const block = element.dataset.type === "block-math";
+                const target = block ? element.querySelector(".block-math-inner") : element;
+                if (!target) continue;
+                const latex = element.getAttribute("data-latex") || "";
+                const errorClass = block ? "block-math-error" : "inline-math-error";
+                // As the extension does: a formula KaTeX throws on shows its LaTeX.
+                try {
+                    katex.render(latex, target, block ? mathKatexOptions.block : mathKatexOptions.inline);
+                    element.classList.remove(errorClass);
+                } catch {
+                    target.textContent = latex;
+                    element.classList.add(errorClass);
+                }
+            }
+        });
+    }
     instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
     instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
     instance.data._currentTableOfContentsEnabled = !!properties.ext_table_of_contents;

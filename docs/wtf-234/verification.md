@@ -96,8 +96,7 @@
     are now keyed by element and dropped once they leave the page. Pruning
     waits a task, because node views render before they're attached; the new
     assertion "formulas waiting since the blocked load are typeset" guards
-    that.
-  - (Superseded in round 2, below.)
+    that. (Replaced in round 2, below.)
   - A failed stylesheet stayed in the page, so it was never retried. It is
     now removed like the script. With the round-0 loader the updated test
     doesn't finish; it is killed (exit 137).
@@ -116,6 +115,20 @@
     hidden.
   - `check-bubble-math.mjs` mounts a bare editor, not the element, so it now
     loads KaTeX first. It was rerun on bundle `626460eb494e` and passed.
+- Review round 3 (independent re-review, head `4f1efd9`, approve with low
+  findings). `initialize.js` only, so the bundle is unchanged:
+  - A formula KaTeX throws on even with `throwOnError: false` (for example
+    20,000 nested braces) stopped the re-typeset loop, leaving later formulas
+    as raw LaTeX and an unhandled rejection. On `4f1efd9` the new test fails
+    with `RangeError: Maximum call stack size exceeded`. Each formula is now
+    rendered in its own try/catch and marked with the extension's error class,
+    as the extension does.
+  - The callback is registered after the editor is created and only
+    typesets that editor, so rebuilds while KaTeX is blocked don't pile up
+    redundant work. New tests cover a rebuild and a teardown before KaTeX
+    arrives.
+  - The KaTeX options are defined once and shared by the nodes and the
+    re-typeset.
 
 ### Gates (Node 24, from `lib/`)
 
@@ -130,7 +143,7 @@ once. Its mouse click put the caret at 14 instead of 13, and that spec doesn't
 turn on Mathematics. It passed on rerun (`--repeat-each=3`, Firefox, 33
 passed).
 
-After round 2: `npm test`, `validate:plugin`, `test:validator` 11/11 and
+After rounds 2 and 3 (each): `npm test`, `validate:plugin`, `test:validator` 11/11 and
 `test:browser` (124 passed, 8 skipped) all pass.
 
 ## Real Bubble
