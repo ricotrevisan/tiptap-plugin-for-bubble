@@ -316,6 +316,30 @@ The maintainer answered the round-2 questions:
   After the fixes, real Tiptap Cloud passed 6/6 again, with every document
   deleted.
 
+## Deployment — development version (2026-09-26)
+
+- PR #52 was squash-merged as `2d3292e`. `main`'s tree is identical to the
+  reviewed head `ea5a7a4` (base `a132fdb`).
+- Before the push, `pled status` showed only local changes, and
+  `git diff a132fdb HEAD -- src/` held only this PR's `initialize.js` and
+  `plugin.json` changes. `pled push` completed, and `pled status` then
+  reported **In sync**. This commit records the resulting `.src.json`
+  baseline, including the new `demo_page` and description.
+- Real run mode (`tiptap-plugin`, development version):
+  - The served test-version element code for `tiptap-demo` contains the
+    menu portal (`data-tiptap-menu-portal`, `appendTo`) and the `focusout`
+    hide (`setMeta(pluginKey, "hide")`).
+  - All 10 demo editors mounted, with no page errors. Real clicking and
+    typing in the first demo editor inserted the typed text.
+  - `node tests/browser/check-demo-menu-lifecycle.mjs`: all 3 checks pass on
+    `version-test/tiptap-demo` (2 of 3 failed before the push).
+  - `node tests/browser/check-bubble-lab.mjs`: all 20 checks pass on
+    `version-test/lifecycle-lab` (7 of 20 failed before the push).
+- Not run by the ship session: `buildprint test run lifecycle_lab` from a
+  clone of `test`.
+- No Bubble `test`/`live` change and no Marketplace release. The new demo
+  link and description reach the Marketplace listing with the next release.
+
 ## Not covered (follow-ups)
 
 - Real Liveblocks (no key).
