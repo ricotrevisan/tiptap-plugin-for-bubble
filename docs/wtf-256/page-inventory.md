@@ -94,12 +94,10 @@ historical records and were not changed.
   https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap. That page is
   public: 200 anonymously, 10 editors, no page errors. The change reaches the
   Marketplace with the next `pled push`.
-- **`code_highlight`.** The page's source was recovered from the Buildprint
-  snapshot of `test` taken 2026-08-21 and saved in
-  `docs/wtf-256/code-highlight-2026-08-21/`. Its sample text came from a
-  `Doc` record in this app, which the rebuilt page will embed.
-
-  The rebuild in `nocode-to-knowcode` is waiting on Buildprint access to that
-  app: Bubble returns 401 until `connect@getbuildprints.com` is invited as an
-  editor collaborator. After that, the Code syntax highlighter plugin's demo
-  link needs updating in that plugin, outside this repository.
+- **`code_highlight`: rebuilt** in `nocode-to-knowcode` on 2026-09-26. It is
+  public at https://nocode-to-knowcode.bubbleapps.io/version-test/code_highlight
+  and uses the published Code Syntax Highlighter plugin. See
+  [code-highlight-rebuild.md](code-highlight-rebuild.md). The plugin's own
+  Marketplace demo link still needs to point there.
+- **Bubble branch `wtf-256-lab` deleted** on 2026-09-26, after the merge, at
+  the maintainer's request.
