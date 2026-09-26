@@ -2,12 +2,12 @@
 
 ## Scope
 
-- New user guide: [docs/recipes.md](../recipes.md). README links it and the
-  canonical demo page (`tiptap-plugin` / `tiptap-demo`) instead of the old
-  `tiptap-demo` app.
-- Plugin change: only text. `src/plugin.json` metadata (`demo_page`, the
-  description's demo link, and whoistyping.wtf links), plus two
-  collaboration help texts in `AAC.json`/`fields.txt`. It reaches Bubble
+- New user guide: [docs/recipes.md](../recipes.md). The README links it and
+  says the recipes run on the development demo page (`tiptap-plugin` /
+  `tiptap-demo`, login tippy / tappy). The README's "Live demo" and the
+  Marketplace demo link are main's public `nocode-to-knowcode` page (WTF-256).
+- Plugin change: only text. The whoistyping.wtf links in the `src/plugin.json`
+  description, plus two collaboration help texts in `AAC.json`/`fields.txt`. It reaches Bubble
   only through the ship session's `pled push`. `lib/index.js` and the element
   code are untouched, so no new CDN asset or header change is needed.
 - New tests:
@@ -16,7 +16,8 @@
     an allowlisted Bubble label. Every recipe states **File uploads enabled**
     explicitly and cites a lifecycle test that runs in `npm test`. Defaults
     quoted (2200 ms, 300 ms) match `AAC.json`. README and `src/plugin.json` link the
-    canonical demo, not the old one. No Liveblocks setup steps (excluded by
+    public demo, the recipes link the development demo, and no old demo
+    appears anywhere. No Liveblocks setup steps (excluded by
     the maintainer).
   - `lib/tests/document-ownership-lifecycle.mjs`: six scenarios through the
     real `initialize.js` / `update.js` / `dist.js` for the claims the existing
