@@ -1179,7 +1179,7 @@
       "rank": 42
     },
     "AEG": {
-      "caption": "to use the collaboration function you first need an account with one of the providers: 𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
+      "caption": "to use the collaboration function you first need an account with one of the providers: 𝘄𝗵𝗼𝗶𝘀𝘁𝘆𝗽𝗶𝗻𝗴.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
       "editor": "Label",
       "name": "collab_info_sub",
       "rank": 203
@@ -1530,7 +1530,7 @@
     "AEH": {
       "caption": "Doc Server ID",
       "default_val": "",
-      "doc": "Required for both Tiptap Cloud or Custom. Get the app id from 𝗵𝘁𝘁𝗽𝘀://𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 or 𝗵𝘁𝘁𝗽𝘀://𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃",
+      "doc": "Required for both Tiptap Cloud or Custom. Get the app id from 𝗵𝘁𝘁𝗽𝘀://𝘄𝗵𝗼𝗶𝘀𝘁𝘆𝗽𝗶𝗻𝗴.𝘄𝘁𝗳 or 𝗵𝘁𝘁𝗽𝘀://𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃",
       "editor": "StaticText",
       "name": "collab_app_id",
       "optional": true,

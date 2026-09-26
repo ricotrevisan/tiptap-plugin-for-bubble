@@ -6,6 +6,15 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### 📘 Recipes for saving, collaboration, menus and read-only text
+
+- New [recipes](docs/recipes.md) with short, tested setups: a Save button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. Setup for a Hocuspocus server such as whoistyping.wtf is described too, but not yet checked end to end.
+- They explain who owns the document in each setup, and what **Content updated** means in each (handed to Bubble, not stored).
+- The development demo page (`tiptap-plugin`, login tippy / tappy) has two new sections, "Save to your database" and "Edit together, live", that run these recipes.
+- The README links the recipes.
+- The hosted collaboration server moved: the Marketplace description, the collaboration help text and the **Doc Server ID** help now point to [whoistyping.wtf](https://whoistyping.wtf) instead of tiptap.rico.wtf.
+- We couldn't find a way to save through Tiptap Cloud webhooks in Bubble: Bubble wouldn't pass the webhook's document object to **convert webhook payload to HTML**. The recipes show a Save-a-copy button instead.
+
 ### 🧭 Bubble Menu and Floating Menu hide and stack correctly
 
 - When you click from the editor into another editor, an input or any other focusable element, the editor's **Bubble Menu** and **Floating Menu** now hide. Before, they stayed visible and clickable until you clicked empty space.

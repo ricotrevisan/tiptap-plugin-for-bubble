@@ -1,0 +1,121 @@
+import { dataTypeRef, plugin, button, dynamicText, element, fontVariable, group, input, parentThing, reusable, search, text, thisElement } from "@buildprint/bubblescript";
+
+export default reusable("bpclrcpa", {
+	type: "group",
+	name: "demo-collaboration",
+	layout: { builderWidth: 1200, container: "column", height: "fill", width: "fill", minWidth: 40 },
+	elementProperties: { customElementPlatform: "web" },
+	customStates: [{ name: "Collaboration token", id: "collab_token", type: "text" }],
+	children: [
+		group("bpclrcpb", {
+			name: "Collaboration playground",
+			layout: { container: "column", gap: 14, height: "fit", padding: 32, alignSelf: "stretch", width: "fill" },
+			appearance: { background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: 24 },
+			children: [
+				text("bpclrcpc", "Edit together, live.", {
+					name: "Playground heading",
+					layout: { height: "fit", width: "fill" },
+					typography: { color: "#0F172A", fontFamily: fontVariable("app"), fontWeight: 800, fontSize: 36, lineHeight: 1.2 },
+					properties: { tagType: "h1" },
+				}),
+				text("bpclrcpd", "Open this page in a second browser or a private window and type in both. The shared document lives on the collaboration server, not in your database. Click Save a copy when you want the current text in a Thing.", {
+					name: "Playground description",
+					layout: { height: "fit", alignSelf: "stretch", width: "fill" },
+					typography: { color: "#475569", fontFamily: fontVariable("app"), fontSize: 16, lineHeight: 1.55 },
+				}),
+				input("bpclrcpe", {
+					name: "Your name input",
+					placeholder: "Your name",
+					value: "Guest",
+					layout: { height: 44, padding: "0 12px", width: 240 },
+					appearance: { background: "#FFFFFF", border: "1px solid #CBD5E1", borderRadius: 10 },
+					typography: { color: "#0F172A", fontFamily: fontVariable("app"), fontSize: 14, lineHeight: 1.2 },
+				}),
+				plugin("bpclrcpf", {
+					type: "1670612027178x122079323974008830_current-AAC",
+					name: "Collaboration editor",
+					style: "Standard tiptap",
+					layout: { minHeight: 200, alignSelf: "stretch", minWidth: 0 },
+					appearance: { background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: 12 },
+					properties: {
+						autoBinding: false,
+						collab_active: true,
+						collabProvider: "tiptap",
+						collab_app_id: "nrm8d1ko",
+						collab_doc_id: "tiptap-demo-recipes",
+						collab_jwt: dynamicText("", element("demo-collaboration").state("Collaboration token"), ""),
+						collab_user_name: dynamicText("", element("Your name input").value(), ""),
+						collab_cursor_color: "rgba(37,99,235,1)",
+						file_upload_condition: false,
+						h2_margin: "0 0 0.5rem 0",
+						h2_size: "1.5rem",
+						initialContent: "<h2>Shared notes</h2><p>Everyone on this page edits the same text.</p>",
+						isEditable: true,
+						mention_list_type: dataTypeRef("Doc"),
+						placeholder: "Start writing…",
+					},
+				}),
+				text("bpclrcpg", dynamicText("Status: ", element("Collaboration editor").state("collab_status", { id: "get_collab_status" }), "  •  Synced: ", element("Collaboration editor").state("collab_synced", { id: "get_collab_synced" }), "  •  People here: ", element("Collaboration editor").state("collab_connected_users", { id: "get_collab_connected_users" }), ""), {
+					name: "Collaboration readout",
+					layout: { height: "fit", alignSelf: "stretch", width: "fill" },
+					typography: { color: "#334155", fontFamily: fontVariable("app"), fontSize: 13, lineHeight: 1.45 },
+				}),
+				group("bpclrcph", {
+					name: "Collaboration copy record",
+					dataSource: search("Doc", { constraints: [{ field: "Title", operator: "equals", value: "Recipe: collaboration copy" }] }).firstItem(),
+					groupType: dataTypeRef("Doc"),
+					layout: { container: "column", gap: 10, height: "fit", alignSelf: "stretch", width: "fill" },
+					children: [
+						button("bpclrcpi", "Save a copy", {
+							name: "Save a copy button",
+							layout: { height: "fit", padding: "10px 18px", alignSelf: "flex-start", width: "fit" },
+							appearance: { background: "#1D4ED8", borderRadius: 10 },
+							typography: { color: "#FFFFFF", fontFamily: fontVariable("app"), fontWeight: 700, fontSize: 14, lineHeight: 1.2 },
+							conditions: [{ id: "hover", when: thisElement().isHovered(), appearance: { background: "#1E40AF" } }],
+						}),
+						text("bpclrcpj", "Saved copy (read-only):", {
+							name: "Saved copy label",
+							layout: { height: "fit", alignSelf: "stretch", width: "fill" },
+							typography: { color: "#64748B", fontFamily: fontVariable("app"), fontWeight: 700, fontSize: 12, letterSpacing: 0.6, lineHeight: 1.5 },
+						}),
+						plugin("bpclrcpk", {
+							type: "1670612027178x122079323974008830_current-AAC",
+							name: "Saved copy view",
+							style: "Standard tiptap",
+							layout: { minHeight: 80, alignSelf: "stretch", minWidth: 0 },
+							appearance: { background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 12 },
+							properties: {
+								autoBinding: false,
+								ext_bubblemenu: false,
+								ext_floatingmenu: false,
+								file_upload_condition: false,
+								h2_margin: "0 0 0.5rem 0",
+								h2_size: "1.5rem",
+								initialContent: dynamicText("", parentThing().field("HTML"), ""),
+								isEditable: false,
+								mention_list_type: dataTypeRef("Doc"),
+							},
+						}),
+					],
+				}),
+				group("bpclrcpl", {
+					name: "How to wire it",
+					layout: { container: "column", gap: 12, height: "fit", padding: "24px 0 0", alignSelf: "stretch", width: "fill" },
+					children: [
+						text("bpclrcpm", "How you would wire this.", {
+							name: "How-to heading",
+							layout: { height: "fit", width: "fill" },
+							typography: { color: "#0F172A", fontFamily: fontVariable("app"), fontWeight: 800, fontSize: 24, lineHeight: 1.3 },
+							properties: { tagType: "h2" },
+						}),
+						text("bpclrcpn", "1. Add your Tiptap Cloud secret in the plugin settings.\n2. On page load, run generate auth token and put the token in a custom state.\n3. On the Tiptap: Enable collaboration, Provider tiptap, Doc Server ID, Document name, and JWT key = that state.\n4. Leave autobinding off. The collaboration server owns the document.\n5. To keep a copy in your database, Make changes to a Thing with This Tiptap's Content (HTML) from a Save button.", {
+							name: "How-to body",
+							layout: { height: "fit", alignSelf: "stretch", width: "fill" },
+							typography: { color: "#334155", fontFamily: fontVariable("app"), fontSize: 15, lineHeight: 1.6 },
+						}),
+					],
+				}),
+			],
+		}),
+	],
+});
