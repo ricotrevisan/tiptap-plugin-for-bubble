@@ -5,20 +5,23 @@
 - New user guide: [docs/recipes.md](../recipes.md). README links it and the
   canonical demo page (`tiptap-plugin` / `tiptap-demo`) instead of the old
   `tiptap-demo` app.
-- No plugin source or runtime bundle change. `src/` and `lib/index.js` are
-  untouched, so no new CDN asset, header change or `pled push` is needed.
+- Plugin change: only `src/plugin.json` metadata (`demo_page` and the
+  description's demo link now point to the canonical demo). It reaches Bubble
+  only through the ship session's `pled push`. `lib/index.js` and the element
+  code are untouched, so no new CDN asset or header change is needed.
 - New tests:
   - `lib/tests/recipes-docs-contract.mjs`: every bold name in the recipes is a
     real element field/state/event/action, server action field, plugin key or
     an allowlisted Bubble label. Every recipe states **File uploads enabled**
     explicitly and cites a lifecycle test that runs in `npm test`. Defaults
-    quoted (2200 ms, 300 ms) match `AAC.json`. README links the canonical demo,
-    not the old one. No Liveblocks setup steps until WTF-248 is verified in a
-    real Bubble app.
+    quoted (2200 ms, 300 ms) match `AAC.json`. README and `src/plugin.json` link the
+    canonical demo, not the old one. No Liveblocks setup steps (excluded by
+    the maintainer).
   - `lib/tests/document-ownership-lifecycle.mjs`: six scenarios through the
     real `initialize.js` / `update.js` / `dist.js` for the claims the existing
     suites didn't cover: explicit save events and no autobinding writes; the
-    saved value returning as **Initial content** keeps the text; read-only view
+    saved value returning as **Initial content** is reloaded (identical text
+    fires nothing; typing in between is replaced); read-only view
     follows **Initial content**; collaboration waits for the token, then
     starts; autobinding is ignored while collaborating (writes and incoming
     values); **Content updated** fires on every local and remote collaborative
