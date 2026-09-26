@@ -54,6 +54,9 @@ try {
     instance.publishState("mentioned_id", "");
     instance.publishState("mentioned_label", "");
     instance.publishState("mentioned_trigger_char", "");
+    // The formula selected in the editor, or empty (docs/wtf-234).
+    instance.publishState("selected_math_latex", "");
+    instance.publishState("selected_math_type", "");
 
     //    instance.canvas.cfss({'overflow':'scroll'});
 
@@ -238,6 +241,15 @@ try {
             ${properties.invisiblecharacters_adv || ""}
         }
 
+        .tiptap-mathematics-render.ProseMirror-selectednode {
+            outline: 2px solid #68cef8;
+            border-radius: 2px;
+        }
+
+        .inline-math-error, .block-math-error {
+            color: #cc0000;
+        }
+
 		ul[data-type="taskList"] {
             list-style: none;
             padding: 0;
@@ -315,6 +327,10 @@ try {
 
             ${properties.baseDiv || ""}
 
+    }
+
+    .ProseMirror[contenteditable="true"] .tiptap-mathematics-render {
+        cursor: pointer;
     }
 
     .ProseMirror .selection {
@@ -1632,8 +1648,29 @@ function publishActiveStates(editor) {
     publishTextStyleAttr("fontSize", "font_size");
     publishTextStyleAttr("lineHeight", "line_height");
     publishTextStyleAttr("backgroundColor", "background_color");
+    publishMathStates(editor);
 }
 instance.data.publishActiveStates = publishActiveStates;
+
+// Selected math LaTeX / type describe the selected formula, or are empty.
+function publishMathStates(editor) {
+    const node = editor.state.selection.node;
+    const type = { inlineMath: "inline", blockMath: "block" }[node?.type.name];
+    instance.publishState("selected_math_latex", type ? node.attrs.latex || "" : "");
+    instance.publishState("selected_math_type", type || "");
+}
+instance.data.publishMathStates = publishMathStates;
+
+// A click on a formula in an editable editor selects it, publishes the math
+// states, then fires Math clicked (Bubble events carry no payload). Read-only
+// editors ignore it.
+instance.data.clickMath = function (pos) {
+    const editor = instance.data.editor;
+    if (!editor || editor.isDestroyed || !editor.isEditable) return;
+    editor.commands.setNodeSelection(pos);
+    publishMathStates(editor);
+    instance.triggerEvent("math_clicked");
+};
 
 function findParentBlock(state, pos) {
     const $pos = state.doc.resolve(pos);
@@ -1916,6 +1953,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         DetailsSummary,
         InvisibleCharacters,
         DragHandle,
+        InlineMath,
+        BlockMath,
         FindAndReplace,
         TableOfContents,
         ServerAiToolkit,
@@ -1965,6 +2004,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         // so its actions report "extension not active" instead of throwing.
         findreplace: !!properties.ext_find_replace && !!window.tiptap?.FindAndReplace,
         tableofcontents: properties.ext_table_of_contents,
+        math: !!properties.ext_math,
     };
 
     // parse heading levels
@@ -2315,6 +2355,29 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         }
 
         extensions.push(DragHandle.configure(dragHandleConfig));
+    }
+
+    // Mathematics (docs/wtf-234/math-contract.md). KaTeX loads from a pinned CDN
+    // only here; formulas show raw LaTeX until it arrives. Invalid LaTeX renders
+    // red instead of throwing. Stored HTML also carries the raw LaTeX as text so
+    // it stays readable outside the editor. Added before CustomDiv so block
+    // math keeps its own <div> parse rule.
+    if (properties.ext_math) {
+        window.tiptap.loadKatex().catch((error) => {
+            context.reportDebugger("Mathematics: KaTeX could not be loaded, so formulas show their LaTeX source. " + error.message);
+        });
+        const mathNode = (extension, tag, type, katexOptions) => extension.extend({
+            renderHTML({ node, HTMLAttributes }) {
+                return [tag, mergeAttributes(HTMLAttributes, { "data-type": type }), node.attrs.latex || ""];
+            },
+        }).configure({
+            katexOptions: { throwOnError: false, ...katexOptions },
+            onClick: (node, pos) => instance.data.clickMath(pos),
+        });
+        extensions.push(
+            mathNode(InlineMath, "span", "inline-math", {}),
+            mathNode(BlockMath, "div", "block-math", { displayMode: true }),
+        );
     }
 
     // ── PreserveAttributes extension ─────────────────────────
@@ -2910,6 +2973,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     instance.data._currentAiToolkitEnabled = !!properties.ext_ai_toolkit;
     instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
     instance.data._currentTableOfContentsEnabled = !!properties.ext_table_of_contents;
+    instance.data._currentMathEnabled = !!properties.ext_math;
     instance.data._currentCollabDocId = properties.collab_doc_id;
     instance.data.debug("editor instance created, waiting for onCreate");
 }
