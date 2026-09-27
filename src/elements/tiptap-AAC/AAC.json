@@ -570,6 +570,20 @@
       "caption": "Blockquote",
       "doc": ""
     },
+    "insert_emoji": {
+      "caption": "Insert emoji",
+      "doc": "Inserts an inline emoji at the cursor. Enter a known emoji name or shortcode, for example smile or :smile:. Needs Emoji on; a picker is not included.",
+      "fields": {
+        "insert_emoji_name": {
+          "caption": "Emoji name or shortcode",
+          "doc": "For example smile or :smile:. Unicode characters can be typed directly into the editor instead.",
+          "editor": "DynamicValue",
+          "name": "emoji_name",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
     "insert_inline_math": {
       "caption": "Insert inline math",
       "doc": "Inserts a formula at the cursor, inside the line of text. If text is selected, the formula goes before it; the text stays. Needs Mathematics on.",
@@ -2598,6 +2612,21 @@
       "optional": true,
       "rank": 214,
       "value": "text"
+    },
+    "ext_emoji_label": {
+      "caption": "----- Emoji -----",
+      "editor": "Label",
+      "name": "ext_emoji_label",
+      "rank": 203.1
+    },
+    "ext_emoji": {
+      "caption": "Emoji",
+      "default_val": false,
+      "doc": "Turns :smile: and other known shortcodes into inline emoji nodes. Use Insert emoji in a workflow with a name like smile; no picker is included. Uses images from the emoji catalog when a device cannot display a character (requires an external image host). Off by default; the extension is still in the downloaded editor bundle. With collaboration, turn this on in every editor that opens the same document: an editor with Emoji off may remove emoji nodes from the shared document.",
+      "editor": "DynamicValue",
+      "name": "ext_emoji",
+      "rank": 203.2,
+      "value": "boolean"
     },
     "ext_math_label": {
       "caption": "----- Mathematics (LaTeX) -----",

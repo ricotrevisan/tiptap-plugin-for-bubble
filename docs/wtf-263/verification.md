@@ -347,3 +347,20 @@ revisions, not the current PR review receipt.
 - No Bubble editor/plugin mutation, Marketplace release or public demo edit
   was part of this rework. The development demo evidence above predates this
   merge, but this merge changes no Tiptap runtime behavior or demo configuration.
+
+## Rework round 5 (2026-09-27): Emoji release on main
+
+Merged `origin/main` (`531185c`, PR #58) into this branch using the existing
+merge-commit convention. This supersedes round 4's gate counts. Kept Emoji's
+runtime dependency, lockfile, bundle URL, fields/action, webhook conversion,
+unit/browser tests and published v4.14.0 changelog; kept this ticket's recipes
+and metadata edits under **Unreleased**. The merged webhook test exercises
+Math, Emoji and the `document.saved` body. The PR diff against main contains
+only the WTF-263 changes.
+
+`npm ci`, `npm test` (Math, Emoji, document ownership and recipes),
+`npm run validate:plugin` (5 metadata files, 78 function bodies),
+`npm run test:validator` (11 passed), and `npm run test:browser` (131 passed,
+10 expected skips across Chromium, Firefox and WebKit) succeeded on Node 24.
+No plugin push, Bubble page edit, Git PR merge or release was performed by this
+branch update. The live demo copy caveat in round 4 still applies.

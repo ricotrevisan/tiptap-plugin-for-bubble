@@ -39,11 +39,13 @@ const tableOfContentsChanged =
     instance.data._currentTableOfContentsEnabled !== !!properties.ext_table_of_contents;
 const mathChanged =
     instance.data._currentMathEnabled !== !!properties.ext_math;
+const emojiChanged =
+    instance.data._currentEmojiEnabled !== !!properties.ext_emoji;
 const menuConfiguration = instance.data.menuConfiguration(properties);
 const menusChanged = instance.data._currentMenuConfiguration?.some((value, index) => value !== menuConfiguration[index]);
 // Terminal authentication failure also owns a configuration: only an explicit
 // construction-configuration change may clear it and start a fresh budget.
-if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instance.data._collabAuthFailed) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || mathChanged || menusChanged)) {
+if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instance.data._collabAuthFailed) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || mathChanged || emojiChanged || menusChanged)) {
     instance.data._collabAuthFailed = false;
     const changedExtensions = [];
     if (collaborationChanged) changedExtensions.push("Collaboration configuration");
@@ -59,6 +61,7 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
     if (findReplaceChanged) changedExtensions.push("Find & Replace");
     if (tableOfContentsChanged) changedExtensions.push("Table of Contents");
     if (mathChanged) changedExtensions.push("Mathematics");
+    if (emojiChanged) changedExtensions.push("Emoji");
     const rebuildReason = changedExtensions.join(" and ") + " changed";
     instance.data.debug(rebuildReason + " — rebuilding editor");
 
@@ -71,11 +74,24 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
     // Local → shared: seed only an empty synced document. Shared → local:
     // retain the visible snapshot. Shared → another room: never carry content.
     if ((!previousCollaboration?.active || !collaborationConfiguration.active) && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
-        // Turning Mathematics off drops its nodes from the schema: JSON with
-        // formulas would not load at all, while HTML keeps each formula's LaTeX as text.
-        instance.data._pendingRebuildContent = mathChanged && !properties.ext_math
-            ? instance.data.editor.getHTML()
-            : instance.data.editor.getJSON();
+        // Turning a node extension off removes its schema: JSON with those
+        // nodes cannot load. Convert to HTML, keeping readable text in place
+        // of emoji nodes (their HTML may contain only a fallback <img>).
+        if ((mathChanged && !properties.ext_math) || (emojiChanged && !properties.ext_emoji)) {
+            const container = document.createElement("div");
+            container.innerHTML = instance.data.editor.getHTML();
+            if (emojiChanged && !properties.ext_emoji) {
+                const catalog = instance.data.editor.storage.emoji?.emojis || [];
+                for (const span of container.querySelectorAll('span[data-type="emoji"]')) {
+                    const name = span.getAttribute("data-name") || "";
+                    const item = catalog.find(emoji => emoji.name === name || emoji.shortcodes?.includes(name));
+                    span.replaceWith(document.createTextNode(item?.emoji || `:${name}:`));
+                }
+            }
+            instance.data._pendingRebuildContent = container.innerHTML;
+        } else {
+            instance.data._pendingRebuildContent = instance.data.editor.getJSON();
+        }
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
         if (!collaborationConfiguration.active) instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
     } else if (boundDocumentChanged || (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument)) {
