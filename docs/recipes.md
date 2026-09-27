@@ -204,9 +204,12 @@ fill in **Doc Server ID** only if the server expects that path. In **generate
 auth token**, **Doc Server ID** becomes the token's audience; whoistyping.wtf
 doesn't check it.
 
-Checked in a real Bubble app with a whoistyping.wtf project: two browsers
+Checked with a whoistyping.wtf project. In a real Bubble app, two browsers
 edited the same document live, and the text was still there after both closed
-and one reopened.
+and one reopened. That check used a token signed outside Bubble. Separately,
+the token that **generate auth token** creates from the project's secret was
+accepted by the server. Running both steps together in Bubble needs the
+project's secret saved in the plugin settings; that hasn't been done.
 
 ### Liveblocks
 

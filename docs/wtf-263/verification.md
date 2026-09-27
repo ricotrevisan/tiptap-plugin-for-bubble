@@ -278,8 +278,8 @@ which needs no password. Resolution:
 
 ## Rework round 3 (2026-09-27): whoistyping.wtf verified; public demo URL
 
-The maintainer pointed to the 1Password item `tiptap-ricowtf` (server ID
-`81df851b`, server secret; project "testy" on whoistyping.wtf).
+The maintainer provided a whoistyping.wtf project's credentials (server ID
+`81df851b` and its server secret).
 
 - Direct Node connection to `wss://collab.whoistyping.wtf/81df851b` with a
   token signed from that secret: authenticated and synced.
@@ -295,7 +295,14 @@ The maintainer pointed to the 1Password item `tiptap-ricowtf` (server ID
     other, with "Probe" carets. After one closed and the other reloaded, the
     text came back from the server.
   - The probe page was deleted afterwards.
-- The recipe now says the whoistyping.wtf setup was checked in real Bubble.
+- Plugin token (after review of `bf4755c`): the plugin's own
+  `generate-auth-token/server.js`, run locally with **Which document server
+  secret to use** = Custom and the project secret, produced a token with
+  `sub`, `allowedDocumentNames`, `iat`, `exp` and `aud` = `81df851b`.
+  Connecting with it to `wss://collab.whoistyping.wtf/81df851b`:
+  authenticated and synced.
+- Not run together in Bubble: saving the project secret in the app's plugin
+  settings and minting in Bubble. The recipe says exactly this.
 - Public demo URL: main's Marketplace `demo_page`, description and README
   pointed to `https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap`,
   which now returns 404. AGENTS.md (main `e0cd48b`) names

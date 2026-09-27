@@ -8,7 +8,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ### 📘 Recipes for saving, collaboration, menus and read-only text
 
-- New [recipes](docs/recipes.md) with short, tested setups: a Save button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. Setup for a Hocuspocus server such as whoistyping.wtf is covered too.
+- New [recipes](docs/recipes.md) with short, tested setups: a Save button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. Setup for a Hocuspocus server such as whoistyping.wtf is covered too; its Bubble connection and token were checked separately.
 - They explain who owns the document in each setup, and what **Content updated** means in each (handed to Bubble, not stored).
 - The development demo page (`tiptap-plugin`, login tippy / tappy) has two new sections, "Save to your database" and "Edit together, live", that run these recipes.
 - The README links the recipes.
