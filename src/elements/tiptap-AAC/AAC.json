@@ -569,6 +569,52 @@
     "ABK": {
       "caption": "Blockquote",
       "doc": ""
+    },
+    "insert_inline_math": {
+      "caption": "Insert inline math",
+      "doc": "Inserts a formula at the cursor, inside the line of text. If text is selected, the formula goes before it; the text stays. Needs Mathematics on.",
+      "fields": {
+        "insert_inline_math_latex": {
+          "caption": "LaTeX",
+          "doc": "The formula, for example x^2 or \\frac{a}{b}. Without dollar signs.",
+          "editor": "DynamicValue",
+          "name": "latex",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
+    "insert_block_math": {
+      "caption": "Insert block math",
+      "doc": "Inserts a formula as its own centered block at the cursor. Needs Mathematics on.",
+      "fields": {
+        "insert_block_math_latex": {
+          "caption": "LaTeX",
+          "doc": "The formula, for example \\sum_{i=1}^n i. Without dollar signs.",
+          "editor": "DynamicValue",
+          "name": "latex",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
+    "update_math": {
+      "caption": "Update math",
+      "doc": "Replaces the LaTeX of the selected formula (inline or block), for example from your edit popup after Math clicked. Does nothing when no formula is selected. Needs Mathematics on.",
+      "fields": {
+        "update_math_latex": {
+          "caption": "LaTeX",
+          "doc": "The new formula. Without dollar signs.",
+          "editor": "DynamicValue",
+          "name": "latex",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
+    "delete_math": {
+      "caption": "Delete math",
+      "doc": "Deletes the selected formula (inline or block). Does nothing when no formula is selected. Needs Mathematics on."
     }
   },
   "add_hover_pressed": true,
@@ -633,19 +679,24 @@
     "table_of_contents_updated": {
       "caption": "Table of contents updated",
       "name": "table_of_contents_updated"
+    },
+    "math_clicked": {
+      "caption": "Math clicked",
+      "doc": "Fires when a user clicks a formula in an editable editor. The formula is then selected, and Selected math LaTeX and Selected math type are already set, so show your edit popup and run Update math or Delete math. Does not fire in read-only mode.",
+      "name": "math_clicked"
     }
   },
   "fields": {
-      "autobinding_save_delay": {
-        "caption": "Autobinding save delay",
-        "name": "autobinding_save_delay",
-        "editor": "DynamicValue",
-        "value": "number",
-        "optional": true,
-        "default_val": 2200,
-        "rank": 4.6,
-        "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding."
-      },
+    "autobinding_save_delay": {
+      "caption": "Autobinding save delay",
+      "name": "autobinding_save_delay",
+      "editor": "DynamicValue",
+      "value": "number",
+      "optional": true,
+      "default_val": 2200,
+      "rank": 4.6,
+      "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding."
+    },
     "autobinding_record_id": {
       "caption": "Autobinding record ID",
       "name": "autobinding_record_id",
@@ -725,7 +776,7 @@
       "long_text": false,
       "name": "collab_cursor_css",
       "optional": true,
-      "rank": 214,
+      "rank": 216,
       "value": "text"
     },
     "ADQ": {
@@ -940,7 +991,7 @@
       "editor": "StaticText",
       "name": "liveblocksPublicApiKey",
       "optional": true,
-      "rank": 211
+      "rank": 213
     },
     "AEN": {
       "caption": "JWT key",
@@ -948,7 +999,7 @@
       "editor": "DynamicValue",
       "name": "collab_jwt",
       "optional": true,
-      "rank": 210,
+      "rank": 212,
       "value": "text"
     },
     "AFK": {
@@ -993,7 +1044,7 @@
       "editor": "Color",
       "name": "collab_cursor_color",
       "optional": true,
-      "rank": 213,
+      "rank": 215,
       "value": "text"
     },
     "h3_margin": {
@@ -1182,7 +1233,7 @@
       "caption": "to use the collaboration function you first need an account with one of the providers: 𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 (has free tier), 𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃, or 𝗹𝗶𝘃𝗲𝗯𝗹𝗼𝗰𝗸𝘀.𝗶𝗼",
       "editor": "Label",
       "name": "collab_info_sub",
-      "rank": 203
+      "rank": 205
     },
     "AEy": {
       "caption": "Label",
@@ -1316,7 +1367,7 @@
       "doc": "When enabled, logs detailed information to the browser console. Useful for troubleshooting. Look for messages prefixed with [Tiptap].",
       "editor": "Checkbox",
       "name": "debug_mode",
-      "rank": 215
+      "rank": 217
     },
     "ADq": {
       "caption": "YouTube CSS override",
@@ -1534,7 +1585,7 @@
       "editor": "StaticText",
       "name": "collab_app_id",
       "optional": true,
-      "rank": 209
+      "rank": 211
     },
     "ext_preserve_label": {
       "caption": "----- Preserve Attributes -----",
@@ -1609,7 +1660,7 @@
       "caption": "𝗦𝘁𝗮𝘁𝘂𝘀 𝘃𝗮𝗹𝘂𝗲𝘀: disconnected → connecting → connected → synced; retrying / failed",
       "editor": "Label",
       "name": "collab_status_docs",
-      "rank": 204
+      "rank": 206
     },
     "ADk": {
       "caption": "Link color hover",
@@ -1733,7 +1784,7 @@
       "doc": "Paste the collab URL here to enable collaborative editing. Leave empty to disable.",
       "editor": "StaticText",
       "name": "collab_url",
-      "rank": 208
+      "rank": 210
     },
     "h6_info": {
       "caption": "     ----- H6 styling -----",
@@ -1815,13 +1866,13 @@
       "doc": "Enable real-time collaborative editing via a Y.js-based provider (Tiptap Cloud, Custom Hocuspocus, or Liveblocks). When collaboration is active, the shared Y.js document is the single source of truth. Note: auto-binding is automatically ignored while collaboration is active — the collaborative document takes priority to prevent conflicts.",
       "editor": "Checkbox",
       "name": "collab_active",
-      "rank": 205
+      "rank": 207
     },
     "AEB": {
       "caption": "𝗖𝗢𝗟𝗟𝗔𝗕𝗢𝗥𝗔𝗧𝗜𝗢𝗡",
       "editor": "Label",
       "name": "collab_info",
-      "rank": 202
+      "rank": 204
     },
     "ext_highlight_label": {
       "caption": "----- Highlight -----",
@@ -1847,7 +1898,7 @@
       "name": "collabProvider",
       "optional": true,
       "options": "tiptap,liveblocks,custom",
-      "rank": 207
+      "rank": 209
     },
     "table_lastColumnResizable": {
       "caption": "Last column resizable",
@@ -2010,7 +2061,7 @@
       "editor": "DynamicValue",
       "name": "collab_doc_id",
       "optional": true,
-      "rank": 206,
+      "rank": 208,
       "value": "text"
     },
     "ext_selection": {
@@ -2545,8 +2596,23 @@
       "editor": "DynamicValue",
       "name": "collab_user_name",
       "optional": true,
-      "rank": 212,
+      "rank": 214,
       "value": "text"
+    },
+    "ext_math_label": {
+      "caption": "----- Mathematics (LaTeX) -----",
+      "editor": "Label",
+      "name": "ext_math_label",
+      "rank": 202
+    },
+    "ext_math": {
+      "caption": "Mathematics",
+      "default_val": false,
+      "doc": "Shows LaTeX formulas, inline (in a line of text) or as their own block. Type $$x^2$$ for an inline formula, or $$$x^2$$$ on an empty line for a block. Clicking a formula selects it and fires Math clicked, so you can edit it in your own popup with Update math. Formulas are saved in the HTML with their LaTeX. Off by default; when off, no math files are loaded. With collaboration, turn it on in every editor that opens the same document: an editor with Mathematics off removes the formulas from the shared document for everyone.",
+      "editor": "DynamicValue",
+      "name": "ext_math",
+      "rank": 203,
+      "value": "boolean"
     }
   },
   "has_reset_fn": false,
@@ -3140,6 +3206,26 @@
       },
       "is_list": false,
       "name": "setup_error",
+      "value": "text"
+    },
+    "selected_math_latex": {
+      "caption": "Selected math LaTeX",
+      "doc": "The LaTeX of the formula selected in the editor (by a click or the keyboard), or empty when no formula is selected. Use it to pre-fill your edit popup when Math clicked fires.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "selected_math_latex",
+      "value": "text"
+    },
+    "selected_math_type": {
+      "caption": "Selected math type",
+      "doc": "inline or block for the formula selected in the editor, or empty when no formula is selected.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "selected_math_type",
       "value": "text"
     }
   },

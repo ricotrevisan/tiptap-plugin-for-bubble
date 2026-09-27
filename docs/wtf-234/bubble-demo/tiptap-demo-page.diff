@@ -1,0 +1,16 @@
+diff --git a/pages/tiptap-demo/page.ts b/pages/tiptap-demo/page.ts
+index 6a0cea7..665269e 100644
+--- a/pages/tiptap-demo/page.ts
++++ b/pages/tiptap-demo/page.ts
+@@ -67,6 +67,11 @@ export default page("bpbdbkrf", {
+ 					layout: { collapseWhenHidden: false, height: "fit", alignSelf: "stretch", width: "fill" },
+ 					elementProperties: { opacity: rawBubble(100) },
+ 				}),
++				reusableInstance("demo-math", "bpmthins", {
++					name: "demo-math",
++					comment: "WTF-234: Mathematics (LaTeX) with a click-to-edit popup.",
++					layout: { collapseWhenHidden: false, height: "fit", alignSelf: "stretch", width: "fill" },
++				}),
+ 				reusableInstance("demo-isolation", "bpuadely", {
+ 					name: "demo-isolation",
+ 					layout: { collapseWhenHidden: false, height: "fit", alignSelf: "stretch", width: "fill" },

@@ -6,6 +6,15 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### ➗ Math formulas with LaTeX
+
+- New **Mathematics** setting (Extensions, off by default) shows LaTeX formulas inside a line or as their own block. Type `$$x^2$$` for an inline formula, or `$$$x^2$$$` on an empty line for a block. Single dollar signs stay text, and saved text is never converted.
+- New actions **Insert inline math**, **Insert block math**, **Update math** and **Delete math**. Update and Delete change the selected formula and do nothing when none is selected.
+- Clicking a formula in an editable editor selects it and fires the new **Math clicked** event. The new states **Selected math LaTeX** and **Selected math type** (`inline`/`block`) are set first, so a workflow can open your own popup to edit it. In read-only mode a click does nothing.
+- Formulas save in the HTML with their LaTeX and load back as formulas. Outside the editor, including **Convert webhook payload to HTML**, they show the LaTeX as text. Invalid LaTeX shows in red and still saves.
+- With collaboration, turn Mathematics on in every editor that opens the same document. An editor with it off removes the formulas from the shared document for everyone.
+- KaTeX and its fonts load from a pinned CDN only on pages with Mathematics turned on. Apps that leave it off load nothing new; the runtime bundle grows by about 6 KB.
+
 ### 🧭 Bubble Menu and Floating Menu hide and stack correctly
 
 - When you click from the editor into another editor, an input or any other focusable element, the editor's **Bubble Menu** and **Floating Menu** now hide. Before, they stayed visible and clickable until you clicked empty space.

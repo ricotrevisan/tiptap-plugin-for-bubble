@@ -10,7 +10,7 @@ CI builds before running Playwright and uploads failure traces. The server binds
 
 The fixture loads built `lib/dist.js`, real jQuery 3.7.1, and actual decoded initialize/update/set-content bodies. The shared harness is a dev dependency installed from a committed tarball; `npm ci` works without the harness source checkout.
 
-Twenty-one scenarios run in all three engines (61 browser tests; the IME scenario runs in Chromium only and is skipped in Firefox and WebKit):
+Twenty-seven scenarios run in all three engines (79 browser tests; the IME scenario runs in Chromium only and is skipped in Firefox and WebKit):
 
 - Typing publishes content and coherent debounced event snapshots; repeated updates preserve the editor and draft.
 - Update and set-content action refresh the rendered document and table-of-contents state.
@@ -22,6 +22,7 @@ Twenty-one scenarios run in all three engines (61 browser tests; the IME scenari
 - Find & Replace starts with JSON content and respects whole-word and case-sensitive options.
 - **Insert image** publishes its URL without a fake upload event; keyboard deletion publishes removed URLs before **Image deleted**, with undo/redo and document-replacement coverage.
 - Links (WTF-262): text typed with the real keyboard after a link set from a toolbar-style button, or after a link at the end of a line, is plain text. So is IME composition there (Chromium). Typing inside a link, Set link with nothing selected (with Backspace, and ArrowRight to stop at the end of a line and move on), retyping a selected link, pasting over it, **Remove link**, autolink, and HTML/JSON round trips keep their behavior.
+- Mathematics (WTF-234, `math.spec.mjs`): with the toggle off no KaTeX file is requested. With it on, KaTeX's CSS, script and fonts (served from `node_modules/katex` in place of jsDelivr, same bytes, so SRI applies) render formulas in KaTeX fonts, and invalid LaTeX in red. A real click selects a formula and fires **Math clicked** once with the states already set; **Update math** from an input outside the editor and **Delete math** change it. Arrow keys select a formula without the event. Typing `$$…$$` and `$$$…$$$` makes formulas while `$5` stays text. In read-only mode a click does nothing.
 
 `lifecycle-lab.spec.mjs` runs the WTF-256 lifecycle lab. `lab.html` is a Bubble-shaped page with several editors, menu groups, a floating group, a popup, a modal, a nested scroll area, resource counters, a Bubble-like autobinding record store, and the in-memory Liveblocks service. There are 15 cases in all three engines (45 tests). The contract is in `docs/wtf-256/lifecycle-lab.md`. The cases cover:
 - menu hit-testing and stacking;
@@ -35,6 +36,7 @@ The collaboration cases start local Hocuspocus servers. The token case waits out
 Two real-Bubble checks are not Playwright tests and are not in CI:
 - `check-bubble-lab.mjs` runs on the `lifecycle-lab` page.
 - `check-demo-menu-lifecycle.mjs` runs on `tiptap-demo`.
+- `check-bubble-math.mjs` mounts a Mathematics editor inside a real Bubble element on `tiptap-demo` and checks that KaTeX loads from the real jsDelivr with SRI and renders in its own fonts. `--local-bundle=<git ref>` serves this checkout's `dist.js` before a `pled push`.
 
 Add `--local-initialize=<git ref>` to preview this checkout's `initialize.js` there before a `pled push` (see `real-bubble.mjs`).
 
