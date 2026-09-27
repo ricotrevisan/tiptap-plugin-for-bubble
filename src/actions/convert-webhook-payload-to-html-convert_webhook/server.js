@@ -9,6 +9,10 @@ try {
     global.document = dom.window.document;
     global.window = dom.window;
     global.navigator = dom.window.navigator;
+    // The Emoji extension probes canvas support when imported. jsdom has no
+    // canvas renderer; an explicit null selects its image/Unicode fallback
+    // without logging a noisy "Not implemented" error for every webhook.
+    dom.window.HTMLCanvasElement.prototype.getContext = () => null;
 
     // ── 2. Import Tiptap libraries ───────────────────────────────────
     const { generateHTML, mergeAttributes, Node } = require("@tiptap/core");
@@ -23,6 +27,7 @@ try {
     const TextAlign = require("@tiptap/extension-text-align").default;
     const Image = require("@tiptap/extension-image").default;
     const Youtube = require("@tiptap/extension-youtube").default;
+    const Emoji = require("@tiptap/extension-emoji").default;
     const { Table, TableRow, TableHeader, TableCell } = require("@tiptap/extension-table");
     const TaskList = require("@tiptap/extension-task-list").default;
     const TaskItem = require("@tiptap/extension-task-item").default;
@@ -76,6 +81,7 @@ try {
         TextAlign.configure({ types: ["heading", "paragraph", "image"] }),
         AlignableImage,
         Youtube,
+        Emoji,
         Table,
         TableRow,
         TableHeader,

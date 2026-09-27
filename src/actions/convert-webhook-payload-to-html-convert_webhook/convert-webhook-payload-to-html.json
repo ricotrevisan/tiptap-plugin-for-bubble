@@ -3,13 +3,9 @@
   "code": {
     "automatically_added_packages": "{\"node:util\":\"latest\"}",
     "package": {
-      "fn": "{\n    \"dependencies\": {\n        \"jsdom\": \"22.1.0\",\n        \"@tiptap/core\": \"^3.0.9\",\n        \"@tiptap/starter-kit\": \"^3.0.1\",\n        \"@tiptap/extension-text-style\": \"^3.0.9\",\n        \"@tiptap/extension-color\": \"^3.0.9\",\n        \"@tiptap/extension-font-family\": \"^3.0.9\",\n        \"@tiptap/extension-font-size\": \"^3.0.0-next.3\",\n        \"@tiptap/extension-highlight\": \"^3.0.9\",\n        \"@tiptap/extension-text-align\": \"^3.0.9\",\n        \"@tiptap/extension-image\": \"^3.0.9\",\n        \"@tiptap/extension-youtube\": \"^3.0.9\",\n        \"@tiptap/extension-table\": \"^3.0.9\",\n        \"@tiptap/extension-task-list\": \"^3.0.9\",\n        \"@tiptap/extension-task-item\": \"^3.0.9\",\n        \"@tiptap/extension-mention\": \"^3.0.9\",\n        \"@tiptap/extension-subscript\": \"^3.20.0\",\n        \"@tiptap/extension-superscript\": \"^3.20.0\",\n        \"@tiptap/extension-details\": \"^3.20.0\"\n    }\n}",
-      "invalid_package": false,
-      "package_hash": "7e084eba61cf869ade6a",
-      "package_status": "up_to_date"
+      "fn": "{\n    \"dependencies\": {\n        \"jsdom\": \"22.1.0\",\n        \"@tiptap/core\": \"^3.0.9\",\n        \"@tiptap/starter-kit\": \"^3.0.1\",\n        \"@tiptap/extension-text-style\": \"^3.0.9\",\n        \"@tiptap/extension-color\": \"^3.0.9\",\n        \"@tiptap/extension-font-family\": \"^3.0.9\",\n        \"@tiptap/extension-font-size\": \"^3.0.0-next.3\",\n        \"@tiptap/extension-highlight\": \"^3.0.9\",\n        \"@tiptap/extension-text-align\": \"^3.0.9\",\n        \"@tiptap/extension-image\": \"^3.0.9\",\n        \"@tiptap/extension-youtube\": \"^3.0.9\",\n        \"@tiptap/extension-emoji\": \"3.31.3\",\n        \"@tiptap/extension-table\": \"^3.0.9\",\n        \"@tiptap/extension-task-list\": \"^3.0.9\",\n        \"@tiptap/extension-task-item\": \"^3.0.9\",\n        \"@tiptap/extension-mention\": \"^3.0.9\",\n        \"@tiptap/extension-subscript\": \"^3.20.0\",\n        \"@tiptap/extension-superscript\": \"^3.20.0\",\n        \"@tiptap/extension-details\": \"^3.20.0\"\n    }\n}",
+      "invalid_package": false
     },
-    "package_hash": "7e084eba61cf869ade6a",
-    "package_status": "up_to_date",
     "package_used": true,
     "server": {
       "fn": "async function(properties, context)"
