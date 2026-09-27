@@ -1,0 +1,234 @@
+# WTF-234: Mathematics (LaTeX) — verification
+
+## Scope and behavior
+
+- Base: `main` at `92592c3`. Spec: the ticket's "Decided spec — 2026-09-26".
+  Contract: `math-contract.md` (18 numbered cases).
+- `@tiptap/extension-mathematics` 3.31.3 (`InlineMath`, `BlockMath`) behind the
+  new **Mathematics** field (`ext_math`, off by default), with the extension's
+  own `$$…$$` / `$$$…$$$` input rules. `migrateMathStrings` is never run.
+- KaTeX options: `throwOnError: false` for both nodes, `displayMode: true` for
+  blocks.
+- New states **Selected math LaTeX** / **Selected math type**, published with
+  the other active states on every transaction and selection change. New event
+  **Math clicked**, fired by the extension's click handler after selecting the
+  formula and publishing the states. In read-only mode a mousedown on a formula
+  is swallowed, so the browser can't select it either.
+- New actions **Insert inline math**, **Insert block math**, **Update math**,
+  **Delete math**. Update re-selects the formula it changed.
+- Stored HTML is the extension's `data-type`/`data-latex` element, plus the raw
+  LaTeX as text content, so the HTML is readable outside the editor.
+- Changing the toggle on a live editor rebuilds it (like AI Toolkit, Find &
+  Replace and Table of Contents). Turning it off keeps unsaved content as HTML,
+  so formulas become their LaTeX text instead of the document failing to load.
+- **Convert webhook payload to HTML** defines the two nodes with
+  `@tiptap/core` only (same HTML), so the server action needs no new package
+  and no KaTeX.
+
+## Runtime bundle and KaTeX
+
+- KaTeX is **not** bundled. The build aliases the extension's `katex` import to
+  `lib/katex-runtime.js`. Without KaTeX its `render` writes the raw LaTeX.
+  When `window.tiptap.whenKatexLoaded()` resolves, each Mathematics editor
+  typesets its own formulas again (`initialize.js`).
+  `window.tiptap.loadKatex()` adds, once per page:
+  - `https://cdn.jsdelivr.net/npm/katex@0.16.29/dist/katex.min.css`
+    `sha384-aKaoM0KVxt5vkmTHL4GAGXO2P1JTsTJ73egG6+Brhf70Apf9rfPzegvgcWGBk3cS`
+  - `https://cdn.jsdelivr.net/npm/katex@0.16.29/dist/katex.min.js`
+    `sha384-Nb8LtjZTKLgHUQ9V7avGfqntEr9VJWRr07IFUImhYDmZBjH+V9k1N0OrCXLdW85/`
+
+  Both files were downloaded from jsDelivr and compared byte for byte with the
+  npm package `katex@0.16.29` (the dev dependency the tests use) before hashing.
+- Size: `dist.js` 1,450,671 → 1,456,994 bytes (+6.3 KB: the extension and the
+  loader). Bundling KaTeX would have added 273 KB for every app.
+- Released as a new versioned asset:
+  `pled upload lib/dist-v4.12.0-wtf234-626460eb494e.js` → asset `AHV`,
+  `//meta-q.cdn.bubble.io/f1790436179042x322397172739226100/dist-v4.12.0-wtf234-626460eb494e.js`.
+  SHA-256 of the CDN download equals the local build:
+  `626460eb494e349e1b76bdef4177e031cfb8b8ce87bbd170c0b23a6fe0f5ddac`.
+  `headers.html` points at it. Assets `AHT` (`…844adbe3c1f8.js`) and `AHU`
+  (`…269214671df0.js`) are earlier uploads from before review rounds 1 and 2;
+  nothing uses them. `pled push` was **not** run by the fix session; before its
+  upload, `pled status` showed only local changes (not remote-ahead).
+- After the maintainer authorized the push in the thread, `pled push` was run
+  from `76f9094`: `pled status` reads **In sync**, and the development version
+  serves the new bundle (`version-test` loads
+  `dist-v4.12.0-wtf234-626460eb494e.js` and the element code includes the math
+  changes). The pushed baseline is recorded on the branch in `87aed155`
+  (`.src.json`).
+
+## Tests
+
+- `lib/tests/math-lifecycle.mjs` (in `npm test`) runs the real decoded
+  initialize/update/Set content and the four new action bodies on the built
+  bundle, with the real `katex` package standing in for the CDN script. It
+  covers contract cases 1–17: metadata, toggle off (schema, no assets, no input
+  rules), KaTeX blocked (raw LaTeX, one debugger message, retry), KaTeX
+  arriving (waiting formulas typeset, one stylesheet and script per page, SRI),
+  HTML/JSON round trips with Preserve unknown HTML tags on, `$` text never
+  converted, typing rules and currency, click → selection → states → one
+  event, per-editor isolation, states following selection/update/undo/delete,
+  the four actions including no-ops, invalid LaTeX red and still saved
+  (contentHTML and autobinding), read-only clicks, toggling on/off with
+  content kept, and actions with the toggle off.
+- `lib/tests/webhook-html-node18-compatibility.mjs`: case 18.
+- Case 12's "no selection change" needs a real browser: the node test only
+  sends a click event, so it checks the event, not the mousedown guard.
+- `lib/tests/browser/math.spec.mjs` (Chromium, Firefox, WebKit; 6 scenarios,
+  18 tests): real KaTeX CSS/fonts, real mouse clicks, arrow keys, keyboard
+  typing and read-only clicks. See `lib/tests/browser/README.md`.
+
+### Red → green
+
+- `math-lifecycle.mjs` on the unchanged source: `AssertionError: Mathematics
+  field exists`.
+- Webhook on the unchanged action: `Unexpected error during conversion:
+  RangeError: Unknown node type: inlineMath`.
+- Found by the tests while building:
+  - A blocked KaTeX script can fail synchronously. The loader then kept the
+    rejected promise and never retried (`a failed script is removed so a later
+    editor retries`, then `KaTeX loaded` failed). It now resets after the
+    promise settles.
+  - Turning Mathematics off with a formula in the document rebuilt an empty
+    editor (`'' !== 'Draft Keep mea^2'`), because the preserved JSON contained
+    node types the new schema lacks. Preserving HTML in that case fixes it.
+  - Read-only: in all three engines a real click still selected the formula
+    (the states showed `\pi r^2`, `inline`); the extension's click hook alone
+    doesn't stop the browser's selection. Swallowing the mousedown fixes it.
+
+- Review round 1 (independent review and drummer, head `9736bb2`):
+  - The loader kept every formula rendered while KaTeX was blocked. Entries
+    are now keyed by element and dropped once they leave the page. Pruning
+    waits a task, because node views render before they're attached; the new
+    assertion "formulas waiting since the blocked load are typeset" guards
+    that. (Replaced in round 2, below.)
+  - A failed stylesheet stayed in the page, so it was never retried. It is
+    now removed like the script. With the round-0 loader the updated test
+    doesn't finish; it is killed (exit 137).
+  - A formula element without `data-latex` became an empty formula. It now
+    uses its text.
+
+- Review round 2 (independent re-review, head `feaa39e`, approve with low
+  findings):
+  - An editor built before Bubble attached its canvas was never typeset: its
+    formulas were pruned or skipped. The new test "an editor built while
+    detached is typeset" failed on `feaa39e` and passes now. The page-wide wait
+    list is gone; each editor typesets its own formulas when KaTeX arrives.
+    That also removes the list's memory concern.
+  - If the stylesheet failed while the script loaded, KaTeX's hidden MathML
+    copy showed next to each formula. The editor stylesheet now keeps it
+    hidden.
+  - `check-bubble-math.mjs` mounts a bare editor, not the element, so it now
+    loads KaTeX first. It was rerun on bundle `626460eb494e` and passed.
+- Review round 3 (independent re-review, head `4f1efd9`, approve with low
+  findings). `initialize.js` only, so the bundle is unchanged:
+  - A formula KaTeX throws on even with `throwOnError: false` (for example
+    20,000 nested braces) stopped the re-typeset loop, leaving later formulas
+    as raw LaTeX and an unhandled rejection. On `4f1efd9` the new test fails
+    with `RangeError: Maximum call stack size exceeded`. Each formula is now
+    rendered in its own try/catch and marked with the extension's error class,
+    as the extension does.
+  - The callback is registered after the editor is created and only
+    typesets that editor, so rebuilds while KaTeX is blocked don't pile up
+    redundant work. New tests cover a rebuild and a teardown before KaTeX
+    arrives.
+  - The KaTeX options are defined once and shared by the nodes and the
+    re-typeset.
+
+### Gates (Node 24, from `lib/`)
+
+`npm ci`, `npm test` (21 scripts), `npm run validate:plugin` (5 metadata
+files, 77 function bodies), `npm run test:validator` (11/11),
+`npm run test:browser` (124 passed, 8 skipped: IME outside Chromium, Tiptap
+Cloud without credentials). All passed.
+
+After review round 1 the same gates passed, except one browser test: 123
+passed, and the WTF-262 Firefox case "typing inside a link extends it" failed
+once. Its mouse click put the caret at 14 instead of 13, and that spec doesn't
+turn on Mathematics. It passed on rerun (`--repeat-each=3`, Firefox, 33
+passed).
+
+After rounds 2 and 3 (each): `npm test`, `validate:plugin`, `test:validator` 11/11 and
+`test:browser` (124 passed, 8 skipped) all pass.
+
+## Real Bubble
+
+- `node tests/browser/check-bubble-math.mjs --local-bundle=e185dc5` (bundle
+  `626460eb494e`) on
+  `https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo` (run mode,
+  real jsDelivr, this checkout's `dist.js` served in place of the pushed
+  bundle; nothing in Bubble changed). A Mathematics editor mounted inside the
+  first demo editor's Bubble element:
+  - KaTeX CSS and script loaded from jsDelivr with the SRI above;
+  - the inline formula's font is `KaTeX_Main`; `KaTeX_Main`, `KaTeX_Math` and
+    `KaTeX_Size2` loaded;
+  - the block formula rendered in display mode;
+  - `\frac{` rendered as `rgb(204, 0, 0)` text.
+
+  Screenshot: `bubble-math-render.png`.
+- After `pled push`, the prepared demo was applied to the Bubble branch
+  `wtf-234-math` (33kpl, from `test`): the `demo-math` reusable, its six
+  workflows, and the `tiptap-demo` placement. `buildprint check` first reported
+  two blockers in the prepared demo, both fixed in
+  `docs/wtf-234/bubble-demo/demo-math/reusable.ts`:
+  - **BSP6001 Type of content is required.** The editor element was missing the
+    Mentions property `mention_list_type` (required by the pushed plugin). It is
+    now `dataTypeRef("User")`. (`demo-docs` has the same omission, but it is not
+    re-checked because it is unchanged.)
+  - **BSP3003 the two new states must be referenced canonically.** The readout,
+    popup title and popup input now pass the state ids
+    (`{ id: "get_selected_math_type" }`, `{ id: "get_selected_math_latex" }`).
+  With those fixed, `buildprint check` passes for all 16 changed files, a
+  savepoint was created, and `buildprint apply` applied 48 changes (11
+  semantic) to the branch. The 8 lifecycle-lab tests were unchanged.
+- Verified on the branch preview
+  `https://tiptap-plugin.bubbleapps.io/version-33kpl/tiptap-demo` (run mode,
+  real mouse and keyboard, real jsDelivr KaTeX): the demo editor renders the
+  inline and block formulas with KaTeX; clicking a formula publishes
+  **Selected math type**/**Selected math LaTeX** and fires **Math clicked**,
+  opening the popup with the LaTeX in its input; editing and **Save** runs
+  Update math and re-renders the formula and closes the popup; **Insert inline
+  formula** and **Insert block formula** insert; **Delete math** removes the
+  selected formula; `$5 or $10` stays text. Screenshot:
+  `bubble-math-demo.png`. The demo is a **demo to keep** (a user-visible
+  feature) on branch `wtf-234-math`.
+- Before `pled push`, Buildprint rejected the demo with `BSP2001 Unknown
+  property "ext_math" for 1670612027178x122079323974008830_current-AAC` and
+  its copy of the plugin definition was read-only (`BSP7001`). After the push
+  and a `buildprint sync`, the workspace schema has `ext_math` and the check
+  accepts the element.
+- Bubble branch `wtf-234-math` was created from `test` for the demo. The demo
+  source is in `bubble-demo/`: a `demo-math` reusable (editor with Mathematics
+  on and **File uploads enabled = no**, Insert inline/block formula buttons, a
+  Selected formula readout, and a popup whose input starts from Selected math
+  LaTeX, with Save = Update math, Delete = Delete math, Cancel), its six
+  workflows, and the `tiptap-demo` placement (`tiptap-demo-page.diff`). It is
+  applied to the branch (see above).
+
+## Demo branch state (after `pled push`)
+
+The ship session's steps 1–2 are already done: the `demo-math` reusable and the
+`tiptap-demo` placement are applied to the Bubble branch `wtf-234-math`
+(33kpl) and verified there (see above). What remains for ship:
+
+1. Merge the Bubble branch into `test` (the demo is a **demo to keep**).
+2. Merge the PR, then delete the branch in the ship session's ticket-scoped
+   cleanup.
+
+## Not covered
+
+- Collaboration: an editor with Mathematics off that opens a shared document
+  with formulas removes them for everyone. y-tiptap drops node types the
+  schema lacks, as it does for any other extension. This is documented (field
+  doc, README, changelog), not prevented.
+- **Insert inline math** with text selected inserts before the selection and
+  keeps the text (the extension's command). The action doc says so.
+
+- Formulas count as no text in **Content (text)**, character and word counts
+  (the extension defines no plain-text form).
+- In the editor, formulas only render after KaTeX arrives from jsDelivr. If a
+  site blocks jsDelivr, formulas stay as LaTeX text.
+- If the page already has another KaTeX on `window.katex`, it is used as is,
+  with the pinned 0.16.29 stylesheet.
+- Pasting HTML from other math editors that don't use `data-latex` (for
+  example MathML) isn't converted.
