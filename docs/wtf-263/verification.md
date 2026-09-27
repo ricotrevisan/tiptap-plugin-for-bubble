@@ -35,7 +35,7 @@
 
 - `recipes-docs-contract.mjs` before the docs: failed at `README links the
   canonical demo page` ([red-before-docs.txt](red-before-docs.txt)). After:
-  `PASS recipes docs contract (85 bold terms, 5 recipes)`.
+  `PASS recipes docs contract (86 bold terms, 5 recipes)`.
 - The docs test also failed while drafting on four bold terms (`bold` in the
   intro, and three names wrapped across lines). The wrap was a test bug
   (Markdown reads a line break as a space); the intro was rewritten.
