@@ -204,8 +204,9 @@ fill in **Doc Server ID** only if the server expects that path. In **generate
 auth token**, **Doc Server ID** becomes the token's audience; whoistyping.wtf
 doesn't check it.
 
-This uses the same connection code as Tiptap Cloud, but it hasn't been checked
-end to end in a real Bubble app for this guide.
+Checked in a real Bubble app with a whoistyping.wtf project: two browsers
+edited the same document live, and the text was still there after both closed
+and one reopened.
 
 ### Liveblocks
 

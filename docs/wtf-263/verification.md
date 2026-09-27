@@ -109,9 +109,9 @@ REST API by name) is a product decision for a follow-up.
 
 ## Not verified
 
-- Hocuspocus server (`collab.whoistyping.wtf`) end to end in real Bubble: no
-  valid project credentials available (see "Rework round 1"). The recipe
-  says so.
+- **generate auth token** signing with the app's **Custom collab document
+  server secret**: that saved key belongs to another project (see "Rework
+  round 3"). Tested with a locally signed token instead.
 - Liveblocks: excluded from these recipes and their tests (maintainer,
   2026-09-26).
 - **Go to page** with an autobinding write still in flight: not checked. The
@@ -275,3 +275,34 @@ which needs no password. Resolution:
   request blocking doesn't affect websockets, and going offline would also
   block the database write. It relies on the Bubble condition, which
   Buildprint validated.
+
+## Rework round 3 (2026-09-27): whoistyping.wtf verified; public demo URL
+
+The maintainer pointed to the 1Password item `tiptap-ricowtf` (server ID
+`81df851b`, server secret; project "testy" on whoistyping.wtf).
+
+- Direct Node connection to `wss://collab.whoistyping.wtf/81df851b` with a
+  token signed from that secret: authenticated and synced.
+- Real Bubble, branch `wtf-263-recipes` (`73knr`), temporary probe page
+  (**Provider** custom, **Custom - URL** `wss://collab.whoistyping.wtf`,
+  **Doc Server ID** `81df851b`):
+  - with **generate auth token** (Custom): authentication failed 5/5. The
+    app's saved **Custom collab document server secret** belongs to another
+    project; plugin key values are app-wide and Buildprint can't set them, so
+    it wasn't changed.
+  - with a 10-minute token signed locally from the project secret and passed
+    in by URL: two browsers `connected`, synced; typing in each showed in the
+    other, with "Probe" carets. After one closed and the other reloaded, the
+    text came back from the server.
+  - The probe page was deleted afterwards.
+- The recipe now says the whoistyping.wtf setup was checked in real Bubble.
+- Public demo URL: main's Marketplace `demo_page`, description and README
+  pointed to `https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap`,
+  which now returns 404. AGENTS.md (main `e0cd48b`) names
+  `…/version-test/tiptap-demo` (200). All four links now use it. Red first: the
+  contract test failed with `README links the public demo page`
+  ([red-before-public-demo-404.txt](red-before-public-demo-404.txt)). The test
+  also rejects the retired `/tiptap` URL. `.src.json` shows the pushed plugin
+  still has the 404 link until the next `pled push`.
+- The earlier merge note above names `/tiptap`; that was main's link then.
+- Gates: `npm test` (22 scripts), `validate:plugin`, `test:validator` (11), `test:browser` (106 passed).
