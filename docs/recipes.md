@@ -89,10 +89,10 @@ the database stored it.
 - **Content updated** means "handed over", not "stored".
 - A record switch that doesn't blur the editor (a delayed workflow, a keyboard shortcut) drops the unsent edit.
 
-So switching records or groups on the same page with a button needs nothing
-extra. A button that goes to another page hands the edit over the same way, but
-this guide hasn't checked that Bubble finishes the database write before the
-page changes.
+For a same-page record switch caused by a button click, the blur hands over
+pending edits before the workflow runs. This is not a server-confirmed save.
+A button that goes to another page blurs the editor too, but this guide hasn't
+checked that Bubble finishes the database write before the page changes.
 
 What neither the plugin nor this guide provides is a confirmation from the
 server that the text is stored. If your app needs that before moving on, it
@@ -201,8 +201,8 @@ Same steps as Tiptap Cloud, with these differences:
 
 The plugin connects to `Custom - URL/Doc Server ID`, so on your own server,
 fill in **Doc Server ID** only if the server expects that path. In **generate
-auth token**, **Doc Server ID** becomes the token's audience; whoistyping.wtf
-doesn't check it.
+auth token**, **Doc Server ID** becomes the token's audience. For whoistyping.wtf,
+use the same project ID in the element and the token action.
 
 Checked with a whoistyping.wtf project. In a real Bubble app, two browsers
 edited the same document live, and the text was still there after both closed
@@ -217,13 +217,17 @@ Liveblocks is outside these recipes and their tests.
 
 ### Saving through Tiptap Cloud webhooks
 
-We couldn't find a way to make this work in Bubble. Tiptap Cloud's "document saved" webhook sends
-the document as a JSON object (`tiptapJson`). **convert webhook payload to
-HTML** needs it as text, and Bubble can't pass it on:
+Tiptap Cloud's `document.saved` webhook includes a `tiptapJson` object.
+**convert webhook payload to HTML** converts a *complete webhook body* when
+it receives that body as JSON text (tested by
+`lib/tests/webhook-html-node18-compatibility.mjs`). Conversion is not
+persistence: you still need a Bubble workflow to receive the body and write
+the resulting HTML to a Thing. Neither Bubble backend-workflow route we tested
+supplied usable JSON text to the converter:
 
-- A backend workflow with a text parameter for `tiptapJson` rejects the call ("Expected a string, but got a object").
+- A text parameter for `tiptapJson` rejected the object ("Expected a string, but got a object").
 - With detected request data, the raw body text arrived empty.
 
-The converter itself handles the full webhook body when it gets it as text
-(tested by `lib/tests/webhook-html-node18-compatibility.mjs`). Until there's a
-supported way in, save a copy from the page as shown above.
+We haven't established a working webhook-to-Thing recipe in Bubble. These
+results don't rule out another supported way to receive or fetch the document.
+For now, the tested path here is the synced Save-a-copy button above.

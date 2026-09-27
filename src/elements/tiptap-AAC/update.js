@@ -37,11 +37,13 @@ const findReplaceChanged =
     instance.data._currentFindReplaceEnabled !== !!properties.ext_find_replace;
 const tableOfContentsChanged =
     instance.data._currentTableOfContentsEnabled !== !!properties.ext_table_of_contents;
+const mathChanged =
+    instance.data._currentMathEnabled !== !!properties.ext_math;
 const menuConfiguration = instance.data.menuConfiguration(properties);
 const menusChanged = instance.data._currentMenuConfiguration?.some((value, index) => value !== menuConfiguration[index]);
 // Terminal authentication failure also owns a configuration: only an explicit
 // construction-configuration change may clear it and start a fresh budget.
-if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instance.data._collabAuthFailed) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || menusChanged)) {
+if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instance.data._collabAuthFailed) && (collaborationChanged || aiToolkitChanged || findReplaceChanged || tableOfContentsChanged || mathChanged || menusChanged)) {
     instance.data._collabAuthFailed = false;
     const changedExtensions = [];
     if (collaborationChanged) changedExtensions.push("Collaboration configuration");
@@ -56,6 +58,7 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
     if (aiToolkitChanged) changedExtensions.push("AI Toolkit");
     if (findReplaceChanged) changedExtensions.push("Find & Replace");
     if (tableOfContentsChanged) changedExtensions.push("Table of Contents");
+    if (mathChanged) changedExtensions.push("Mathematics");
     const rebuildReason = changedExtensions.join(" and ") + " changed";
     instance.data.debug(rebuildReason + " — rebuilding editor");
 
@@ -68,7 +71,11 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
     // Local → shared: seed only an empty synced document. Shared → local:
     // retain the visible snapshot. Shared → another room: never carry content.
     if ((!previousCollaboration?.active || !collaborationConfiguration.active) && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
-        instance.data._pendingRebuildContent = instance.data.editor.getJSON();
+        // Turning Mathematics off drops its nodes from the schema: JSON with
+        // formulas would not load at all, while HTML keeps each formula's LaTeX as text.
+        instance.data._pendingRebuildContent = mathChanged && !properties.ext_math
+            ? instance.data.editor.getHTML()
+            : instance.data.editor.getJSON();
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
         if (!collaborationConfiguration.active) instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
     } else if (boundDocumentChanged || (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument)) {

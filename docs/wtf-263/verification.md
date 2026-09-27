@@ -158,7 +158,7 @@ next commit: "Before leaving the page" now limits the claim to what was tested
 (same-page switches). Going to another page with a write still in flight is
 listed as unchecked. Two remaining "saves" became "hands over".
 
-## Final checks (Node 24, from `lib/`)
+## Historical checks (Node 24, from `lib/`)
 
 `npm ci`, `npm test` (22 scripts), `npm run validate:plugin` (5
 metadata files, 73 function bodies), `npm run test:validator` (11 tests),
@@ -312,4 +312,31 @@ The maintainer provided a whoistyping.wtf project's credentials (server ID
   also rejects the retired `/tiptap` URL. `.src.json` shows the pushed plugin
   still has the 404 link until the next `pled push`.
 - The earlier merge note above names `/tiptap`; that was main's link then.
-- Gates: `npm test` (22 scripts), `validate:plugin`, `test:validator` (11), `test:browser` (106 passed).
+- Gates at that revision: `npm test` (22 scripts), `validate:plugin`, `test:validator` (11), `test:browser` (106 passed).
+
+## Rework round 4 (2026-09-27): current main and Math
+
+Merged `origin/main` (`dee7c42`) into the PR branch. This section supersedes the
+older gate counts and link/conflict notes above; those describe their historical
+revisions, not the current PR review receipt.
+
+- Kept main's KaTeX build alias, Math dependencies, Math lifecycle/browser tests,
+  Math asset metadata, actions, states and webhook HTML conversion case. The
+  `document.saved` converter case and both WTF-263 tests still run in `npm test`.
+- Kept the public `/version-test/tiptap-demo` Marketplace and README links,
+  the recipes link and the whoistyping.wtf plugin help/description. The released
+  v4.13.0 changelog is unchanged; this ticket's entry is now **Unreleased**.
+- Tightened the recipes: the tested Bubble webhook intake attempts didn't
+  produce usable JSON text, but the converter itself accepts a complete body
+  as text. Conversion alone doesn't save a Thing. Same-page button switching
+  hands off pending autobinding edits without proving database acknowledgement;
+  navigation with an in-flight save remains unverified.
+- `npm ci`, `npm test` (including Math, document ownership and recipes),
+  `npm run validate:plugin` (5 metadata files, 77 function bodies),
+  `npm run test:validator` (11 passed) and `npm run test:browser` (124 passed,
+  8 expected skips) succeeded on Node 24. The browser suite ran in Chromium,
+  Firefox and WebKit. The eight skips are the gated Tiptap Cloud integration
+  cases and Firefox/WebKit IME cases.
+- No Bubble editor/plugin mutation, Marketplace release or public demo edit
+  was part of this rework. The development demo evidence above predates this
+  merge, but this merge changes no Tiptap runtime behavior or demo configuration.
