@@ -215,6 +215,46 @@ The ship session's steps 1–2 are already done: the `demo-math` reusable and th
 2. Merge the PR, then delete the branch in the ship session's ticket-scoped
    cleanup.
 
+## Deployment — development version (2026-09-27)
+
+- `main` moved to `e0cd48b` (docs-only AGENTS.md) after review. The ship
+  session merged it into the branch as `ed76c6c`. The PR's net diff was
+  byte-identical to the reviewed one. The gates passed on `ed76c6c`:
+  `npm ci`, `npm test`, `validate:plugin`, `test:validator` 11/11 and
+  `test:browser` (124 passed, 8 skipped). CI and a fresh independent review
+  receipt also covered `ed76c6c` against `e0cd48b`.
+- PR #56 was squash-merged as `5697a19`.
+- The fix session had already pushed this plugin source from `76f9094` (see
+  above). Its `.src.json` baseline came in with the merge. Before the ship
+  push:
+  - `git diff e185dc5 HEAD -- src/` listed only this PR's `src/` files;
+  - `pled status` on `main` read **In sync**.
+- `pled push` reported "already in sync; nothing uploaded", and `pled status`
+  still reads **In sync**. `.src.json` is unchanged; this commit records the
+  deployment.
+- Real run mode (`tiptap-plugin`), with real Playwright mouse and keyboard
+  input:
+  - `version-test/tiptap-demo`:
+    - The served element code contains `_currentMathEnabled`,
+      `selected_math_latex`, `insertInlineMath` and `math_clicked`.
+    - The page loads `dist-v4.12.0-wtf234-626460eb494e.js`, with
+      `window.tiptap.InlineMath` present.
+    - All 15 demo editors mounted.
+  - `version-33kpl/tiptap-demo`, the `wtf-234-math` demo:
+    - All editors mounted, and formulas rendered with KaTeX.
+    - Clicking the inline formula published `Selected formula: inline \pi r^2`
+      and opened the popup holding `\pi r^2`.
+    - Typing `\pi d` and clicking Save updated the formula and closed the
+      popup.
+    - Insert inline and Insert block added their formulas.
+    - Clicking the block formula showed `block`, and Delete removed it.
+    - Typing `$$a+b$$` made an inline formula, while `$5 or $10` and a typed
+      `$7.` stayed text.
+- The Bubble branch `wtf-234-math` (33kpl) is a **demo to keep**. It is not
+  merged into `test` and was not deleted. Merging it is the maintainer's
+  call. Nothing was released to the Marketplace, and `test`/`live` were not
+  edited.
+
 ## Not covered
 
 - Collaboration: an editor with Mathematics off that opens a shared document
