@@ -337,6 +337,13 @@ revisions, not the current PR review receipt.
   8 expected skips) succeeded on Node 24. The browser suite ran in Chromium,
   Firefox and WebKit. The eight skips are the gated Tiptap Cloud integration
   cases and Firefox/WebKit IME cases.
+- Review follow-up: the recipes now require separate IDs for Bubble and
+  Floating menu groups, and explicitly limit the real Bubble menu check to
+  reusable copies (repeating-group lookup has lifecycle-test coverage). The
+  collaboration demo *fixture* now spells out the `Is ready` + `Collaboration
+  synced?` guard already present on its Save-a-copy workflow. The live Bubble
+  demo's explanatory text has **not** been updated by this Git change; it
+  must be synced separately before claiming that copy is fixed in the app.
 - No Bubble editor/plugin mutation, Marketplace release or public demo edit
   was part of this rework. The development demo evidence above predates this
   merge, but this merge changes no Tiptap runtime behavior or demo configuration.

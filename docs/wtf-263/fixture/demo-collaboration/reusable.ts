@@ -108,7 +108,7 @@ export default reusable("bpclrcpa", {
 							typography: { color: "#0F172A", fontFamily: fontVariable("app"), fontWeight: 800, fontSize: 24, lineHeight: 1.3 },
 							properties: { tagType: "h2" },
 						}),
-						text("bpclrcpn", "1. Add your Tiptap Cloud secret in the plugin settings.\n2. On page load, run generate auth token and put the token in a custom state.\n3. On the Tiptap: Enable collaboration, Provider tiptap, Doc Server ID, Document name, and JWT key = that state.\n4. Leave autobinding off. The collaboration server owns the document.\n5. To keep a copy in your database, Make changes to a Thing with This Tiptap's Content (HTML) from a Save button.", {
+						text("bpclrcpn", "1. Add your Tiptap Cloud secret in the plugin settings.\n2. On page load, run generate auth token and put the token in a custom state.\n3. On the Tiptap: Enable collaboration, Provider tiptap, Doc Server ID, Document name, and JWT key = that state.\n4. Leave autobinding off. The collaboration server owns the document.\n5. To keep a copy, use a Save button → Make changes to a Thing with This Tiptap's Content (HTML). Only when This Tiptap's Is ready is yes AND Collaboration synced? is yes; otherwise the copy may be empty or stale.", {
 							name: "How-to body",
 							layout: { height: "fit", alignSelf: "stretch", width: "fill" },
 							typography: { color: "#334155", fontFamily: fontVariable("app"), fontSize: 15, lineHeight: 1.6 },

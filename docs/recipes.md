@@ -103,15 +103,15 @@ has to come from Bubble's server side and is outside these recipes.
 Use this for a bubble menu (shows on text selection) or a floating menu (shows
 on an empty line) built from your own Bubble buttons.
 
-1. Inside the same reusable or repeating-group cell as the editor, add a Group with your buttons. Give it an **ID Attribute**, for example `noteBubbleMenu`. Leave it visible on page load; the plugin hides and shows it.
-2. On the Tiptap element: **Bubble Menu** yes, and **Bubble menu** = `noteBubbleMenu`. For a floating menu, use **Floating Menu** and **Floating menu**.
+1. Inside the same reusable or repeating-group cell as the editor, add a Group with your buttons. Give it an **ID Attribute**, for example `noteBubbleMenu`. Leave it visible on page load; the plugin hides and shows it. If you use both menus, add a *different* Group with a *different* ID, for example `noteFloatingMenu`.
+2. On the Tiptap element: **Bubble Menu** yes, and **Bubble menu** = `noteBubbleMenu`. For the second Group, use **Floating Menu** yes and **Floating menu** = `noteFloatingMenu`.
 3. **File uploads enabled**: no (or yes, with **Attach files to** set).
 4. Each button runs a Tiptap action on its own editor, for example **Bold** or **H1**.
 
 How it behaves:
 
-- The plugin looks for the group with that ID closest to the editor. The same ID in every copy of a reusable, or in every repeating-group cell, is fine: each editor takes its own group.
-- One group serves one editor. If another editor already uses it, the plugin leaves it alone and reports it in the debugger.
+- The plugin looks for the group with that ID closest to the editor. Copies of one reusable can reuse the same IDs; the same lookup is covered by lifecycle tests for repeating-group cells, but hasn't been checked in a real Bubble repeating group.
+- One group serves one menu on one editor. Bubble and Floating menus need separate groups and separate IDs. If another editor already uses a group, the plugin leaves it alone and reports it in the debugger.
 - If the ID isn't found, the debugger says so.
 - Changing a menu ID rebuilds the editor. Unsaved text is kept.
 

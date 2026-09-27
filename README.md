@@ -28,7 +28,7 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 
 ## Recipes
 
-[docs/recipes.md](docs/recipes.md) has short, tested setups for saving with a button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. Each one runs on the [development demo page](https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo) (login `tippy` / `tappy`).
+[docs/recipes.md](docs/recipes.md) has short setups backed by lifecycle tests for saving with a button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. The [development demo page](https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo) (login `tippy` / `tappy`) shows the save, collaboration and reusable-menu examples; the repeating-group menu case is tested in the lifecycle suite, not that page.
 
 ---
 
