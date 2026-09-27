@@ -1937,6 +1937,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Resizable,
         Link,
         Youtube,
+        Emoji,
         Table,
         TableRow,
         TableHeader,
@@ -1993,6 +1994,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         tasklist: properties.ext_tasklist,
         image: properties.ext_image,
         youtube: properties.ext_youtube,
+        emoji: !!properties.ext_emoji,
         link: properties.ext_link,
         table: properties.ext_table,
         bubblemenu: properties.ext_bubblemenu,
@@ -2165,6 +2167,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     if (properties.ext_code) extensions.push(Code);
     if (properties.ext_blockquote) extensions.push(Blockquote);
     if (properties.ext_horizontalrule) extensions.push(HorizontalRule);
+    if (properties.ext_emoji) extensions.push(Emoji);
     if (properties.ext_youtube) extensions.push(Youtube.configure({
         nocookie: properties.youtube_nocookie !== false,
         allowFullscreen: properties.youtube_allowFullscreen !== false,
@@ -3039,6 +3042,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     instance.data._currentFindReplaceEnabled = !!properties.ext_find_replace;
     instance.data._currentTableOfContentsEnabled = !!properties.ext_table_of_contents;
     instance.data._currentMathEnabled = !!properties.ext_math;
+    instance.data._currentEmojiEnabled = !!properties.ext_emoji;
     instance.data._currentCollabDocId = properties.collab_doc_id;
     instance.data.debug("editor instance created, waiting for onCreate");
 }

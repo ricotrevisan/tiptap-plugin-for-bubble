@@ -4,6 +4,14 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## Unreleased
+
+### 😄 Inline emoji (WTF-236, Emoji first)
+
+- Turn on **Emoji** under Extensions to convert known `:shortcode:` text into inline emoji nodes. It is off by default. The **Insert emoji** workflow action accepts a name like `smile` or shortcode like `:smile:`; no picker is included.
+- Emoji nodes survive HTML/JSON saves, read-only display and webhook-to-HTML conversion. Unsupported devices use the emoji catalog's image fallback from jsDelivr; switching Emoji off turns existing nodes into Unicode text. For collaboration, enable Emoji in every editor sharing a document.
+- The static runtime bundle grows by about 70 KB gzipped even when Emoji is off. Audio and Twitch are not included.
+
 ## v4.13.0
 
 ### ➗ Math formulas with LaTeX
