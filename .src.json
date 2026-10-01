@@ -701,6 +701,13 @@
             }
           }
         },
+        "blur": {
+          "caption": "Blur",
+          "code": {
+            "fn": "function(instance, properties, context) {\nif (!instance.data.editor_is_ready)\n    return instance.data.returnAndReportErrorIfEditorNotReady(\"Blur\");\n\n// Only focus changes; content and selection stay, and the editor fires\n// its own \"isn't focused\" event.\nif (instance.data.editor.can().blur()) {\n    instance.data.editor.commands.blur();\n} else {\n    const message = \"Tried to run Blur, but the editor cannot blur. Returning\";\n    instance.data.debug(message);\n    context.reportDebugger(message);\n}\n}"
+          },
+          "doc": "Removes focus from the editor without changing its content or selection. The editor's \"isn't focused\" event fires and \"is focused\" becomes no."
+        },
         "delete_math": {
           "caption": "Delete math",
           "code": {
