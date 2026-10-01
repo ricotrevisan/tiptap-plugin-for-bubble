@@ -546,6 +546,13 @@
             "fn": "function(instance, properties, context) {\nif (!instance.data.editor_is_ready)\n    return instance.data.returnAndReportErrorIfEditorNotReady(\"Delete Row\");\n\n  instance.data.editor.chain().focus().deleteRow().run();\n}"
           }
         },
+        "clear_highlight": {
+          "caption": "Clear Highlight",
+          "code": {
+            "fn": "function(instance, properties, context) {\nif (!instance.data.editor_is_ready)\n    return instance.data.returnAndReportErrorIfEditorNotReady(\"Clear Highlight\");\n\nif (instance.data.ext.highlight) {\n    instance.data.editor.chain().focus().unsetHighlight().run();\n} else {\n    return instance.data.returnAndReportErrorIfExtensionNotActive(\"Clear Highlight\", \"Highlight\");\n}\n}"
+          },
+          "doc": "Removes the highlight from the current selection. Other formatting, such as bold or text color, stays."
+        },
         "AAv": {
           "caption": "H2",
           "code": {
