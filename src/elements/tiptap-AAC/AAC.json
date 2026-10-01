@@ -633,6 +633,10 @@
     "clear_highlight": {
       "caption": "Clear Highlight",
       "doc": "Removes the highlight from the current selection. Other formatting, such as bold or text color, stays."
+    },
+    "blur": {
+      "caption": "Blur",
+      "doc": "Removes focus from the editor without changing its content or selection. The editor's \"isn't focused\" event fires and \"is focused\" becomes no."
     }
   },
   "add_hover_pressed": true,
