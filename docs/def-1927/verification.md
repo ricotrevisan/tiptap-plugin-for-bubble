@@ -39,3 +39,11 @@ Screenshots of the collab-on run: [blur-before.png](blur-before.png), [blur-afte
 When the editor is not focused, **Blur in 3 s** changes nothing: the is focused state and the event counter stay the same.
 
 Automated: `lib/tests/blur-action.mjs` (in `npm test`) covers the focus state, the event firing once, unchanged content and selection, and the "editor not ready" guard.
+
+## Release (2026-10-01)
+
+- PR [#59](https://github.com/ricotrevisan/tiptap-plugin-for-bubble/pull/59) was squash-merged as `67156e8`. Its tree is identical to the reviewed head `05b900e`. `pled status` reported **In sync** with that tree. No runtime bundle release was needed: `lib/dist.js` is unchanged.
+- Bubble branch `def-1927-clear-hl` (`93l0d`) on `tiptap-plugin` was deleted with owner approval. `buildprint branch list` no longer lists it, and no other branch changed.
+- **Marketplace:** the owner published **v4.15.0** (minor, MIT, not obfuscated) at about 12:50Z. Description: "Clear Highlight action removes highlight only; Blur action removes focus without changing content or selection." It contains only DEF-1927, because Emoji (WTF-236) had already shipped in v4.14.0.
+- The owner confirmed that the Marketplace lists 4.15.0, and that Defacto's spike branch installed it with **Clear Highlight** and **Blur** present.
+- An automated publish attempt was abandoned before submitting: browser automation misfired in the publish dialog and once selected Major. The dialog was cancelled, and the owner published by hand.

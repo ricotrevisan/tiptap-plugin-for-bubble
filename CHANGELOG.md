@@ -4,7 +4,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## Unreleased
+## v4.15.0 (2026-10-01)
 
 ### 🧽 Clear Highlight action (DEF-1927)
 
@@ -15,6 +15,8 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 - New **Blur** action takes focus away from the editor without changing its content or selection. Use it after toolbar buttons or before showing something else. The editor's **isn't focused** event fires and **is focused** becomes *no*, as when the user clicks away.
 - Works with collaboration on or off. Running it on an editor that isn't focused does nothing.
+
+## v4.14.0 (2026-09-27)
 
 ### 😄 Inline emoji (WTF-236, Emoji first)
 
