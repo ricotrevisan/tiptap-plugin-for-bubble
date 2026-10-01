@@ -6,6 +6,11 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
+### 🧽 Clear Highlight action (DEF-1927)
+
+- New **Clear Highlight** action removes the highlight from the selected text and keeps every other format, such as bold, italic or text color. Before, the only option was **Highlight**, which toggles, so selected text that was only partly highlighted got highlighted instead of cleared.
+- Needs **Highlight** on (Extensions, on by default). Works with collaboration on or off.
+
 ### 😄 Inline emoji (WTF-236, Emoji first)
 
 - Turn on **Emoji** under Extensions to convert known `:shortcode:` text into inline emoji nodes. It is off by default. The **Insert emoji** workflow action accepts a name like `smile` or shortcode like `:smile:`; no picker is included.

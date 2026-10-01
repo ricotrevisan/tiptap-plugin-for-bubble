@@ -629,6 +629,10 @@
     "delete_math": {
       "caption": "Delete math",
       "doc": "Deletes the selected formula (inline or block). Does nothing when no formula is selected. Needs Mathematics on."
+    },
+    "clear_highlight": {
+      "caption": "Clear Highlight",
+      "doc": "Removes the highlight from the current selection. Other formatting, such as bold or text color, stays."
     }
   },
   "add_hover_pressed": true,
