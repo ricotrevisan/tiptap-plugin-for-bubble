@@ -23,7 +23,7 @@ Automated: `lib/tests/clear-highlight-action.mjs` (in `npm test`) covers the sam
 
 The same page now also has **Blur** and **Blur in 3 s** buttons per editor, a readout of the **is focused** state, and a counter that a page workflow on the editor's **isn't focused** event increases by 1.
 
-Clicking a `<button>` takes focus away from the editor by itself, so the plain Blur button can't prove the action works. **Blur in 3 s** schedules a custom event that runs Blur three seconds later. That way the editor can be focused again with real clicks and keys before the action runs. Steps in each editor (collab off, then collab on), plugin Testing version from commit 4ef4b5b:
+Clicking a `<button>` takes focus away from the editor by itself, so the plain Blur button can't prove the action works. **Blur in 3 s** schedules a custom event that runs Blur three seconds later. That way the editor can be focused again with real clicks and keys before the action runs. Steps in each editor (collab off, then collab on), plugin Testing version from commit 0a0f177:
 
 1. Click into the editor, press Home, select four characters with Shift+→ (selection 1–5).
 2. Click **Blur in 3 s**, click back into the editor and select the same four characters. The readout shows `is focused: yes`.
