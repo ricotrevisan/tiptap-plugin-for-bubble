@@ -27,3 +27,11 @@ Evidence: `autobinding-persisted.png`; raw browser console: `autobinding-console
 ## Collaboration plus autobinding: BLOCKED
 
 Branch capacity is full. No branch was created or deleted. The existing collaboration fixture in `63l47` sets `autoBinding:false` in both editors, so it cannot reproduce the target warning. Existing branch configuration belongs to earlier work and was not changed. No synthetic runtime harness was used. Actual Bubble-config before/after console verification of collaboration plus autobinding remains unverified.
+
+## After Testing-source push: PASS
+
+The parent confirmed successful Pled Testing-source push before this check. Reloaded the same `version-63l47/wtf-260-autobinding` preview and repeated real typing with marker ` DEF1927-AFTER-20261002`. Stored HTML reflected the marker and a reload retained it. Removed it with real Backspace input, waited specifically for Stored HTML to lose it, then reloaded and confirmed exact original HTML equality.
+
+An initial cleanup reload occurred before the debounce save completed, so the marker remained. Cleanup was repeated with a Stored HTML save assertion; final exact restoration passed. This is consistent with the fixture's configured 2200 ms save delay.
+
+After-push evidence: `autobinding-after-persisted.png` and `autobinding-console-after.txt`. This verifies collaboration-off persistence only. The combined configuration remains blocked; absence of its warning is not claimed as a real Bubble-config test.
