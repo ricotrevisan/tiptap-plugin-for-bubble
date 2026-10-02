@@ -135,6 +135,30 @@ lib/
 
 ---
 
+## Doc Server ID per environment
+
+**Doc Server ID (dynamic)** (`collab_app_id_dynamic`) accepts a Bubble text
+expression. A non-empty value, trimmed of surrounding whitespace, overrides the
+static **Doc Server ID** (`collab_app_id`). Empty or whitespace-only values fall
+back to the unchanged static field. This applies to Tiptap Cloud and custom
+Hocuspocus; Liveblocks ignores it.
+
+Supply an environment-specific value from your app's configuration (for example,
+Test `e97r1ejm`, Live `29qn2129`). The plugin does not detect Bubble's environment.
+Use the same resolved ID in **generate auth token → Doc Server ID** (`appId`),
+which already accepts expressions, and configure the matching signing secret.
+An ID expression selects an endpoint, not a signing secret.
+
+Changing the resolved ID while a document is open tears down and rebuilds the
+editor/provider. It connects to the current document name on the new server;
+the old server's document and pending content are not copied across. Changing a
+masked static value does not reconnect. Missing prerequisites wait for setup;
+a mismatched JWT fails authentication through the normal retry mechanism.
+
+The token action is unchanged: its optional audience remains optional for
+backward compatibility. It cannot compare its input with an element's resolved
+ID. No new guard is added; apps must pass the matching ID and secret.
+
 ## Collaboration authentication retries
 
 Custom Hocuspocus and Tiptap Cloud allow **five total attempts**, not five retries:

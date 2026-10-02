@@ -1603,11 +1603,21 @@
     "AEH": {
       "caption": "Doc Server ID",
       "default_val": "",
-      "doc": "Required for both Tiptap Cloud or Custom. Get the app id from 𝗵𝘁𝘁𝗽𝘀://𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 or 𝗵𝘁𝘁𝗽𝘀://𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃",
+      "doc": "Required for both Tiptap Cloud or Custom. Get the app id from 𝗵𝘁𝘁𝗽𝘀://𝘁𝗶𝗽𝘁𝗮𝗽.𝗿𝗶𝗰𝗼.𝘄𝘁𝗳 or 𝗵𝘁𝘁𝗽𝘀://𝗰𝗼𝗹𝗹𝗮𝗯.𝘁𝗶𝗽𝘁𝗮𝗽.𝗱𝗲𝘃 — Set 'Doc Server ID (dynamic)' below to fill this in from an expression; that value wins when it is not empty.",
       "editor": "StaticText",
       "name": "collab_app_id",
       "optional": true,
       "rank": 211
+    },
+    "AEO": {
+      "caption": "Doc Server ID (dynamic)",
+      "default_val": "",
+      "doc": "Optional. Same Tiptap Cloud or custom app id as 'Doc Server ID', but this one accepts an expression, so one Bubble app can use a different app id per environment (for example a Test app id and a Live app id). Leave it empty to use the static 'Doc Server ID'. When it is not empty it wins. Changing it reconnects the editor to the new app id.",
+      "editor": "DynamicValue",
+      "name": "collab_app_id_dynamic",
+      "optional": true,
+      "rank": 211.5,
+      "value": "text"
     },
     "ext_preserve_label": {
       "caption": "----- Preserve Attributes -----",
