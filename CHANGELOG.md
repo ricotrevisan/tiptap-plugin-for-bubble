@@ -4,6 +4,13 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.16.0 (proposed, unreleased)
+
+### Environment-specific Doc Server ID (DEF-1927)
+
+- New **Doc Server ID (dynamic)** accepts an expression for Tiptap Cloud or custom Hocuspocus. A non-empty value overrides the static **Doc Server ID**; leaving it empty keeps existing behaviour.
+- Changing the resolved ID reconnects the editor to the new server without copying the old server's document. Pass the same ID to **generate auth token** and use the matching signing secret.
+
 ## v4.15.0 (2026-10-01)
 
 ### 🧽 Clear Highlight action (DEF-1927)
