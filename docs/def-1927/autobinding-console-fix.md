@@ -20,7 +20,7 @@ Reviewed `reportDebugger` and `console.error` calls across `src/`.
 
 ## Live verification
 
-`pled push` completed successfully and `pled status` reports **In sync**. Full `npm test`, `npm run validate:plugin`, and `npm run test:validator` passed. See `autobinding-console-verification.md` for real preview evidence. Branch capacity is full. The existing `def-1927-doc-server-id` preview has collaboration enabled but auto-binding disabled. A matching combined-mode fixture requires permission to reuse that branch or a free branch slot. No app other than `tiptap-plugin` is touched.
+`pled push` completed successfully and `pled status` reports **In sync**. Full `npm test`, `npm run validate:plugin`, and `npm run test:validator` passed. See `autobinding-console-verification.md` for real preview evidence. Rico approved reusing `def-1927-doc-server-id`. The real combined fixture now passes: original code reproduced the warning with client-only source interception; unmodified remote Testing does not emit it. Shared edits sync without writing the bound database copy. See `combined-verification.md` for logs, source-interception limits, transient prerequisite errors, and exact cleanup confirmation. No app other than `tiptap-plugin` is touched.
 
 ## Release notes
 

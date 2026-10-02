@@ -1,0 +1,11 @@
+log: JQMIGRATE: Migrate is installed, version 3.4.1
+warning: Using plugins in testing mode can considerably slow down your application as they are not cached. You should only use a test app to test plugins.
+ {code: 1790975604275x166414622373513020}
+warning: Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+log: page is loaded after 1.509 seconds
+error: Element Collaboration editor - Collaboration is waiting for a supported provider, document name, credentials, and endpoint configuration.
+ {element_instance: ElementInstance2, code: 1790975605855x567564360563439740}
+error: Element Dynamic Doc Server ID editor - Collaboration is waiting for a supported provider, document name, credentials, and endpoint configuration.
+ {element_instance: ElementInstance2, code: 1790975605862x998816140382755000}
+log: Result of generate auth token
+log: {val: Object}

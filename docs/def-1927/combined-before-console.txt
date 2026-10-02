@@ -1,0 +1,16 @@
+log: JQMIGRATE: Migrate is installed, version 3.4.1
+warning: Using plugins in testing mode can considerably slow down your application as they are not cached. You should only use a test app to test plugins.
+ {code: 1790975589109x323121742347268540}
+warning: Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+log: page is loaded after 1.65 seconds
+error: Element Collaboration editor - Collaboration is waiting for a supported provider, document name, credentials, and endpoint configuration.
+ {element_instance: ElementInstance2, code: 1790975590442x942865281496133000}
+error: Element Dynamic Doc Server ID editor - Collaboration is waiting for a supported provider, document name, credentials, and endpoint configuration.
+ {element_instance: ElementInstance2, code: 1790975590444x611790083867946900}
+log: 
+%cThis web application is entirely built without code on Bubble background: #0205D3;color: white;display: block;text-align: center;font-weight: bold;padding: 7px;border-radius: 2px
+log: Visit https://bubble.io to build your own apps
+log: Result of generate auth token
+log: {val: Object}
+error: Element Collaboration editor - Collaboration and auto-binding are both enabled. Auto-binding will be ignored while collaboration is active — the collaborative document is the source of truth.
+ {element_instance: ElementInstance2, code: 1790975598929x671495696323383600}
