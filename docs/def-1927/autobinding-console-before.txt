@@ -1,0 +1,42 @@
+[log] JQMIGRATE: Migrate is installed, version 3.4.1
+[log] fontinactive being called for IBM Plex Mono, Google says the fonts didnt render
+[log] fontinactive being called for IBM Plex Mono, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[warning] Using plugins in testing mode can considerably slow down your application as they are not cached. You should only use a test app to test plugins.
+ {code: "1790972065422x551778328105446340"}
+[log] page is loaded after 2.307 seconds
+[log] fontinactive being called for Lato, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] Failed to load all the fonts
+[log] 
+%cThis web application is entirely built without code on Bubble background: #0205D3;color: white;display: block;text-align: center;font-weight: bold;padding: 7px;border-radius: 2px
+[log] Visit https://bubble.io to build your own apps
+[log] JQMIGRATE: Migrate is installed, version 3.4.1
+[warning] Using plugins in testing mode can considerably slow down your application as they are not cached. You should only use a test app to test plugins.
+ {code: "1790972108227x580554635199182100"}
+[log] fontinactive being called for IBM Plex Mono, Google says the fonts didnt render
+[log] page is loaded after 2.031 seconds
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Inter, Google says the fonts didnt render
+[log] fontinactive being called for Lato, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for Open Sans, Google says the fonts didnt render
+[log] fontinactive being called for IBM Plex Mono, Google says the fonts didnt render
+[log] Failed to load all the fonts
+[log] 
+%cThis web application is entirely built without code on Bubble background: #0205D3;color: white;display: block;text-align: center;font-weight: bold;padding: 7px;border-radius: 2px
+[log] Visit https://bubble.io to build your own apps

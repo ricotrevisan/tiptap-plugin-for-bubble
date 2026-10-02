@@ -110,13 +110,8 @@ if (!instance.data.collaborationReady(collaborationConfiguration)) {
     return;
 }
 
-// Warn if both collaboration and auto-binding are enabled (one-time)
-if (properties.collab_active && properties.bubble.auto_binding() && !instance.data._collabAutobindingWarningShown) {
-    instance.data._collabAutobindingWarningShown = true;
-    context.reportDebugger(
-        "Collaboration and auto-binding are both enabled. Auto-binding will be ignored while collaboration is active — the collaborative document is the source of truth.",
-    );
-}
+// Collaboration and auto-binding may both be configured for conditional use.
+// The binding handlers below ignore auto-binding while collaboration is active.
 
 // Exhaustion must survive ordinary Bubble updates, even though teardown cleared
 // isEditorSetup. Changed configuration above explicitly restarts authentication.
