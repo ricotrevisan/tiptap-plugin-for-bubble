@@ -26,6 +26,10 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 
 ---
 
+## Conditional collaboration and auto-binding
+
+An editor can have Bubble **Auto-binding** enabled and switch **Collaboration** on conditionally. While collaboration is active, the shared document is the source of truth: bound values do not replace it, and edits do not publish auto-binding saves. When collaboration is off, auto-binding resumes. This supported configuration does not report a console error, including with **Debug mode** on.
+
 ## Fork & develop locally
 
 Want to customize the plugin, add extensions, or contribute? Here's how to get your own copy running.

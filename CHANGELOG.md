@@ -4,7 +4,14 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## v4.16.0 (proposed, unreleased)
+## v4.16.1 (proposed, unreleased)
+
+### Conditional collaboration and auto-binding (DEF-1927)
+
+- An editor with both **Collaboration** and **Auto-binding** enabled no longer reports a console error. This is a supported configuration for editors that switch between shared documents and local drafts.
+- Behaviour is unchanged: auto-binding is ignored while collaboration is active and resumes when collaboration is off.
+
+## v4.16.0 (2026-10-02)
 
 ### Environment-specific Doc Server ID (DEF-1927)
 
