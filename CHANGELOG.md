@@ -4,7 +4,33 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## Unreleased
+## v4.16.1 (proposed, unreleased)
+
+### Conditional collaboration and auto-binding (DEF-1927)
+
+- An editor with both **Collaboration** and **Auto-binding** enabled no longer reports a console error. This is a supported configuration for editors that switch between shared documents and local drafts.
+- Behaviour is unchanged: auto-binding is ignored while collaboration is active and resumes when collaboration is off.
+
+## v4.16.0 (2026-10-02)
+
+### Environment-specific Doc Server ID (DEF-1927)
+
+- New **Doc Server ID (dynamic)** accepts an expression for Tiptap Cloud or custom Hocuspocus. A non-empty value overrides the static **Doc Server ID**; leaving it empty keeps existing behaviour.
+- Changing the resolved ID reconnects the editor to the new server without copying the old server's document. Pass the same ID to **generate auth token** and use the matching signing secret.
+
+## v4.15.0 (2026-10-01)
+
+### 🧽 Clear Highlight action (DEF-1927)
+
+- New **Clear Highlight** action removes the highlight from the selected text and keeps every other format, such as bold, italic or text color. Before, the only option was **Highlight**, which toggles, so selected text that was only partly highlighted got highlighted instead of cleared.
+- Needs **Highlight** on (Extensions, on by default). Works with collaboration on or off.
+
+### 👋 Blur action (DEF-1927)
+
+- New **Blur** action takes focus away from the editor without changing its content or selection. Use it after toolbar buttons or before showing something else. The editor's **isn't focused** event fires and **is focused** becomes *no*, as when the user clicks away.
+- Works with collaboration on or off. Running it on an editor that isn't focused does nothing.
+
+## v4.14.0 (2026-09-27)
 
 ### 📘 Recipes for saving, collaboration, menus and read-only text
 

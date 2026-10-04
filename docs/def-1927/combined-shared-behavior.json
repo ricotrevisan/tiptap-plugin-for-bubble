@@ -1,0 +1,11 @@
+{
+  "url": "https://tiptap-plugin.bubbleapps.io/version-63l47/tiptap-demo",
+  "peerSynced": true,
+  "cloudMarkerRetainedOnReload": true,
+  "savedDatabaseHtmlUnchanged": true,
+  "cloudOriginalRestored": true,
+  "originalCloudHtml": "<h2>Shared notes</h2><p>Everyone on this page edits the same text.</p>",
+  "finalCloudHtml": "<h2>Shared notes</h2><p>Everyone on this page edits the same text.</p>",
+  "finalDatabaseHtml": "<h2>Shared notes</h2><p>Everyone on this page edits the same text. Typed in browser A. And browser B. Synced save.</p>",
+  "cleanupNote": "Initial end-cursor/backspace cleanup failed. Real heading/paragraph keyboard repair followed. Its textContent wait timed out, but subsequent read-only fresh-page reload inspection confirmed exact original HTML. No editor API/CRDT cleanup performed."
+}

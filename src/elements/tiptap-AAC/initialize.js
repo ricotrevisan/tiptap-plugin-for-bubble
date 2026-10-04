@@ -728,6 +728,19 @@ try {
         instance.triggerEvent("collab_status_changed");
     };
 
+    // ── Doc Server ID ─────────────────────────────────────────
+    // The element has two Doc Server ID fields: a static one (collab_app_id)
+    // and a dynamic one (collab_app_id_dynamic). Bubble merges Test into Live by
+    // copying static values as-is, and has no runtime "which environment" value,
+    // so an app that uses one Tiptap Cloud app per environment needs an
+    // expression-capable field. The dynamic value wins when it is not empty;
+    // otherwise the static value applies exactly as before.
+    instance.data.collaborationAppId = function (properties) {
+        const dynamic = String(properties.collab_app_id_dynamic ?? "").trim();
+        if (dynamic) return dynamic;
+        return properties.collab_app_id || "";
+    };
+
     // ── Collab auth-failure retry mechanism ──────────────────
     // Five total authentication attempts: the initial connection plus four
     // timer-driven rebuilds. Exhaustion stays failed until configuration changes.
@@ -741,7 +754,7 @@ try {
             provider,
             document: properties.collab_doc_id || "",
             url: provider === "custom" ? (properties.collab_url || "").replace(/\/+$/, "") : "",
-            app: provider === "liveblocks" ? "" : properties.collab_app_id || "",
+            app: provider === "liveblocks" ? "" : instance.data.collaborationAppId(properties),
             credential: provider === "liveblocks" ? properties.liveblocksPublicApiKey || "" : properties.collab_jwt || "",
         };
     };
@@ -1054,7 +1067,7 @@ try {
     function setupCustomHocuspocus(extensions, properties) {
         instance.data.debug("setting up custom Hocuspocus collab");
         const { HocuspocusProvider, Collaboration } = window.tiptap;
-        const custom_url = (properties.collab_url || "").replace(/\/+$/, "") + "/" + (properties.collab_app_id || "");
+        const custom_url = (properties.collab_url || "").replace(/\/+$/, "") + "/" + instance.data.collaborationAppId(properties);
         try {
             instance.data.provider = new HocuspocusProvider(instance.data.guardCollabCallbacks({
                 document: instance.data._collabDocument,
@@ -1125,7 +1138,7 @@ try {
         instance.data.debug("setting up Tiptap Cloud collab");
 
         const { HocuspocusProvider, Collaboration } = window.tiptap;
-        const url = `wss://${properties.collab_app_id}.collab.tiptap.cloud`;
+        const url = `wss://${instance.data.collaborationAppId(properties)}.collab.tiptap.cloud`;
         try {
             instance.data.provider = new HocuspocusProvider(instance.data.guardCollabCallbacks({
                 document: instance.data._collabDocument,

@@ -26,6 +26,10 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 
 ---
 
+## Conditional collaboration and auto-binding
+
+An editor can have Bubble **Auto-binding** enabled and switch **Collaboration** on conditionally. While collaboration is active, the shared document is the source of truth: bound values do not replace it, and edits do not publish auto-binding saves. When collaboration is off, auto-binding resumes. This supported configuration does not report a console error, including with **Debug mode** on.
+
 ## Recipes
 
 [docs/recipes.md](docs/recipes.md) has short setups backed by lifecycle tests for saving with a button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. The [development demo page](https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo) (login `tippy` / `tappy`) shows the save, collaboration and reusable-menu examples; the repeating-group menu case is tested in the lifecycle suite, not that page.
@@ -140,6 +144,30 @@ lib/
 ```
 
 ---
+
+## Doc Server ID per environment
+
+**Doc Server ID (dynamic)** (`collab_app_id_dynamic`) accepts a Bubble text
+expression. A non-empty value, trimmed of surrounding whitespace, overrides the
+static **Doc Server ID** (`collab_app_id`). Empty or whitespace-only values fall
+back to the unchanged static field. This applies to Tiptap Cloud and custom
+Hocuspocus; Liveblocks ignores it.
+
+Supply an environment-specific value from your app's configuration (for example,
+Test `e97r1ejm`, Live `29qn2129`). The plugin does not detect Bubble's environment.
+Use the same resolved ID in **generate auth token → Doc Server ID** (`appId`),
+which already accepts expressions, and configure the matching signing secret.
+An ID expression selects an endpoint, not a signing secret.
+
+Changing the resolved ID while a document is open tears down and rebuilds the
+editor/provider. It connects to the current document name on the new server;
+the old server's document and pending content are not copied across. Changing a
+masked static value does not reconnect. Missing prerequisites wait for setup;
+a mismatched JWT fails authentication through the normal retry mechanism.
+
+The token action is unchanged: its optional audience remains optional for
+backward compatibility. It cannot compare its input with an element's resolved
+ID. No new guard is added; apps must pass the matching ID and secret.
 
 ## Collaboration authentication retries
 

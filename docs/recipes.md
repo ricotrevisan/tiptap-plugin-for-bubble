@@ -165,7 +165,7 @@ server.
    - **user_name** and **cursor_color**: the current user's name and color.
    - **Initial content**: only used when the room is empty. If two people open a brand-new document at the same moment, it can appear twice. Open new documents once first, or leave **Initial content** empty.
    - **File uploads enabled**: no (or yes, with **Attach files to** set).
-   - Leave autobinding off. If it's on, the plugin ignores it and says so in the debugger.
+   - Autobinding can stay on, for example when collaboration is switched on conditionally. While collaboration is active the plugin ignores it: the database value doesn't replace the shared document and edits aren't autobound. It resumes when collaboration is off.
 3. Show **Collaboration status**, **Collaboration synced?** and **Collaboration connected users** if you like.
 
 How it behaves:

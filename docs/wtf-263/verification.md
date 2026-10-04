@@ -364,3 +364,30 @@ only the WTF-263 changes.
 10 expected skips across Chromium, Firefox and WebKit) succeeded on Node 24.
 No plugin push, Bubble page edit, Git PR merge or release was performed by this
 branch update. The live demo copy caveat in round 4 still applies.
+
+## Refresh on main after DEF-1927 (2026-10-04)
+
+`origin/main` (`7c3c887`, through PR #62) merged into the branch.
+
+- Conflicts, all kept from both sides: `README.md` (main's "Conditional
+  collaboration and auto-binding" section, then Recipes), `lib/package.json`
+  (main's `clear-highlight-action`, `blur-action`, `collab-app-id-override`
+  plus this branch's `document-ownership-lifecycle`, `recipes-docs-contract`),
+  `AAC.json` Doc Server ID help (main's dynamic-ID sentence with the
+  whoistyping.wtf link).
+- PR #62 removed the "Auto-binding will be ignored" debugger message; it was a
+  false alarm and binding behaviour did not change. Red: after the merge,
+  `document-ownership-lifecycle.mjs` failed "collaboration owns the document:
+  autobinding is ignored" on that message. The scenario now asserts the
+  message is absent, and still asserts no autobinding writes and that the
+  database value does not replace the shared document.
+- `docs/recipes.md` Tiptap Cloud step no longer says the plugin reports
+  autobinding in the debugger; it describes autobinding as ignored while
+  collaborating and resuming afterwards, matching main's README.
+- Gates (Node 24.20.0): `npm ci`, `npm test` (exit 0),
+  `validate:plugin`, `test:validator`, `git diff --check`, and
+  `playwright test --workers=1`: 131 passed, 10 skipped (Chromium-only
+  clipboard/IME tests on Firefox/WebKit; Tiptap Cloud tests without
+  `TIPTAP_CLOUD_*` credentials).
+- Not re-run in real Bubble: the refresh changes only tests and wording on
+  this branch; the behaviour change came from main, verified in PR #62.
