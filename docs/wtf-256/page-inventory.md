@@ -48,7 +48,7 @@ without the run-mode login.
 | `wtf-260-autobinding` | WTF-260 autobinding fixture, used by the real-database probes | 1 | 8 | Keep (recreated and merged into `test`) |
 | `test` | One legacy Bubble **Rich Text Editor** (built-in plugin) input, no Tiptap | 0 | 0 | **Deleted** (maintainer) |
 | `1t-modern-rows`, `1t-modern-test`, `1t-slimselect-check` | 1T Dropdown plugin fixtures | 0 | 1 / 3 / 0 | Protect (other project) |
-| `bubbleex-*` (22 pages) | BubbleEx controlled fixtures. `bubbleex-i36-target` is the link target of `bubbleex-i36-text-only-link`. | 0 | 0 | Protect (other project) |
+| `bubbleex-*` (21 pages) and reusables `bubbleex-complex-badge`, `bubbleex-complex-card` | BubbleEx controlled fixtures. BubbleEx tests use frozen copies (`test/support/fidelity/cases`). | 0 | 0 | **Deleted** 2026-10-04 (maintainer); savepoint `1791105925731` |
 | `modern-dropdown-demo`, `modern-popover`, `modern-popover-reuse-check` | Modern Dropdown demos and fixtures | 0 | 3 / 0 / 0 | Protect (other project) |
 | `native-binding-57`, `tanstack-chart-demo`, `tanstack-chart-dev` | TanStack Charts demos and fixtures; referenced from that plugin's repo | 0 | 3 / 14 / 15 | Protect (other project) |
 
