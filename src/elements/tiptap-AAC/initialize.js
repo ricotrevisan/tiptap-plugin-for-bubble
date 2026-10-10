@@ -350,7 +350,6 @@ try {
         line-height: 1;
         transform: translateX(-2px);
         width: 14px;
-        ${properties.draghandle_adv || ""}
     }
 
     .tiptap-drag-handle:hover {
@@ -360,6 +359,11 @@ try {
 
     .tiptap-drag-handle:active {
         cursor: grabbing;
+    }
+
+    /* Last, so the override also wins for &:hover and &:active. */
+    .tiptap-drag-handle {
+        ${properties.draghandle_adv || ""}
     }
 
     .mention {
@@ -2381,14 +2385,16 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         }));
     }
     if (properties.ext_draghandle) {
-        // Centre the handle on the hovered block's first line: its first character, or for
-        // a block without text its first line box. The default aligns the handle with the
+        // Centre the handle on the hovered block's first line: the first character of its
+        // first non-blank text node, or for a block without text its first line box. The default aligns the handle with the
         // block's top edge, which sits above the text and differs per font size.
         let dragHandleBlock = null;
         const firstLineRect = (block) => {
             const box = block.getBoundingClientRect();
             const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
-                acceptNode: (node) => (node.data.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP),
+                // Document text only: skips widgets such as task checkbox labels and
+                // collaboration caret names, which sit elsewhere on screen.
+                acceptNode: (node) => (node.pmViewDesc && node.data.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP),
             });
             const text = walker.nextNode();
             let top = box.top;

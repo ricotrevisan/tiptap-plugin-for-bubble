@@ -8,7 +8,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ### Drag handle styling and alignment (DEF-1927)
 
-- The drag handle now gets its styles. Its CSS rule sat inside the editor content, which the handle is not part of, so neither the default look nor **Drag handle CSS override** applied. It is now a quiet 14px grip with a hover background and a grab cursor.
+- The drag handle now gets its styles. Its CSS rule sat inside the editor content, which the handle is not part of, so neither the default look nor **Drag handle CSS override** applied. It is now a quiet 14px grip with a hover background and a grab cursor. **Drag handle CSS override** comes last, so it also overrides the hover and active styles.
 - The handle is centred on the first line of the hovered block, so it lines up with paragraphs and headings of any size and stays on the first line of long, wrapping list items. Empty lines use their line box.
 
 ## v4.16.1 (proposed, unreleased)
