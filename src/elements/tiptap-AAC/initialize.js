@@ -323,19 +323,6 @@ try {
         	background: ${properties.table_zebra_background};
         }
 
-        .tiptap-drag-handle {
-          align-items: center;
-          background: white;
-          border-radius: .25rem;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          cursor: grab;
-          display: flex;
-          height: 1.5rem;
-          justify-content: center;
-          width: 1.5rem;
-          ${properties.draghandle_adv || ""}
-        }
-
             ${properties.baseDiv || ""}
 
     }
@@ -347,6 +334,36 @@ try {
     .ProseMirror .selection {
         background: #accef7;
         ${properties.ext_selection_css || ""}
+    }
+
+    /* The drag handle sits beside the blocks, outside .ProseMirror. 14px plus the
+       2px shift fit a 16px editor padding. */
+    .tiptap-drag-handle {
+        align-items: center;
+        border-radius: .25rem;
+        color: rgba(0, 0, 0, 0.35);
+        cursor: grab;
+        display: flex;
+        font-size: 14px;
+        height: 1.25rem;
+        justify-content: center;
+        line-height: 1;
+        transform: translateX(-2px);
+        width: 14px;
+    }
+
+    .tiptap-drag-handle:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: rgba(0, 0, 0, 0.6);
+    }
+
+    .tiptap-drag-handle:active {
+        cursor: grabbing;
+    }
+
+    /* Last, so the override also wins for &:hover and &:active. */
+    .tiptap-drag-handle {
+        ${properties.draghandle_adv || ""}
     }
 
     .mention {
@@ -2368,12 +2385,53 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         }));
     }
     if (properties.ext_draghandle) {
+        // Centre the handle on the hovered block's first line: the first character of its
+        // first non-blank text node, or for a block without text its first line box. The default aligns the handle with the
+        // block's top edge, which sits above the text and differs per font size.
+        let dragHandleBlock = null;
+        const firstLineRect = (block) => {
+            const box = block.getBoundingClientRect();
+            const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
+                // Document text only: skips widgets such as task checkbox labels and
+                // collaboration caret names, which sit elsewhere on screen.
+                acceptNode: (node) => (node.pmViewDesc && node.data.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP),
+            });
+            const text = walker.nextNode();
+            let top = box.top;
+            let height = 0;
+            if (text) {
+                const range = document.createRange();
+                range.setStart(text, 0);
+                range.setEnd(text, 1);
+                const glyph = range.getClientRects()[0];
+                if (glyph) {
+                    top = glyph.top;
+                    height = glyph.height;
+                }
+            }
+            if (!height) {
+                const style = getComputedStyle(block);
+                const lineHeight = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2 || 20;
+                top = box.top + (parseFloat(style.paddingTop) || 0) + (parseFloat(style.borderTopWidth) || 0);
+                height = Math.min(lineHeight, box.height || lineHeight);
+            }
+            return { x: box.left, y: top, left: box.left, top, right: box.right, bottom: top + height, width: box.width, height };
+        };
         const dragHandleConfig = {
             render() {
                 const el = document.createElement("div");
                 el.classList.add("tiptap-drag-handle");
                 el.innerHTML = "⠿";
                 return el;
+            },
+            computePositionConfig: { placement: "left" },
+            onNodeChange: ({ editor, pos }) => {
+                dragHandleBlock = pos >= 0 ? editor.view.nodeDOM(pos) : null;
+            },
+            getReferencedVirtualElement: () => {
+                const block = dragHandleBlock;
+                if (!block || block.nodeType !== 1 || !block.isConnected) return null;
+                return { getBoundingClientRect: () => firstLineRect(block) };
             },
         };
 
