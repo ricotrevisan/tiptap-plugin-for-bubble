@@ -39,6 +39,16 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## v4.14.0 (2026-09-27)
 
+### 📘 Recipes for saving, collaboration, menus and read-only text
+
+- New [recipes](docs/recipes.md) with short, tested setups: a Save button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. Setup for a Hocuspocus server such as whoistyping.wtf is covered too; its Bubble connection and plugin-generated token were checked separately.
+- They explain who owns the document in each setup, and what **Content updated** means in each (handed to Bubble, not stored).
+- The development demo page (`tiptap-plugin`, login tippy / tappy) has two recipe sections, "Save to your database" and "Edit together, live". The README links the recipes.
+- The hosted collaboration links in the Marketplace description and plugin help now point to [whoistyping.wtf](https://whoistyping.wtf) instead of tiptap.rico.wtf.
+- The converter can turn a complete Tiptap Cloud `document.saved` webhook body into HTML when it receives the body as JSON text. The Bubble backend-workflow routes tested here did not provide that text, so these recipes use a synced Save-a-copy button instead of claiming webhook persistence.
+
+## v4.14.0
+
 ### 😄 Inline emoji (WTF-236, Emoji first)
 
 - Turn on **Emoji** under Extensions to convert known `:shortcode:` text into inline emoji nodes. It is off by default. The **Insert emoji** workflow action accepts a name like `smile` or shortcode like `:smile:`; no picker is included.

@@ -2,7 +2,7 @@
 
 A full-featured rich text editor for [Bubble.io](https://bubble.io) built on [Tiptap v3](https://tiptap.dev). Drop it into any Bubble app and get a modern editing experience — formatting, tables, images, collaboration, and 55+ editor actions — without writing a line of code inside Bubble.
 
-**[Install the plugin](https://bubble.io/plugin/rich-text-editor-tiptapdev-1670612027178x122079323974008830)** · **[Live demo](https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap-demo)**
+**[Install the plugin](https://bubble.io/plugin/rich-text-editor-tiptapdev-1670612027178x122079323974008830)** · **[Live demo](https://nocode-to-knowcode.bubbleapps.io/version-test/tiptap-demo)** · **[Recipes](docs/recipes.md)**
 
 ---
 
@@ -29,6 +29,12 @@ Bubble's built-in rich text editor is limited. This plugin gives you:
 ## Conditional collaboration and auto-binding
 
 An editor can have Bubble **Auto-binding** enabled and switch **Collaboration** on conditionally. While collaboration is active, the shared document is the source of truth: bound values do not replace it, and edits do not publish auto-binding saves. When collaboration is off, auto-binding resumes. This supported configuration does not report a console error, including with **Debug mode** on.
+
+## Recipes
+
+[docs/recipes.md](docs/recipes.md) has short setups backed by lifecycle tests for saving with a button, autobinding while switching records, menus in reusables and repeating groups, read-only text with the editor's styles, and live collaboration with Tiptap Cloud. The [development demo page](https://tiptap-plugin.bubbleapps.io/version-test/tiptap-demo) (login `tippy` / `tappy`) shows the save, collaboration and reusable-menu examples; the repeating-group menu case is tested in the lifecycle suite, not that page.
+
+---
 
 ## Fork & develop locally
 
