@@ -4,6 +4,14 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.16.3 (proposed, unreleased)
+
+### File drops and action errors (DEF-1927)
+
+- Dropping a file the editor won't upload (its type isn't in **Allowed MIME Types**, or uploads are off) no longer makes the browser open the file and leave the page. The file is ignored and reported once through **File upload error**, with **File upload error message** naming it, e.g. `"invoice.pdf" can't be added here.` No console errors. Pasted files behave the same; pasted content that also carries text or HTML still pastes.
+- A drop mixing allowed and disallowed files uploads the allowed ones and reports the rest.
+- **Set content**, **Clear contents** and **Focus** no longer show a blocking "reportToDebugger is not a function" alert when they fail. The real error is logged and sent to the Bubble debugger.
+
 ## v4.16.2 (2026-10-10)
 
 ### Drag handle styling and alignment (DEF-1927)

@@ -2691,16 +2691,17 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     // ── File upload handling ─────────────────────────────────
 
+    // Files the editor will not upload (type not allowed, or uploads off) are reported
+    // once through File upload error. Expected, so no console or debugger noise.
+    function rejectFiles(files) {
+        const names = files.map((file) => '"' + file.name + '"').join(", ");
+        const message = names + " can't" + " be added here.";
+        instance.publishState("fileUploadErrorMessage", message);
+        instance.triggerEvent("fileUploadError");
+    }
+
     function handleUpload(file, editor, pos) {
-        const attachFilesTo = properties.attachFilesTo || null;
         return new Promise((resolve, reject) => {
-            if (!instance.canUploadFile(file)) {
-                const message = "Not allowed to upload this file";
-                context.reportDebugger(message);
-                instance.publishState("fileUploadErrorMessage", message);
-                reject(new Error(message));
-                return;
-            }
             if (!properties.attachFilesTo) {
                 context.reportDebugger(
                     "Uploading a file, but there's no object to attach to. This file could be accessible by anyone. Consider the privacy implications.",
@@ -2708,7 +2709,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             }
 
             instance.publishState("fileUploadProgress", 0);
-            const uploadedFile = instance.uploadFile(
+            instance.uploadFile(
                 file,
                 (err, url) => {
                     if (err) {
@@ -2745,42 +2746,35 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     const allowedMimeTypes = bubbleData.allowedMimeTypes;
 
+    // FileHandler is given no type filter: it drops disallowed files silently and, when none
+    // are left, does not prevent the event, so the browser opens a dropped file and leaves
+    // the page. Filtering here lets every file drop or paste be handled and reported.
+    async function uploadFiles(editor, files, pos) {
+        instance.data.fileUploadUrls = [];
+        const typeAllowed = (file) => !allowedMimeTypes || !allowedMimeTypes.length || allowedMimeTypes.includes(file.type);
+        const accepted = files.filter((file) => typeAllowed(file) && instance.canUploadFile(file));
+        const refused = files.filter((file) => !accepted.includes(file));
+        if (refused.length) rejectFiles(refused);
+        if (!accepted.length) return;
+        try {
+            const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, pos)));
+            instance.data.debug("file upload URLs:", urls);
+            instance.publishState("fileUploadUrls", urls);
+        } catch (error) {
+            instance.triggerEvent("fileUploadError");
+            console.error("Upload error:", error);
+            context.reportDebugger(error.message);
+            instance.publishState("fileUploadErrorMessage", error.message);
+        }
+    }
+
     extensions.push(
         FileHandler.configure({
-            onDrop: async (editor, files, pos) => {
-                instance.data.fileUploadUrls = [];
-                try {
-                    const uploadPromises = Array.from(files).map((file) => handleUpload(file, editor, pos));
-
-                    // Wait for all uploads to complete
-                    const urls = await Promise.all(uploadPromises);
-                    instance.data.debug("file upload URLs:", urls);
-                    instance.publishState("fileUploadUrls", urls);
-                } catch (error) {
-                    instance.triggerEvent("fileUploadError");
-                    console.error("Upload error:", error);
-                    context.reportDebugger(error.message);
-                    instance.publishState("fileUploadErrorMessage", error.message);
-                }
-            },
-
-            onPaste: async (editor, files, htmlContent) => {
-                instance.data.fileUploadUrls = [];
+            onDrop: (editor, files, pos) => uploadFiles(editor, Array.from(files), pos),
+            onPaste: (editor, files, htmlContent) => {
                 if (htmlContent) return;
-                try {
-                    const uploadPromises = Array.from(files).map((file) => handleUpload(file, editor));
-
-                    // Wait for all uploads to complete
-                    const urls = await Promise.all(uploadPromises);
-                    instance.publishState("fileUploadUrls", urls);
-                } catch (error) {
-                    instance.triggerEvent("fileUploadError");
-                    console.error("Upload error:", error);
-                    context.reportDebugger(error.message);
-                    instance.publishState("fileUploadErrorMessage", error.message);
-                }
+                return uploadFiles(editor, Array.from(files));
             },
-            allowedMimeTypes: allowedMimeTypes,
         }),
     );
 

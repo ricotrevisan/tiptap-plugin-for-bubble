@@ -6,6 +6,6 @@ if (!instance.data.editor_is_ready)
     instance.data.editor.commands.focus(position);
   } else {
     const message = "tried to run focus command, but cannot";
-    context.reportToDebugger(message);
+    context.reportDebugger(message);
     console.log(message);
   }
