@@ -24,8 +24,6 @@ if (!instance.data.editor_is_ready)
     });
     instance.data.refreshTableOfContents();
   } catch (error) {
-    context.reportToDebugger(
-      "There was an error running setContent.\n" + error.message
-    );
     console.error(error);
+    context.reportDebugger("There was an error running setContent.\n" + error.message);
   }

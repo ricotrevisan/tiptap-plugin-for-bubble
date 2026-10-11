@@ -176,7 +176,6 @@ window.makeEditor = (name, overrides = {}, publishAutobinding = () => {}) => {
   };
   const h = createHarness({ callbacks, canvas: window.jQuery(document.getElementById('host-' + name)), methods: { publishAutobinding: value => publishAutobinding(value) }, context: {
     reportDebugger: message => debuggerMessages.push(name + ': ' + String(message)),
-    reportToDebugger: message => debuggerMessages.push(name + ': ' + String(message)),
   } });
   h.initialize(); h.update(properties);
   editors[name] = { h, properties };

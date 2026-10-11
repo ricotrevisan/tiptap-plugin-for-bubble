@@ -1983,7 +1983,6 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Selection,
         BubbleMenu,
         FloatingMenu,
-        FileHandler,
         UniqueID,
         Subscript,
         Superscript,
@@ -2692,15 +2691,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     // ── File upload handling ─────────────────────────────────
 
     function handleUpload(file, editor, pos) {
-        const attachFilesTo = properties.attachFilesTo || null;
         return new Promise((resolve, reject) => {
-            if (!instance.canUploadFile(file)) {
-                const message = "Not allowed to upload this file";
-                context.reportDebugger(message);
-                instance.publishState("fileUploadErrorMessage", message);
-                reject(new Error(message));
-                return;
-            }
             if (!properties.attachFilesTo) {
                 context.reportDebugger(
                     "Uploading a file, but there's no object to attach to. This file could be accessible by anyone. Consider the privacy implications.",
@@ -2708,7 +2699,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             }
 
             instance.publishState("fileUploadProgress", 0);
-            const uploadedFile = instance.uploadFile(
+            instance.uploadFile(
                 file,
                 (err, url) => {
                     if (err) {
@@ -2718,7 +2709,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                         return;
                     }
 
-                    if (file.type.startsWith("image/")) {
+                    if (file.type.startsWith("image/") && editor.schema.nodes.image) {
                         // Insert at the drop position
                         if (pos) {
                             editor.commands.insertContentAt(pos, {
@@ -2745,42 +2736,87 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     const allowedMimeTypes = bubbleData.allowedMimeTypes;
 
+    // File drops and pastes. Replaces FileHandler, which drops files outside Allowed MIME
+    // Types silently and, when none are left, does not prevent the event, so the browser
+    // opened a dropped file and left the page. A file is refused only when nothing else would
+    // happen with it; a drop or paste that also carries content (a web image's HTML, a file
+    // name as text) falls back to ProseMirror as before. Refusals are expected, so they are
+    // reported once through File upload error, without console or debugger noise.
+    const typeAllowed = (file) => !allowedMimeTypes || !allowedMimeTypes.length || allowedMimeTypes.includes(file.type);
+    const uploadable = (file) => {
+        try {
+            return typeAllowed(file) && instance.canUploadFile(file);
+        } catch (error) {
+            context.reportDebugger("Could not check whether this file may be uploaded: " + error.message);
+            return false;
+        }
+    };
+    const hasType = (data, ...types) => types.some((type) => Array.from(data.types).includes(type));
+
+    function reportFileErrors(messages) {
+        if (!messages.length) return;
+        instance.publishState("fileUploadErrorMessage", messages.join(" "));
+        instance.triggerEvent("fileUploadError");
+    }
+
+    async function uploadFiles(editor, files, pos) {
+        instance.data.fileUploadUrls = [];
+        const accepted = files.filter(uploadable);
+        const refused = files.filter((file) => !accepted.includes(file));
+        const messages = refused.length ? [refused.map((file) => '"' + file.name + '"').join(", ") + " can't be added here."] : [];
+        try {
+            if (accepted.length) {
+                const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, pos)));
+                instance.data.debug("file upload URLs:", urls);
+                instance.publishState("fileUploadUrls", urls);
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            context.reportDebugger(error.message);
+            messages.push(error.message);
+        }
+        reportFileErrors(messages);
+    }
+
     extensions.push(
-        FileHandler.configure({
-            onDrop: async (editor, files, pos) => {
-                instance.data.fileUploadUrls = [];
-                try {
-                    const uploadPromises = Array.from(files).map((file) => handleUpload(file, editor, pos));
-
-                    // Wait for all uploads to complete
-                    const urls = await Promise.all(uploadPromises);
-                    instance.data.debug("file upload URLs:", urls);
-                    instance.publishState("fileUploadUrls", urls);
-                } catch (error) {
-                    instance.triggerEvent("fileUploadError");
-                    console.error("Upload error:", error);
-                    context.reportDebugger(error.message);
-                    instance.publishState("fileUploadErrorMessage", error.message);
-                }
+        Extension.create({
+            name: "fileDropAndPaste",
+            addProseMirrorPlugins() {
+                const editor = this.editor;
+                return [
+                    new Plugin({
+                        key: new PluginKey("fileDropAndPaste"),
+                        props: {
+                            handleDrop(view, event) {
+                                const data = event.dataTransfer;
+                                if (!data || !data.files.length || hasType(data, "application/x-prosemirror-slice")) return false;
+                                const files = Array.from(data.files);
+                                if (!files.some(uploadable) && hasType(data, "text/html", "text/uri-list", "text/plain")) return false;
+                                event.preventDefault();
+                                event.stopPropagation();
+                                let pos;
+                                try {
+                                    pos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
+                                } catch (error) {
+                                    pos = undefined; // no layout (e.g. tests): insert at the selection
+                                }
+                                uploadFiles(editor, files, pos);
+                                return true;
+                            },
+                            handlePaste(_view, event) {
+                                const data = event.clipboardData;
+                                if (!data || !data.files.length || hasType(data, "text/html")) return false;
+                                const files = Array.from(data.files);
+                                if (!files.some(uploadable) && hasType(data, "text/plain")) return false;
+                                event.preventDefault();
+                                event.stopPropagation();
+                                uploadFiles(editor, files);
+                                return true;
+                            },
+                        },
+                    }),
+                ];
             },
-
-            onPaste: async (editor, files, htmlContent) => {
-                instance.data.fileUploadUrls = [];
-                if (htmlContent) return;
-                try {
-                    const uploadPromises = Array.from(files).map((file) => handleUpload(file, editor));
-
-                    // Wait for all uploads to complete
-                    const urls = await Promise.all(uploadPromises);
-                    instance.publishState("fileUploadUrls", urls);
-                } catch (error) {
-                    instance.triggerEvent("fileUploadError");
-                    console.error("Upload error:", error);
-                    context.reportDebugger(error.message);
-                    instance.publishState("fileUploadErrorMessage", error.message);
-                }
-            },
-            allowedMimeTypes: allowedMimeTypes,
         }),
     );
 

@@ -40,7 +40,6 @@ window.makeHarness = (id, overrides = {}) => {
   const autobindings = [];
   const h = createHarness({ callbacks, canvas: window.jQuery(document.getElementById(id)), methods: { publishAutobinding: value => autobindings.push(value) }, context: {
     reportDebugger: message => debuggerMessages.push(String(message)),
-    reportToDebugger: message => debuggerMessages.push(String(message)),
   } });
   h.initialize(); h.update(properties);
   return { h, properties, autobindings };
