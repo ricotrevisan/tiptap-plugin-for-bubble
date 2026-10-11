@@ -4,7 +4,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## v4.16.3 (proposed, unreleased)
+## v4.16.3 (2026-10-11)
 
 ### File drops and action errors (DEF-1927)
 
