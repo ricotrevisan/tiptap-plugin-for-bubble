@@ -2351,6 +2351,32 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             if (protocols.length > 0) linkConfig.protocols = protocols;
         }
         extensions.push(linkWithPlainRightEdge().configure(linkConfig));
+        if (!linkConfig.openOnClick) {
+            // With Open on click off, a plain click selects the link for editing; Ctrl/⌘+click
+            // (⌘ on Apple devices, where Ctrl+click is a right-click) opens it in a new tab.
+            // Tiptap opens links only when openOnClick is on. Read-only editors and
+            // non-editable anchors such as mentions are left to the browser, which opens them.
+            const appleModifier = /Mac|iPhone|iPad/.test(navigator.platform);
+            extensions.push(Extension.create({
+                name: "openLinkOnModifierClick",
+                addProseMirrorPlugins() {
+                    return [new Plugin({
+                        key: new PluginKey("openLinkOnModifierClick"),
+                        props: {
+                            handleClick(view, _pos, event) {
+                                const modifier = appleModifier ? event.metaKey : event.ctrlKey;
+                                if (!view.editable || event.button !== 0 || !modifier) return false;
+                                const link = event.target?.closest?.("a[href]");
+                                if (!link || !view.dom.contains(link) || !link.isContentEditable || !link.getAttribute("href")) return false;
+                                const noreferrer = /noreferrer/.test(link.getAttribute("rel") || "");
+                                window.open(link.href, "_blank", noreferrer ? "noopener,noreferrer" : "noopener");
+                                return true;
+                            },
+                        },
+                    })];
+                },
+            }));
+        }
     }
     if (properties.ext_placeholder) extensions.push(Placeholder.configure({
         placeholder: placeholder,

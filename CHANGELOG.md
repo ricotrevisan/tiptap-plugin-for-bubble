@@ -4,6 +4,12 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.17.1 (proposed, unreleased)
+
+### Ctrl/⌘+click opens links (DEF-1927)
+
+- With **Open on click** off (the default), Ctrl/⌘+click now opens a link in a new tab, as the field's description says. Before, there was no way to open a link from the editor. On Apple devices it's ⌘+click (Ctrl+click there is a right-click). A plain click still selects the link for editing; read-only editors, mentions and Open on click on are unchanged.
+
 ## v4.17.0 (2026-10-11)
 
 ### Insert links for uploaded files (DEF-1927)
