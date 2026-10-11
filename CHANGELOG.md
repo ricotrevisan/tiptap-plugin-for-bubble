@@ -4,7 +4,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## v4.17.1 (proposed, unreleased)
+## v4.17.1 (2026-10-11)
 
 ### Ctrl/⌘+click opens links (DEF-1927)
 
