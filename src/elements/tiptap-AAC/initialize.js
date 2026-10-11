@@ -2720,6 +2720,14 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                             // Fallback to regular image insertion if no position specified
                             editor.commands.setImage({ src: url });
                         }
+                    } else if (!file.type.startsWith("image/") && properties.insert_file_links) {
+                        // Other files: their name, linked to the upload, then a space so typing
+                        // continues outside the link. Without the Link extension, name and address.
+                        const content = editor.schema.marks.link
+                            ? [{ type: "text", text: file.name, marks: [{ type: "link", attrs: { href: url } }] }, { type: "text", text: " " }]
+                            : [{ type: "text", text: file.name + " (" + url + ") " }];
+                        if (pos) editor.commands.insertContentAt(pos, content);
+                        else editor.commands.insertContent(content);
                     }
                     instance.data.fileUploadUrls.push(url);
                     instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
