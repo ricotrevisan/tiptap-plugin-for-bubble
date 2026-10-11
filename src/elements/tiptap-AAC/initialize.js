@@ -2709,7 +2709,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                         return;
                     }
 
-                    if (file.type.startsWith("image/")) {
+                    if (file.type.startsWith("image/") && editor.schema.nodes.image) {
                         // Insert at the drop position
                         if (pos) {
                             editor.commands.insertContentAt(pos, {
@@ -2793,6 +2793,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                                 const files = Array.from(data.files);
                                 if (!files.some(uploadable) && hasType(data, "text/html", "text/uri-list", "text/plain")) return false;
                                 event.preventDefault();
+                                event.stopPropagation();
                                 let pos;
                                 try {
                                     pos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
@@ -2808,6 +2809,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                                 const files = Array.from(data.files);
                                 if (!files.some(uploadable) && hasType(data, "text/plain")) return false;
                                 event.preventDefault();
+                                event.stopPropagation();
                                 uploadFiles(editor, files);
                                 return true;
                             },
