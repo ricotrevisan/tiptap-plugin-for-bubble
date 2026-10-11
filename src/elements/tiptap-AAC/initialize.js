@@ -2351,6 +2351,27 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             if (protocols.length > 0) linkConfig.protocols = protocols;
         }
         extensions.push(linkWithPlainRightEdge().configure(linkConfig));
+        if (!linkConfig.openOnClick) {
+            // With Open on click off, a plain click selects the link for editing; Ctrl/⌘+click
+            // opens it in a new tab. Tiptap opens links only when openOnClick is on.
+            extensions.push(Extension.create({
+                name: "openLinkOnModifierClick",
+                addProseMirrorPlugins() {
+                    return [new Plugin({
+                        key: new PluginKey("openLinkOnModifierClick"),
+                        props: {
+                            handleClick(view, _pos, event) {
+                                if (event.button !== 0 || !(event.metaKey || event.ctrlKey)) return false;
+                                const link = event.target?.closest?.("a[href]");
+                                if (!link || !view.dom.contains(link)) return false;
+                                window.open(link.href, "_blank", "noopener");
+                                return true;
+                            },
+                        },
+                    })];
+                },
+            }));
+        }
     }
     if (properties.ext_placeholder) extensions.push(Placeholder.configure({
         placeholder: placeholder,
