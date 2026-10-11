@@ -1983,7 +1983,6 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Selection,
         BubbleMenu,
         FloatingMenu,
-        FileHandler,
         UniqueID,
         Subscript,
         Superscript,
@@ -2691,15 +2690,6 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     // ── File upload handling ─────────────────────────────────
 
-    // Files the editor will not upload (type not allowed, or uploads off) are reported
-    // once through File upload error. Expected, so no console or debugger noise.
-    function rejectFiles(files) {
-        const names = files.map((file) => '"' + file.name + '"').join(", ");
-        const message = names + " can't" + " be added here.";
-        instance.publishState("fileUploadErrorMessage", message);
-        instance.triggerEvent("fileUploadError");
-    }
-
     function handleUpload(file, editor, pos) {
         return new Promise((resolve, reject) => {
             if (!properties.attachFilesTo) {
@@ -2746,34 +2736,84 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     const allowedMimeTypes = bubbleData.allowedMimeTypes;
 
-    // FileHandler is given no type filter: it drops disallowed files silently and, when none
-    // are left, does not prevent the event, so the browser opens a dropped file and leaves
-    // the page. Filtering here lets every file drop or paste be handled and reported.
+    // File drops and pastes. Replaces FileHandler, which drops files outside Allowed MIME
+    // Types silently and, when none are left, does not prevent the event, so the browser
+    // opened a dropped file and left the page. A file is refused only when nothing else would
+    // happen with it; a drop or paste that also carries content (a web image's HTML, a file
+    // name as text) falls back to ProseMirror as before. Refusals are expected, so they are
+    // reported once through File upload error, without console or debugger noise.
+    const typeAllowed = (file) => !allowedMimeTypes || !allowedMimeTypes.length || allowedMimeTypes.includes(file.type);
+    const uploadable = (file) => {
+        try {
+            return typeAllowed(file) && instance.canUploadFile(file);
+        } catch (error) {
+            context.reportDebugger("Could not check whether this file may be uploaded: " + error.message);
+            return false;
+        }
+    };
+    const hasType = (data, ...types) => types.some((type) => Array.from(data.types).includes(type));
+
+    function reportFileErrors(messages) {
+        if (!messages.length) return;
+        instance.publishState("fileUploadErrorMessage", messages.join(" "));
+        instance.triggerEvent("fileUploadError");
+    }
+
     async function uploadFiles(editor, files, pos) {
         instance.data.fileUploadUrls = [];
-        const typeAllowed = (file) => !allowedMimeTypes || !allowedMimeTypes.length || allowedMimeTypes.includes(file.type);
-        const accepted = files.filter((file) => typeAllowed(file) && instance.canUploadFile(file));
+        const accepted = files.filter(uploadable);
         const refused = files.filter((file) => !accepted.includes(file));
-        if (refused.length) rejectFiles(refused);
-        if (!accepted.length) return;
+        const messages = refused.length ? [refused.map((file) => '"' + file.name + '"').join(", ") + " can't be added here."] : [];
         try {
-            const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, pos)));
-            instance.data.debug("file upload URLs:", urls);
-            instance.publishState("fileUploadUrls", urls);
+            if (accepted.length) {
+                const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, pos)));
+                instance.data.debug("file upload URLs:", urls);
+                instance.publishState("fileUploadUrls", urls);
+            }
         } catch (error) {
-            instance.triggerEvent("fileUploadError");
             console.error("Upload error:", error);
             context.reportDebugger(error.message);
-            instance.publishState("fileUploadErrorMessage", error.message);
+            messages.push(error.message);
         }
+        reportFileErrors(messages);
     }
 
     extensions.push(
-        FileHandler.configure({
-            onDrop: (editor, files, pos) => uploadFiles(editor, Array.from(files), pos),
-            onPaste: (editor, files, htmlContent) => {
-                if (htmlContent) return;
-                return uploadFiles(editor, Array.from(files));
+        Extension.create({
+            name: "fileDropAndPaste",
+            addProseMirrorPlugins() {
+                const editor = this.editor;
+                return [
+                    new Plugin({
+                        key: new PluginKey("fileDropAndPaste"),
+                        props: {
+                            handleDrop(view, event) {
+                                const data = event.dataTransfer;
+                                if (!data || !data.files.length || hasType(data, "application/x-prosemirror-slice")) return false;
+                                const files = Array.from(data.files);
+                                if (!files.some(uploadable) && hasType(data, "text/html", "text/uri-list", "text/plain")) return false;
+                                event.preventDefault();
+                                let pos;
+                                try {
+                                    pos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
+                                } catch (error) {
+                                    pos = undefined; // no layout (e.g. tests): insert at the selection
+                                }
+                                uploadFiles(editor, files, pos);
+                                return true;
+                            },
+                            handlePaste(_view, event) {
+                                const data = event.clipboardData;
+                                if (!data || !data.files.length || hasType(data, "text/html")) return false;
+                                const files = Array.from(data.files);
+                                if (!files.some(uploadable) && hasType(data, "text/plain")) return false;
+                                event.preventDefault();
+                                uploadFiles(editor, files);
+                                return true;
+                            },
+                        },
+                    }),
+                ];
             },
         }),
     );

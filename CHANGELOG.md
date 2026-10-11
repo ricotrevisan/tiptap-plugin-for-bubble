@@ -8,8 +8,10 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ### File drops and action errors (DEF-1927)
 
-- Dropping a file the editor won't upload (its type isn't in **Allowed MIME Types**, or uploads are off) no longer makes the browser open the file and leave the page. The file is ignored and reported once through **File upload error**, with **File upload error message** naming it, e.g. `"invoice.pdf" can't be added here.` No console errors. Pasted files behave the same; pasted content that also carries text or HTML still pastes.
-- A drop mixing allowed and disallowed files uploads the allowed ones and reports the rest.
+- Dropping a file the editor won't upload (its type isn't in **Allowed MIME Types**, or uploads are off) no longer makes the browser open the file and leave the page. The file is ignored and reported once through **File upload error**, with **File upload error message** naming it, e.g. `"invoice.pdf" can't be added here.` No console errors. Pasted files behave the same. A drop or paste that also carries content still inserts that content, as before: a web image's HTML, or a file name pasted as text.
+- A drop mixing allowed and disallowed files uploads the allowed ones and reports the rest, in one File upload error.
+- A blank **Allowed MIME Types** list now allows any type, as its description says (an empty dynamic list used to refuse every file).
+- The refusal message changed from `Not allowed to upload this file` to one that names the files, and refusals no longer log to the console or the Bubble debugger.
 - **Set content**, **Clear contents** and **Focus** no longer show a blocking "reportToDebugger is not a function" alert when they fail. The real error is logged and sent to the Bubble debugger.
 
 ## v4.16.2 (2026-10-10)
