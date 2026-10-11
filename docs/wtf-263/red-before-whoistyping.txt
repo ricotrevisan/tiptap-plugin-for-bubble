@@ -1,0 +1,1 @@
+AssertionError [ERR_ASSERTION]: src/plugin.json no longer points at tiptap.rico.wtf
