@@ -2660,6 +2660,15 @@
       "name": "ext_math",
       "rank": 203,
       "value": "boolean"
+    },
+    "insert_file_links": {
+      "caption": "Insert links for uploaded files",
+      "default_val": false,
+      "doc": "When a dropped or pasted file that isn't an image is uploaded, insert its name as a link to the uploaded file. Images are always inserted as images. Off: the file is uploaded and its URL published in File upload URLs, but nothing is inserted.",
+      "editor": "Checkbox",
+      "name": "insert_file_links",
+      "rank": 7.5,
+      "value": "boolean"
     }
   },
   "has_reset_fn": false,

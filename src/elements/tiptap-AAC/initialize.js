@@ -2690,7 +2690,41 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     // ── File upload handling ─────────────────────────────────
 
-    function handleUpload(file, editor, pos) {
+    // Insert an uploaded file where it was dropped (drop.pos, kept current while uploads run)
+    // or at the cursor. Images as images; other files, with Insert links for uploaded files on,
+    // as their name linked to the upload, or "name (address)" where links aren't allowed.
+    function insertUploaded(editor, file, url, drop) {
+        const isImage = file.type.startsWith("image/");
+        if (isImage ? !editor.schema.nodes.image : !properties.insert_file_links) return;
+        const size = editor.state.doc.content.size;
+        const pos = drop && typeof drop.pos === "number" ? Math.min(drop.pos, size) : null;
+        let content;
+        if (isImage) {
+            content = { type: "image", attrs: { src: url } };
+        } else {
+            const link = editor.schema.marks.link;
+            const parent = editor.state.doc.resolve(pos ?? editor.state.selection.from).parent;
+            const canLink = link && (!parent.inlineContent || (!parent.type.spec.code && parent.type.allowsMarkType(link)));
+            content = canLink
+                ? [{ type: "text", text: file.name, marks: [{ type: "link", attrs: { href: url } }] }, { type: "text", text: " " }]
+                : [{ type: "text", text: file.name + " (" + url + ") " }];
+        }
+        try {
+            if (pos === null) {
+                if (isImage) editor.commands.setImage({ src: url });
+                else editor.commands.insertContent(content);
+            } else {
+                const before = editor.state.doc.content.size;
+                editor.commands.insertContentAt(pos, content);
+                // The next file of this drop goes after this one.
+                drop.pos = pos + (editor.state.doc.content.size - before);
+            }
+        } catch (error) {
+            context.reportDebugger("Could not insert the uploaded file " + file.name + ": " + error.message);
+        }
+    }
+
+    function handleUpload(file, editor, drop) {
         return new Promise((resolve, reject) => {
             if (!properties.attachFilesTo) {
                 context.reportDebugger(
@@ -2709,18 +2743,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                         return;
                     }
 
-                    if (file.type.startsWith("image/") && editor.schema.nodes.image) {
-                        // Insert at the drop position
-                        if (pos) {
-                            editor.commands.insertContentAt(pos, {
-                                type: "image",
-                                attrs: { src: url },
-                            });
-                        } else {
-                            // Fallback to regular image insertion if no position specified
-                            editor.commands.setImage({ src: url });
-                        }
-                    }
+                    insertUploaded(editor, file, url, drop);
                     instance.data.fileUploadUrls.push(url);
                     instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
                     instance.triggerEvent("fileUploaded");
@@ -2764,9 +2787,15 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         const accepted = files.filter(uploadable);
         const refused = files.filter((file) => !accepted.includes(file));
         const messages = refused.length ? [refused.map((file) => '"' + file.name + '"').join(", ") + " can't be added here."] : [];
+        // The drop position, mapped through every change made while the uploads run.
+        const drop = { pos };
+        const track = ({ transaction }) => {
+            if (typeof drop.pos === "number" && transaction.docChanged) drop.pos = transaction.mapping.map(drop.pos);
+        };
+        if (accepted.length) editor.on("transaction", track);
         try {
             if (accepted.length) {
-                const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, pos)));
+                const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, drop)));
                 instance.data.debug("file upload URLs:", urls);
                 instance.publishState("fileUploadUrls", urls);
             }
@@ -2774,6 +2803,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             console.error("Upload error:", error);
             context.reportDebugger(error.message);
             messages.push(error.message);
+        } finally {
+            editor.off("transaction", track);
         }
         reportFileErrors(messages);
     }

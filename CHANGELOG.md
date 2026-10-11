@@ -4,6 +4,14 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.17.0 (proposed, unreleased)
+
+### Insert links for uploaded files (DEF-1927)
+
+- New checkbox **Insert links for uploaded files** (off by default). When on, a dropped or pasted file that isn't an image (e.g. a PDF) is uploaded and its name is inserted as a link to the file, at the drop position or the cursor. Images are still inserted as images. Without the Link extension, the name and address are inserted as text.
+- Off keeps today's behaviour: the file uploads and its URL is published in **File upload URLs**, but nothing is inserted.
+- To allow PDFs, add `application/pdf` to **Allowed MIME Types**. With **Attach files to** set, the link only opens for users allowed to see that thing.
+
 ## v4.16.3 (2026-10-11)
 
 ### File drops and action errors (DEF-1927)
