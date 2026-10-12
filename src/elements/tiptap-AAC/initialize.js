@@ -361,6 +361,19 @@ try {
         cursor: grabbing;
     }
 
+    /* Upload placeholder: shown where a dropped or pasted file will land while it uploads. */
+    .tiptap-upload-placeholder {
+        background: rgba(0, 0, 0, 0.06);
+        border-radius: .25rem;
+        color: rgba(0, 0, 0, 0.55);
+        display: inline-block;
+        font-size: 0.9em;
+        margin: 0 .15em;
+        padding: 0 .4em;
+        user-select: none;
+        white-space: nowrap;
+    }
+
     /* Last, so the override also wins for &:hover and &:active. */
     .tiptap-drag-handle {
         ${properties.draghandle_adv || ""}
@@ -1938,6 +1951,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         mergeAttributes,
         Plugin,
         PluginKey,
+        Decoration,
+        DecorationSet,
         Document,
         HardBreak,
         Paragraph,
@@ -2716,6 +2731,53 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     // ── File upload handling ─────────────────────────────────
 
+    // Upload placeholders: a chip with the file name and progress where the file will land.
+    // A decoration, so it is never part of the document, its HTML or collaboration. Needs
+    // Decoration from the runtime bundle; without it uploads work as before, without chips.
+    const placeholderKey = new PluginKey("uploadPlaceholders");
+    const placeholders = typeof Decoration === "function" && typeof DecorationSet === "function";
+    let placeholderCounter = 0;
+
+    function placeholderWidget(pos, spec) {
+        const pct = Math.round((spec.progress || 0) * 100);
+        const label = "Uploading " + spec.name + "\u2026" + (pct > 0 ? " " + pct + "%" : "");
+        return Decoration.widget(pos, () => {
+            const chip = document.createElement("span");
+            chip.className = "tiptap-upload-placeholder";
+            chip.contentEditable = "false";
+            chip.textContent = label;
+            return chip;
+        }, { id: spec.id, key: spec.id + ":" + pct, side: spec.side, ignoreSelection: true });
+    }
+
+    function findPlaceholder(state, id) {
+        return (placeholderKey.getState(state) || []).find((item) => item.id === id);
+    }
+
+    function placeholderAction(editor, action) {
+        if (!placeholders || editor.isDestroyed) return;
+        try {
+            editor.view.dispatch(editor.state.tr.setMeta(placeholderKey, action).setMeta("addToHistory", false));
+        } catch (error) {
+            instance.data.debug("upload placeholder:", error.message);
+        }
+    }
+
+    // Uploads in flight across this element: published as Files uploading, and the page asks
+    // for confirmation before closing while any are left.
+    const warnBeforeUnload = (event) => {
+        event.preventDefault();
+        event.returnValue = "";
+    };
+    function countUpload(delta) {
+        const before = instance.data.uploadsInFlight || 0;
+        const after = Math.max(0, before + delta);
+        instance.data.uploadsInFlight = after;
+        instance.publishState("files_uploading", after);
+        if (!before && after) window.addEventListener("beforeunload", warnBeforeUnload);
+        if (before && !after) window.removeEventListener("beforeunload", warnBeforeUnload);
+    }
+
     // Insert an uploaded file where it was dropped (drop.pos, kept current while uploads run)
     // or at the cursor. Images as images; other files, with Insert links for uploaded files on,
     // as their name linked to the upload, or "name (address)" where links aren't allowed.
@@ -2750,8 +2812,17 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         }
     }
 
-    function handleUpload(file, editor, drop) {
+    function handleUpload(file, editor, drop, order = 0, count = 1) {
         return new Promise((resolve, reject) => {
+            const id = "upload-" + ++placeholderCounter;
+            const at = typeof drop?.pos === "number" ? Math.min(drop.pos, editor.state.doc.content.size) : editor.state.selection.from;
+            // Negative sides keep chips in drop order and before content inserted at the same spot.
+            placeholderAction(editor, { add: { id, pos: at, name: file.name, side: order - count } });
+            countUpload(1);
+            const finish = () => {
+                placeholderAction(editor, { remove: id });
+                countUpload(-1);
+            };
             if (!properties.attachFilesTo) {
                 context.reportDebugger(
                     "Uploading a file, but there's no object to attach to. This file could be accessible by anyone. Consider the privacy implications.",
@@ -2763,13 +2834,17 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 file,
                 (err, url) => {
                     if (err) {
+                        finish();
                         context.reportDebugger(err.message);
                         instance.publishState("fileUploadErrorMessage", err.message);
                         reject(err);
                         return;
                     }
 
-                    insertUploaded(editor, file, url, drop);
+                    // Land where the chip is (it moved with any edits); else the tracked drop position.
+                    const chip = placeholders && !editor.isDestroyed ? findPlaceholder(editor.state, id) : undefined;
+                    insertUploaded(editor, file, url, chip ? { pos: chip.pos } : drop);
+                    finish();
                     instance.data.fileUploadUrls.push(url);
                     instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
                     instance.triggerEvent("fileUploaded");
@@ -2778,6 +2853,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 properties.attachFilesTo,
                 (progress) => {
                     instance.publishState("fileUploadProgress", progress);
+                    placeholderAction(editor, { update: { id, progress } });
                 },
             );
         });
@@ -2821,7 +2897,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         if (accepted.length) editor.on("transaction", track);
         try {
             if (accepted.length) {
-                const urls = await Promise.all(accepted.map((file) => handleUpload(file, editor, drop)));
+                instance.triggerEvent("upload_started");
+                const urls = await Promise.all(accepted.map((file, i) => handleUpload(file, editor, drop, i, accepted.length)));
                 instance.data.debug("file upload URLs:", urls);
                 instance.publishState("fileUploadUrls", urls);
             }
@@ -2840,7 +2917,34 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             name: "fileDropAndPaste",
             addProseMirrorPlugins() {
                 const editor = this.editor;
+                const plugins = [];
+                if (placeholders) {
+                    plugins.push(new Plugin({
+                        key: placeholderKey,
+                        // Chip positions are kept here and mapped through every change (never
+                        // dropped, unlike widgets inside a replaced range); the decorations are
+                        // rebuilt from them.
+                        state: {
+                            init: () => [],
+                            apply(tr, items) {
+                                if (tr.docChanged) items = items.map((item) => ({ ...item, pos: tr.mapping.map(item.pos, -1) }));
+                                const action = tr.getMeta(placeholderKey);
+                                if (action?.add) items = [...items, action.add];
+                                if (action?.remove) items = items.filter((item) => item.id !== action.remove);
+                                if (action?.update) items = items.map((item) => (item.id === action.update.id ? { ...item, progress: action.update.progress } : item));
+                                return items;
+                            },
+                        },
+                        props: {
+                            decorations: (state) => {
+                                const items = placeholderKey.getState(state);
+                                return items.length ? DecorationSet.create(state.doc, items.map((item) => placeholderWidget(item.pos, item))) : null;
+                            },
+                        },
+                    }));
+                }
                 return [
+                    ...plugins,
                     new Plugin({
                         key: new PluginKey("fileDropAndPaste"),
                         props: {
