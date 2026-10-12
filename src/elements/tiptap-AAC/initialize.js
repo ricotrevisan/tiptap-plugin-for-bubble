@@ -1953,6 +1953,9 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         PluginKey,
         Decoration,
         DecorationSet,
+        ySyncPluginKey,
+        absolutePositionToRelativePosition,
+        relativePositionToAbsolutePosition,
         Document,
         HardBreak,
         Paragraph,
@@ -2754,18 +2757,40 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         return (placeholderKey.getState(state) || []).find((item) => item.id === id);
     }
 
+    // In a collaborative editor a remote change replaces the whole document, which maps every
+    // position to its start. Chips also keep a Yjs relative position, refreshed after each of
+    // our own changes (y-tiptap writes local edits to Yjs during the dispatch) and resolved on
+    // remote changes, as y-tiptap does for the cursor.
+    function ySyncBinding(state) {
+        const sync = ySyncPluginKey && relativePositionToAbsolutePosition ? ySyncPluginKey.getState(state) : null;
+        return sync?.binding && !sync.binding.isDestroyed ? sync.binding : null;
+    }
+
     function placeholderAction(editor, action) {
         if (!placeholders || editor.isDestroyed) return;
         try {
             editor.view.dispatch(editor.state.tr.setMeta(placeholderKey, action).setMeta("addToHistory", false));
+            const binding = ySyncBinding(editor.state);
+            const items = placeholderKey.getState(editor.state) || [];
+            if (binding && items.length && !action.rels) {
+                const rels = {};
+                for (const item of items) {
+                    try {
+                        rels[item.id] = absolutePositionToRelativePosition(item.pos, binding.type, binding.mapping);
+                    } catch (error) {
+                        rels[item.id] = null;
+                    }
+                }
+                editor.view.dispatch(editor.state.tr.setMeta(placeholderKey, { rels }).setMeta("addToHistory", false));
+            }
         } catch (error) {
             instance.data.debug("upload placeholder:", error.message);
         }
     }
 
-    // Uploads in flight across this element: published as Files uploading, and the page asks
-    // for confirmation before closing while any are left.
-    const warnBeforeUnload = (event) => {
+    // Uploads in flight across this element (and its rebuilds): published as Files uploading,
+    // and the page asks for confirmation before closing while any are left.
+    instance.data.warnBeforeUnload ??= (event) => {
         event.preventDefault();
         event.returnValue = "";
     };
@@ -2774,8 +2799,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         const after = Math.max(0, before + delta);
         instance.data.uploadsInFlight = after;
         instance.publishState("files_uploading", after);
-        if (!before && after) window.addEventListener("beforeunload", warnBeforeUnload);
-        if (before && !after) window.removeEventListener("beforeunload", warnBeforeUnload);
+        if (!before && after) window.addEventListener("beforeunload", instance.data.warnBeforeUnload);
+        if (before && !after) window.removeEventListener("beforeunload", instance.data.warnBeforeUnload);
     }
 
     // Insert an uploaded file where it was dropped (drop.pos, kept current while uploads run)
@@ -2806,56 +2831,80 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 editor.commands.insertContentAt(pos, content);
                 // The next file of this drop goes after this one.
                 drop.pos = pos + (editor.state.doc.content.size - before);
+                return { from: pos, to: drop.pos };
             }
         } catch (error) {
             context.reportDebugger("Could not insert the uploaded file " + file.name + ": " + error.message);
         }
+        return null;
     }
 
-    function handleUpload(file, editor, drop, order = 0, count = 1) {
+    function handleUpload(file, editor, drop, order = 0, count = 1, dropId = 0) {
         return new Promise((resolve, reject) => {
-            const id = "upload-" + ++placeholderCounter;
-            const at = typeof drop?.pos === "number" ? Math.min(drop.pos, editor.state.doc.content.size) : editor.state.selection.from;
-            // Negative sides keep chips in drop order and before content inserted at the same spot.
-            placeholderAction(editor, { add: { id, pos: at, name: file.name, side: order - count } });
-            countUpload(1);
-            const finish = () => {
-                placeholderAction(editor, { remove: id });
-                countUpload(-1);
-            };
             if (!properties.attachFilesTo) {
                 context.reportDebugger(
                     "Uploading a file, but there's no object to attach to. This file could be accessible by anyone. Consider the privacy implications.",
                 );
             }
 
-            instance.publishState("fileUploadProgress", 0);
-            instance.uploadFile(
-                file,
-                (err, url) => {
-                    if (err) {
-                        finish();
-                        context.reportDebugger(err.message);
-                        instance.publishState("fileUploadErrorMessage", err.message);
-                        reject(err);
-                        return;
-                    }
+            const id = "upload-" + ++placeholderCounter;
+            const at = typeof drop?.pos === "number" ? Math.min(drop.pos, editor.state.doc.content.size) : editor.state.selection.from;
+            // Negative sides keep chips in drop order and before content inserted at the same spot.
+            placeholderAction(editor, { add: { id, dropId, order, pos: at, name: file.name, side: order - count } });
+            countUpload(1);
+            let finished = false;
+            const finish = (landed) => {
+                if (finished) return;
+                finished = true;
+                placeholderAction(editor, { remove: id, landed });
+                countUpload(-1);
+            };
+            let lastPct = 0;
 
-                    // Land where the chip is (it moved with any edits); else the tracked drop position.
-                    const chip = placeholders && !editor.isDestroyed ? findPlaceholder(editor.state, id) : undefined;
-                    insertUploaded(editor, file, url, chip ? { pos: chip.pos } : drop);
-                    finish();
-                    instance.data.fileUploadUrls.push(url);
-                    instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
-                    instance.triggerEvent("fileUploaded");
-                    resolve(url);
-                },
-                properties.attachFilesTo,
-                (progress) => {
-                    instance.publishState("fileUploadProgress", progress);
-                    placeholderAction(editor, { update: { id, progress } });
-                },
-            );
+            instance.publishState("fileUploadProgress", 0);
+            try {
+                instance.uploadFile(
+                    file,
+                    (err, url) => {
+                        if (err) {
+                            finish();
+                            context.reportDebugger(err.message);
+                            instance.publishState("fileUploadErrorMessage", err.message);
+                            reject(err);
+                            return;
+                        }
+
+                        let landed = null;
+                        try {
+                            if (!editor.isDestroyed) {
+                                // Land where the chip is (it moved with any edits); else the tracked drop position.
+                                const chip = placeholders ? findPlaceholder(editor.state, id) : undefined;
+                                const range = insertUploaded(editor, file, url, chip ? { pos: chip.pos } : drop);
+                                if (range) landed = { dropId, order, ...range };
+                            }
+                        } catch (error) {
+                            context.reportDebugger("Could not insert the uploaded file " + file.name + ": " + error.message);
+                        } finally {
+                            finish(landed);
+                        }
+                        instance.data.fileUploadUrls.push(url);
+                        instance.publishState("fileUploadUrls", instance.data.fileUploadUrls.slice());
+                        instance.triggerEvent("fileUploaded");
+                        resolve(url);
+                    },
+                    properties.attachFilesTo,
+                    (progress) => {
+                        instance.publishState("fileUploadProgress", progress);
+                        const pct = Math.round(progress * 100);
+                        if (pct === lastPct) return;
+                        lastPct = pct;
+                        placeholderAction(editor, { update: { id, progress } });
+                    },
+                );
+            } catch (error) {
+                finish();
+                reject(error);
+            }
         });
     }
 
@@ -2897,8 +2946,10 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         if (accepted.length) editor.on("transaction", track);
         try {
             if (accepted.length) {
+                const dropId = ++placeholderCounter;
+                const uploads = accepted.map((file, i) => handleUpload(file, editor, drop, i, accepted.length, dropId));
                 instance.triggerEvent("upload_started");
-                const urls = await Promise.all(accepted.map((file, i) => handleUpload(file, editor, drop, i, accepted.length)));
+                const urls = await Promise.all(uploads);
                 instance.data.debug("file upload URLs:", urls);
                 instance.publishState("fileUploadUrls", urls);
             }
@@ -2926,12 +2977,33 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                         // rebuilt from them.
                         state: {
                             init: () => [],
-                            apply(tr, items) {
-                                if (tr.docChanged) items = items.map((item) => ({ ...item, pos: tr.mapping.map(item.pos, -1) }));
+                            apply(tr, items, _old, state) {
+                                if (tr.docChanged && items.length) {
+                                    const binding = ySyncPluginKey && tr.getMeta(ySyncPluginKey)?.isChangeOrigin ? ySyncBinding(state) : null;
+                                    const size = tr.doc.content.size;
+                                    items = items.map((item) => {
+                                        let pos = null;
+                                        if (binding && item.rel) {
+                                            try {
+                                                pos = relativePositionToAbsolutePosition(binding.doc, binding.type, item.rel, binding.mapping);
+                                            } catch (error) {
+                                                pos = null;
+                                            }
+                                        }
+                                        return { ...item, pos: Math.min(pos ?? tr.mapping.map(item.pos, -1), size) };
+                                    });
+                                }
                                 const action = tr.getMeta(placeholderKey);
-                                if (action?.add) items = [...items, action.add];
-                                if (action?.remove) items = items.filter((item) => item.id !== action.remove);
-                                if (action?.update) items = items.map((item) => (item.id === action.update.id ? { ...item, progress: action.update.progress } : item));
+                                if (!action) return items;
+                                if (action.add) items = [...items, action.add];
+                                if (action.remove) items = items.filter((item) => item.id !== action.remove);
+                                if (action.landed) {
+                                    // Later files of the same drop still waiting at that spot go after it.
+                                    const { dropId, order, from, to } = action.landed;
+                                    items = items.map((item) => (item.dropId === dropId && item.order > order && item.pos === from ? { ...item, pos: to } : item));
+                                }
+                                if (action.update) items = items.map((item) => (item.id === action.update.id ? { ...item, progress: action.update.progress } : item));
+                                if (action.rels) items = items.map((item) => (item.id in action.rels ? { ...item, rel: action.rels[item.id] } : item));
                                 return items;
                             },
                         },
@@ -2971,6 +3043,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                                 if (!files.some(uploadable) && hasType(data, "text/plain")) return false;
                                 event.preventDefault();
                                 event.stopPropagation();
+                                // A paste replaces the selection, as pasting text does.
+                                if (!editor.state.selection.empty && files.some(uploadable)) editor.commands.deleteSelection();
                                 uploadFiles(editor, files);
                                 return true;
                             },
