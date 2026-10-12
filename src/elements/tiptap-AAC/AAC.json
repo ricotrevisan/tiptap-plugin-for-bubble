@@ -706,6 +706,11 @@
       "caption": "Math clicked",
       "doc": "Fires when a user clicks a formula in an editable editor. The formula is then selected, and Selected math LaTeX and Selected math type are already set, so show your edit popup and run Update math or Delete math. Does not fire in read-only mode.",
       "name": "math_clicked"
+    },
+    "upload_started": {
+      "caption": "Upload started",
+      "name": "upload_started",
+      "doc": "Fires when a drop or paste starts uploading one or more files. Read Files uploading for how many are in progress; File is uploaded and File upload error fire as they finish."
     }
   },
   "fields": {
@@ -3283,6 +3288,16 @@
       "is_list": false,
       "name": "selected_math_type",
       "value": "text"
+    },
+    "files_uploading": {
+      "caption": "Files uploading",
+      "doc": "How many dropped or pasted files are uploading right now. 0 when none. While it is above 0, a placeholder shows each file where it will land, and the browser asks for confirmation before the page is closed.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "files_uploading",
+      "value": "number"
     }
   },
   "support_autobinding": true

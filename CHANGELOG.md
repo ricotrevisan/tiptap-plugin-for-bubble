@@ -4,6 +4,18 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.18.0 (proposed, unreleased)
+
+### Upload feedback (DEF-1927)
+
+- While a dropped or pasted file uploads, a placeholder chip shows **Uploading <file name>… 40%** where the file will land. It moves with edits made meanwhile and is replaced by the image or link when the upload finishes; a failed upload removes it (File upload error reports why). The chip is never part of the document, its HTML or collaboration.
+- Files land where they were dropped, in drop order, even when a later file finishes first.
+- New state **Files uploading** (how many are in progress) and event **Upload started**, for apps that want their own upload UI.
+- While uploads are in progress, closing or leaving the page asks for confirmation.
+- In collaborative editors the placeholder keeps its place when others edit meanwhile.
+- Pasting a file over a selection replaces the selection, as pasting text does.
+- Runtime bundle `dist-v4.18.0-def1927-5fbbf5d73ff2.js`: adds ProseMirror's Decoration and y-tiptap's position helpers; otherwise identical to the 4.14.0 bundle.
+
 ## v4.17.1 (2026-10-11)
 
 ### Ctrl/⌘+click opens links (DEF-1927)
