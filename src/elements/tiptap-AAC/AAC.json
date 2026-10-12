@@ -2674,6 +2674,34 @@
       "name": "insert_file_links",
       "rank": 7.5,
       "value": "boolean"
+    },
+    "code_highlight": {
+      "caption": "Syntax highlighting",
+      "default_val": false,
+      "doc": "Colours code in code blocks (37 common languages: JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change.",
+      "editor": "Checkbox",
+      "name": "code_highlight",
+      "rank": 82.1,
+      "value": "boolean"
+    },
+    "code_highlight_theme": {
+      "caption": "Code highlighting theme",
+      "default_val": "GitHub",
+      "doc": "Colour scheme for highlighted code blocks, from highlight.js. None: no colours from the plugin; style the hljs-* classes yourself with Code highlighting CSS override.",
+      "editor": "Dropdown",
+      "name": "code_highlight_theme",
+      "options": "GitHub,GitHub Dark,Atom One Light,Atom One Dark,Monokai,Nord,Stack Overflow Light,Tokyo Night Dark,None",
+      "rank": 82.2
+    },
+    "code_highlight_adv": {
+      "caption": "Code highlighting CSS override",
+      "doc": "CSS rules for highlighted code blocks, applied after the theme. Rules are relative to the code block: .hljs-keyword { color: #c00; } styles keywords, & { background: #fafafa; } styles the block itself. Token classes include hljs-keyword, hljs-string, hljs-comment, hljs-number, hljs-title, hljs-built_in. — Tip: use an 'arbitrary text' value for more room.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "code_highlight_adv",
+      "optional": true,
+      "rank": 82.3,
+      "value": "text"
     }
   },
   "has_reset_fn": false,
