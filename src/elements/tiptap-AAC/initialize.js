@@ -2833,8 +2833,13 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             } else {
                 // The range this insert covers, from its own mapping: Tiptap may replace more than
                 // the drop point (a block dropped on an empty line replaces that line).
+                // Includes appended transactions (e.g. Emoji turning characters into nodes).
                 let mapping = null;
-                const grab = ({ transaction }) => { if (transaction.docChanged && !mapping) mapping = transaction.mapping; };
+                const grab = ({ transaction, appendedTransactions = [] }) => {
+                    if (!transaction.docChanged || mapping) return;
+                    const trs = [transaction, ...appendedTransactions];
+                    mapping = { map: (at, assoc) => trs.reduce((q, t) => t.mapping.map(q, assoc), at) };
+                };
                 editor.on("transaction", grab);
                 try {
                     editor.commands.insertContentAt(pos, content);
@@ -3146,9 +3151,9 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             }
             instance.data._autobindingSave.resume(instance.data._pendingRebuildSave);
             delete instance.data._pendingRebuildSave;
+            instance.publishState("files_uploading", instance.data.uploadsInFlight || 0);
             instance.triggerEvent("is_ready");
             instance.publishState("is_ready", true);
-            instance.publishState("files_uploading", instance.data.uploadsInFlight || 0);
 
             instance.publishState("contentHTML", editor.getHTML());
             instance.publishState("contentText", editor.getText());
