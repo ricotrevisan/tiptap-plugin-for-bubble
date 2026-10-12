@@ -4,7 +4,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
-## v4.18.1 (proposed, unreleased)
+## v4.18.1 (2026-10-12)
 
 ### Upload chip in an empty editor (DEF-1927)
 
