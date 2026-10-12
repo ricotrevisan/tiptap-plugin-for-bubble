@@ -2770,22 +2770,26 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         if (!placeholders || editor.isDestroyed) return;
         try {
             editor.view.dispatch(editor.state.tr.setMeta(placeholderKey, action).setMeta("addToHistory", false));
-            const binding = ySyncBinding(editor.state);
-            const items = placeholderKey.getState(editor.state) || [];
-            if (binding && items.length && !action.rels) {
-                const rels = {};
-                for (const item of items) {
-                    try {
-                        rels[item.id] = absolutePositionToRelativePosition(item.pos, binding.type, binding.mapping);
-                    } catch (error) {
-                        rels[item.id] = null;
-                    }
-                }
-                editor.view.dispatch(editor.state.tr.setMeta(placeholderKey, { rels }).setMeta("addToHistory", false));
-            }
+            if (!action.update) refreshPlaceholderRels(editor);
         } catch (error) {
             instance.data.debug("upload placeholder:", error.message);
         }
+    }
+
+    function refreshPlaceholderRels(editor) {
+        if (!placeholders || editor.isDestroyed) return;
+        const binding = ySyncBinding(editor.state);
+        const items = placeholderKey.getState(editor.state) || [];
+        if (!binding || !items.length) return;
+        const rels = {};
+        for (const item of items) {
+            try {
+                rels[item.id] = absolutePositionToRelativePosition(item.pos, binding.type, binding.mapping);
+            } catch (error) {
+                rels[item.id] = null;
+            }
+        }
+        editor.view.dispatch(editor.state.tr.setMeta(placeholderKey, { rels }).setMeta("addToHistory", false));
     }
 
     // Uploads in flight across this element (and its rebuilds): published as Files uploading,
@@ -2827,11 +2831,21 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 if (isImage) editor.commands.setImage({ src: url });
                 else editor.commands.insertContent(content);
             } else {
-                const before = editor.state.doc.content.size;
-                editor.commands.insertContentAt(pos, content);
+                // The range this insert covers, from its own mapping: Tiptap may replace more than
+                // the drop point (a block dropped on an empty line replaces that line).
+                let mapping = null;
+                const grab = ({ transaction }) => { if (transaction.docChanged && !mapping) mapping = transaction.mapping; };
+                editor.on("transaction", grab);
+                try {
+                    editor.commands.insertContentAt(pos, content);
+                } finally {
+                    editor.off("transaction", grab);
+                }
+                const from = mapping ? mapping.map(pos, -1) : pos;
+                const to = mapping ? mapping.map(pos, 1) : pos;
                 // The next file of this drop goes after this one.
-                drop.pos = pos + (editor.state.doc.content.size - before);
-                return { from: pos, to: drop.pos };
+                drop.pos = to;
+                return { from, to };
             }
         } catch (error) {
             context.reportDebugger("Could not insert the uploaded file " + file.name + ": " + error.message);
@@ -2940,8 +2954,24 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         const messages = refused.length ? [refused.map((file) => '"' + file.name + '"').join(", ") + " can't be added here."] : [];
         // The drop position, mapped through every change made while the uploads run.
         const drop = { pos };
+        let refreshQueued = false;
         const track = ({ transaction }) => {
-            if (typeof drop.pos === "number" && transaction.docChanged) drop.pos = transaction.mapping.map(drop.pos);
+            if (!transaction.docChanged) return;
+            if (typeof drop.pos === "number") drop.pos = transaction.mapping.map(drop.pos);
+            // Local edits (not remote ones, which are resolved from the Yjs positions) can move a
+            // chip in ways Yjs positions don't follow, e.g. splitting its paragraph: refresh them
+            // once this dispatch is done.
+            if (ySyncPluginKey && !transaction.getMeta(ySyncPluginKey)?.isChangeOrigin && !refreshQueued) {
+                refreshQueued = true;
+                queueMicrotask(() => {
+                    refreshQueued = false;
+                    try {
+                        refreshPlaceholderRels(editor);
+                    } catch (error) {
+                        instance.data.debug("upload placeholder:", error.message);
+                    }
+                });
+            }
         };
         if (accepted.length) editor.on("transaction", track);
         try {
@@ -3118,6 +3148,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
             delete instance.data._pendingRebuildSave;
             instance.triggerEvent("is_ready");
             instance.publishState("is_ready", true);
+            instance.publishState("files_uploading", instance.data.uploadsInFlight || 0);
 
             instance.publishState("contentHTML", editor.getHTML());
             instance.publishState("contentText", editor.getText());
