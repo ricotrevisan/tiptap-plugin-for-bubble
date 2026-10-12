@@ -136,6 +136,11 @@ try {
             pointer-events: none;
         }
 
+        /* No placeholder text next to an upload chip. */
+        p.is-editor-empty:has(.tiptap-upload-placeholder)::before {
+            content: none;
+        }
+
         mark {
 	        ${properties.mark_adv || ""}
         }
@@ -2957,7 +2962,14 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         const accepted = files.filter(uploadable);
         const refused = files.filter((file) => !accepted.includes(file));
         const messages = refused.length ? [refused.map((file) => '"' + file.name + '"').join(", ") + " can't be added here."] : [];
-        // The drop position, mapped through every change made while the uploads run.
+        // The drop position, mapped through every change made while the uploads run. A drop
+        // just before a paragraph (e.g. into an empty editor) goes into that paragraph, so the
+        // chip and file land inside it. Never into a code block.
+        if (typeof pos === "number" && pos <= editor.state.doc.content.size) {
+            const $pos = editor.state.doc.resolve(pos);
+            const next = $pos.nodeAfter;
+            if (!$pos.parent.inlineContent && next?.isTextblock && !next.type.spec.code) pos += 1;
+        }
         const drop = { pos };
         let refreshQueued = false;
         const track = ({ transaction }) => {

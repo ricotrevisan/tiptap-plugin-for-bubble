@@ -4,6 +4,13 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.18.1 (proposed, unreleased)
+
+### Upload chip in an empty editor (DEF-1927)
+
+- A file dropped between blocks (e.g. into an empty editor, before its first paragraph) now lands inside the neighbouring paragraph, and its upload chip shows there.
+- The empty-editor placeholder text no longer overlaps an upload chip.
+
 ## v4.18.0 (2026-10-12)
 
 ### Upload feedback (DEF-1927)
