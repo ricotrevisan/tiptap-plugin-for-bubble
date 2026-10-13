@@ -65,9 +65,24 @@ try {
 
     // Reusable function to populate the editor stylesheet.
     // Called from update.js on every property change and from the collab retry path.
+    // Rules typed into an override must not close the editor's scope early.
+    const balancedCss = (css) => {
+        if (!css) return false;
+        let depth = 0;
+        for (const ch of css) {
+            if (ch === "{") depth++;
+            else if (ch === "}" && --depth < 0) return false;
+        }
+        return depth === 0;
+    };
+
     instance.data.applyStylesheet = function (properties) {
+        const codeHighlight = properties.code_highlight && properties.ext_codeblock !== false;
+        const codeTheme = codeHighlight ? (window.tiptap?.codeThemes || {})[properties.code_highlight_theme || "GitHub"] || "" : "";
         instance.data.stylesheet.innerHTML = `
 #tiptapEditor-${instance.data.randomId} {
+
+    ${codeTheme}
 
     .ProseMirror {
 
@@ -378,6 +393,9 @@ try {
         user-select: none;
         white-space: nowrap;
     }
+
+    /* Code highlighting override: relative to the code block and after the theme, so it wins at equal specificity. */
+    ${codeHighlight && balancedCss(properties.code_highlight_adv) ? ".ProseMirror pre {\n" + properties.code_highlight_adv + "\n}" : ""}
 
     /* Last, so the override also wins for &:hover and &:active. */
     .tiptap-drag-handle {
@@ -1973,6 +1991,9 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Heading,
         Blockquote,
         CodeBlock,
+        CodeBlockHighlight,
+        lowlight,
+        codeThemes,
         HorizontalRule,
         BulletList,
         OrderedList,
@@ -2209,13 +2230,20 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
 
     if (properties.ext_highlight) extensions.push(Highlight.configure({ multicolor: properties.highlight_multicolor !== false }));
     if (properties.ext_underline) extensions.push(Underline);
-    if (properties.ext_codeblock) extensions.push(CodeBlock.configure({
-        exitOnTripleEnter: properties.codeblock_exitOnTripleEnter !== false,
-        exitOnArrowDown: properties.codeblock_exitOnArrowDown !== false,
-        defaultLanguage: properties.codeblock_defaultLanguage || null,
-        enableTabIndentation: properties.codeblock_tabIndentation || false,
-        tabSize: properties.codeblock_tabSize || 4,
-    }));
+    if (properties.ext_codeblock) {
+        const codeBlockOptions = {
+            exitOnTripleEnter: properties.codeblock_exitOnTripleEnter !== false,
+            exitOnArrowDown: properties.codeblock_exitOnArrowDown !== false,
+            defaultLanguage: properties.codeblock_defaultLanguage || null,
+            enableTabIndentation: properties.codeblock_tabIndentation || false,
+            tabSize: properties.codeblock_tabSize || 4,
+        };
+        // Syntax highlighting colours code with decorations only; the saved HTML is the same.
+        // Needs lowlight from the runtime bundle; without it, plain code blocks.
+        extensions.push(properties.code_highlight && CodeBlockHighlight
+            ? CodeBlockHighlight.configure(codeBlockOptions)
+            : CodeBlock.configure(codeBlockOptions));
+    }
     if (properties.ext_code) extensions.push(Code);
     if (properties.ext_blockquote) extensions.push(Blockquote);
     if (properties.ext_horizontalrule) extensions.push(HorizontalRule);
