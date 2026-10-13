@@ -12,6 +12,10 @@
       "name": "2.11.2-resize_image",
       "url": "//meta-q.cdn.bubble.io/f1740299743780x981628697617822600/dist.js"
     },
+    "AIB": {
+      "name": "dist-v4.19.1-def1927-9ac5742e5a81.js",
+      "url": "//meta-q.cdn.bubble.io/f1791892462534x996319805744319000/dist-v4.19.1-def1927-9ac5742e5a81.js"
+    },
     "AHS": {
       "name": "dist-v4.11.1-wtf262-bdd8b03533e2.js",
       "url": "//meta-q.cdn.bubble.io/f1790340793329x711759839404912300/dist-v4.11.1-wtf262-bdd8b03533e2.js"
@@ -3040,7 +3044,7 @@
         "code_highlight": {
           "caption": "Syntax highlighting",
           "default_val": false,
-          "doc": "Colours code in code blocks (37 common languages: JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change. Setting a language is faster than detection; blocks over 2,000 characters without a language, and blocks in an unknown language (e.g. mermaid), stay plain.",
+          "doc": "Colours code in code blocks (38 languages: Elixir, JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change. Setting a language is faster than detection; blocks over 2,000 characters without a language, and blocks in an unknown language (e.g. mermaid), stay plain.",
           "editor": "Checkbox",
           "name": "code_highlight",
           "rank": 82.1,
@@ -3286,7 +3290,7 @@
       },
       "has_reset_fn": false,
       "headers": {
-        "snippet": "<script src=\"//meta-q.cdn.bubble.io/f1791856452052x237434620534848770/dist-v4.19.0-def1927-0e5bb252d43d.js\" defer></script>\n\n<script\n    src=\"https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js\"\n    integrity=\"sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=\"\n    crossorigin=\"anonymous\"\n    defer\n></script>\n\n<!-- Tippy styles -->\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/light-border.min.css\"\n    integrity=\"sha512-DiG+GczLaoJczcpFjhVy4sWA1rheh0I6zmlEc+ax7vrq2y/qTg80RtxDOueLcwBrC80IsiQapIgTi++lcGHPLg==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/light.min.css\"\n    integrity=\"sha512-zpbTFOStBclqD3+SaV5Uz1WAKh9d2/vOtaFYpSLkosymyJKnO+M4vu2CK2U4ZjkRCJ7+RvLnISpNrCfJki5JXA==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/material.min.css\"\n    integrity=\"sha512-R8oUfFYCO11afzYKUhovrP+cajy9JF0iRRHbuk16gPYstVj9McxsE/D8wnH2l0aBKuhnkAd6VMLiTFV1Bp+zKA==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/translucent.min.css\"\n    integrity=\"sha512-MkXwkRGjkxAMeA0Kma3nhRs2CxojMPMv5kgP+y9OcIQkXOTPGyxmjPPddHPov59evYXjcC5B5hM4yUQ5n49Yog==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n"
+        "snippet": "<script src=\"//meta-q.cdn.bubble.io/f1791892462534x996319805744319000/dist-v4.19.1-def1927-9ac5742e5a81.js\" defer></script>\n\n<script\n    src=\"https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js\"\n    integrity=\"sha256-qXBd/EfAdjOA2FGrGAG+b3YBn2tn5A6bhz+LSgYD96k=\"\n    crossorigin=\"anonymous\"\n    defer\n></script>\n\n<!-- Tippy styles -->\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/light-border.min.css\"\n    integrity=\"sha512-DiG+GczLaoJczcpFjhVy4sWA1rheh0I6zmlEc+ax7vrq2y/qTg80RtxDOueLcwBrC80IsiQapIgTi++lcGHPLg==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/light.min.css\"\n    integrity=\"sha512-zpbTFOStBclqD3+SaV5Uz1WAKh9d2/vOtaFYpSLkosymyJKnO+M4vu2CK2U4ZjkRCJ7+RvLnISpNrCfJki5JXA==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/material.min.css\"\n    integrity=\"sha512-R8oUfFYCO11afzYKUhovrP+cajy9JF0iRRHbuk16gPYstVj9McxsE/D8wnH2l0aBKuhnkAd6VMLiTFV1Bp+zKA==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n<link\n    rel=\"stylesheet\"\n    href=\"https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/themes/translucent.min.css\"\n    integrity=\"sha512-MkXwkRGjkxAMeA0Kma3nhRs2CxojMPMv5kgP+y9OcIQkXOTPGyxmjPPddHPov59evYXjcC5B5hM4yUQ5n49Yog==\"\n    crossorigin=\"anonymous\"\n    referrerpolicy=\"no-referrer\"\n/>\n"
       },
       "icon": "ion-chatbox-working",
       "property_applications": {
