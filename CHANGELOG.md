@@ -4,6 +4,10 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.19.1 (proposed, unreleased)
+
+- Syntax highlighting adds **Elixir** (```` ```elixir ````, ```` ```ex ```` or ```` ```exs ````). Runtime bundle `dist-v4.19.1-def1927-9ac5742e5a81.js` (+1 KB gzipped). HEEx templates are not highlighted (highlight.js has no HEEx grammar).
+
 ## v4.19.0 (2026-10-13)
 
 ### Syntax highlighting for code blocks (DEF-1927)
