@@ -65,6 +65,17 @@ try {
 
     // Reusable function to populate the editor stylesheet.
     // Called from update.js on every property change and from the collab retry path.
+    // Rules typed into an override must not close the editor's scope early.
+    const balancedCss = (css) => {
+        if (!css) return false;
+        let depth = 0;
+        for (const ch of css) {
+            if (ch === "{") depth++;
+            else if (ch === "}" && --depth < 0) return false;
+        }
+        return depth === 0;
+    };
+
     instance.data.applyStylesheet = function (properties) {
         const codeHighlight = properties.code_highlight && properties.ext_codeblock !== false;
         const codeTheme = codeHighlight ? (window.tiptap?.codeThemes || {})[properties.code_highlight_theme || "GitHub"] || "" : "";
@@ -383,8 +394,8 @@ try {
         white-space: nowrap;
     }
 
-    /* Code highlighting override: relative to the code block and after the theme, so it wins. */
-    ${codeHighlight && properties.code_highlight_adv ? ".ProseMirror pre {\n" + properties.code_highlight_adv + "\n}" : ""}
+    /* Code highlighting override: relative to the code block and after the theme, so it wins at equal specificity. */
+    ${codeHighlight && balancedCss(properties.code_highlight_adv) ? ".ProseMirror pre {\n" + properties.code_highlight_adv + "\n}" : ""}
 
     /* Last, so the override also wins for &:hover and &:active. */
     .tiptap-drag-handle {
@@ -1980,7 +1991,7 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         Heading,
         Blockquote,
         CodeBlock,
-        CodeBlockLowlight,
+        CodeBlockHighlight,
         lowlight,
         codeThemes,
         HorizontalRule,
@@ -2229,8 +2240,8 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
         };
         // Syntax highlighting colours code with decorations only; the saved HTML is the same.
         // Needs lowlight from the runtime bundle; without it, plain code blocks.
-        extensions.push(properties.code_highlight && CodeBlockLowlight && lowlight
-            ? CodeBlockLowlight.configure({ ...codeBlockOptions, lowlight })
+        extensions.push(properties.code_highlight && CodeBlockHighlight
+            ? CodeBlockHighlight.configure(codeBlockOptions)
             : CodeBlock.configure(codeBlockOptions));
     }
     if (properties.ext_code) extensions.push(Code);
