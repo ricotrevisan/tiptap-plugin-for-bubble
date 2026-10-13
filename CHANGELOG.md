@@ -8,13 +8,13 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ### Syntax highlighting for code blocks (DEF-1927)
 
-- New **Syntax highlighting** checkbox (off by default). Code blocks are coloured for 37 common languages (JavaScript, TypeScript, Python, SQL, JSON, HTML/XML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, Swift, Kotlin, YAML, Markdown and more). Type the language after ```, e.g. ```python, or set **Default language**; blocks without a language are detected (up to 5,000 characters; larger ones stay plain).
+- New **Syntax highlighting** checkbox (off by default). Code blocks are coloured for 37 common languages (JavaScript, TypeScript, Python, SQL, JSON, HTML/XML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, Swift, Kotlin, YAML, Markdown and more). Type the language after ```, e.g. ```python, or set **Default language**; blocks without a language are detected (up to 2,000 characters; larger ones, and blocks in a language it doesn't know, stay plain).
 - **Code highlighting theme**: GitHub (default), GitHub Dark, Atom One Light, Atom One Dark, Monokai, Nord, Stack Overflow Light, Tokyo Night Dark, or None to style it yourself.
 - **Code highlighting CSS override**: rules relative to the code block, applied after the theme (`.hljs-comment { … }`, `& { background: … }`).
 - Colours are display only: the saved HTML, collaboration and webhooks are unchanged.
-- Own highlighting plugin instead of upstream CodeBlockLowlight's: re-colours any code change (also Replace all and inserts while the cursor is outside code) and caches results by language and text, so unchanged blocks cost nothing per keystroke.
+- Own highlighting plugin instead of upstream CodeBlockLowlight's: re-colours exactly the code blocks that changed (also Replace all and inserts while the cursor is outside code) and leaves the others' colours in place, so typing outside code costs nothing extra; results are cached by language and text (about 2 MB) for collaboration.
 - Override rules with unbalanced braces are ignored, so they cannot break the editor's stylesheet.
-- Runtime bundle `dist-v4.19.0-def1927-18b4356655b5.js`: adds lowlight with highlight.js's common languages and the eight themes (+47 KB gzipped).
+- Runtime bundle `dist-v4.19.0-def1927-0e5bb252d43d.js`: adds lowlight with highlight.js's common languages and the eight themes (+47 KB gzipped).
 
 ## v4.18.1 (2026-10-12)
 

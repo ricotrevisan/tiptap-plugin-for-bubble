@@ -2678,7 +2678,7 @@
     "code_highlight": {
       "caption": "Syntax highlighting",
       "default_val": false,
-      "doc": "Colours code in code blocks (37 common languages: JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change. Setting a language is faster than detection; blocks over 5,000 characters without a language stay plain.",
+      "doc": "Colours code in code blocks (37 common languages: JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change. Setting a language is faster than detection; blocks over 2,000 characters without a language, and blocks in an unknown language (e.g. mermaid), stay plain.",
       "editor": "Checkbox",
       "name": "code_highlight",
       "rank": 82.1,
