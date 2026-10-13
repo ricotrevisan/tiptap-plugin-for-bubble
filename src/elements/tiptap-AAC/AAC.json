@@ -58,6 +58,20 @@
       "caption": "Unset line height",
       "doc": "Removes the line height from the current selection, reverting to the default."
     },
+    "insert_block_math": {
+      "caption": "Insert block math",
+      "doc": "Inserts a formula as its own centered block at the cursor. Needs Mathematics on.",
+      "fields": {
+        "insert_block_math_latex": {
+          "caption": "LaTeX",
+          "doc": "The formula, for example \\sum_{i=1}^n i. Without dollar signs.",
+          "editor": "DynamicValue",
+          "name": "latex",
+          "rank": 0,
+          "value": "text"
+        }
+      }
+    },
     "ABH": {
       "caption": "Indent item",
       "doc": "sink list item"
@@ -125,6 +139,10 @@
     "ACw": {
       "caption": "Table delete row"
     },
+    "clear_highlight": {
+      "caption": "Clear Highlight",
+      "doc": "Removes the highlight from the current selection. Other formatting, such as bold or text color, stays."
+    },
     "AAv": {
       "caption": "H2",
       "doc": ""
@@ -135,6 +153,20 @@
     },
     "ACz": {
       "caption": "Table merge cells"
+    },
+    "insert_emoji": {
+      "caption": "Insert emoji",
+      "doc": "Inserts an inline emoji at the cursor. Enter a known emoji name or shortcode, for example smile or :smile:. Needs Emoji on; a picker is not included.",
+      "fields": {
+        "insert_emoji_name": {
+          "caption": "Emoji name or shortcode",
+          "doc": "For example smile or :smile:. Unicode characters can be typed directly into the editor instead.",
+          "editor": "DynamicValue",
+          "name": "emoji_name",
+          "rank": 0,
+          "value": "text"
+        }
+      }
     },
     "ABC": {
       "caption": "Bullet list"
@@ -232,6 +264,14 @@
         }
       }
     },
+    "blur": {
+      "caption": "Blur",
+      "doc": "Removes focus from the editor without changing its content or selection. The editor's \"isn't focused\" event fires and \"is focused\" becomes no."
+    },
+    "delete_math": {
+      "caption": "Delete math",
+      "doc": "Deletes the selected formula (inline or block). Does nothing when no formula is selected. Needs Mathematics on."
+    },
     "AGU": {
       "caption": "Unset all marks"
     },
@@ -300,6 +340,20 @@
           "name": "parseOptions_preserveWhitespace",
           "options": "true,false,'full'",
           "rank": 2
+        }
+      }
+    },
+    "insert_inline_math": {
+      "caption": "Insert inline math",
+      "doc": "Inserts a formula at the cursor, inside the line of text. If text is selected, the formula goes before it; the text stays. Needs Mathematics on.",
+      "fields": {
+        "insert_inline_math_latex": {
+          "caption": "LaTeX",
+          "doc": "The formula, for example x^2 or \\frac{a}{b}. Without dollar signs.",
+          "editor": "DynamicValue",
+          "name": "latex",
+          "rank": 0,
+          "value": "text"
         }
       }
     },
@@ -566,52 +620,6 @@
         }
       }
     },
-    "ABK": {
-      "caption": "Blockquote",
-      "doc": ""
-    },
-    "insert_emoji": {
-      "caption": "Insert emoji",
-      "doc": "Inserts an inline emoji at the cursor. Enter a known emoji name or shortcode, for example smile or :smile:. Needs Emoji on; a picker is not included.",
-      "fields": {
-        "insert_emoji_name": {
-          "caption": "Emoji name or shortcode",
-          "doc": "For example smile or :smile:. Unicode characters can be typed directly into the editor instead.",
-          "editor": "DynamicValue",
-          "name": "emoji_name",
-          "rank": 0,
-          "value": "text"
-        }
-      }
-    },
-    "insert_inline_math": {
-      "caption": "Insert inline math",
-      "doc": "Inserts a formula at the cursor, inside the line of text. If text is selected, the formula goes before it; the text stays. Needs Mathematics on.",
-      "fields": {
-        "insert_inline_math_latex": {
-          "caption": "LaTeX",
-          "doc": "The formula, for example x^2 or \\frac{a}{b}. Without dollar signs.",
-          "editor": "DynamicValue",
-          "name": "latex",
-          "rank": 0,
-          "value": "text"
-        }
-      }
-    },
-    "insert_block_math": {
-      "caption": "Insert block math",
-      "doc": "Inserts a formula as its own centered block at the cursor. Needs Mathematics on.",
-      "fields": {
-        "insert_block_math_latex": {
-          "caption": "LaTeX",
-          "doc": "The formula, for example \\sum_{i=1}^n i. Without dollar signs.",
-          "editor": "DynamicValue",
-          "name": "latex",
-          "rank": 0,
-          "value": "text"
-        }
-      }
-    },
     "update_math": {
       "caption": "Update math",
       "doc": "Replaces the LaTeX of the selected formula (inline or block), for example from your edit popup after Math clicked. Does nothing when no formula is selected. Needs Mathematics on.",
@@ -626,17 +634,9 @@
         }
       }
     },
-    "delete_math": {
-      "caption": "Delete math",
-      "doc": "Deletes the selected formula (inline or block). Does nothing when no formula is selected. Needs Mathematics on."
-    },
-    "clear_highlight": {
-      "caption": "Clear Highlight",
-      "doc": "Removes the highlight from the current selection. Other formatting, such as bold or text color, stays."
-    },
-    "blur": {
-      "caption": "Blur",
-      "doc": "Removes focus from the editor without changing its content or selection. The editor's \"isn't focused\" event fires and \"is focused\" becomes no."
+    "ABK": {
+      "caption": "Blockquote",
+      "doc": ""
     }
   },
   "add_hover_pressed": true,
@@ -652,16 +652,6 @@
   },
   "display": "Tiptap",
   "events": {
-    "mention_created": {
-      "caption": "Mention created",
-      "name": "mention_created",
-      "doc": "Fires once when a user picks someone from the mention list and the mention is added. Read Created mention ID, Created mention label and Created mention trigger character in this event. Does not fire for pasted or dropped mentions, undo/redo, initial content, Set content, autobinding loads, resets, or changes from other collaborators. Picking the same person again fires again."
-    },
-    "image_deleted": {
-      "caption": "Image deleted",
-      "name": "image_deleted",
-      "doc": "Fires once per edit when one or more image URLs lose their last reference in this document. Read Removed image URLs in this event. Covers loaded and inserted images, keyboard and multi-image edits, undo insertion and redo deletion. Undo restoring an image does not fire. Undo/redo are evaluated as edits, even when history crosses a previous Set content or Clear contents action. Set content, Clear contents, initial content changes, record switches, resets and rebuilds do not fire. Yjs-origin changes (remote collaboration and collaborative undo/redo) do not fire. Notification only: no stored file is deleted. Do not delete shared files from this event without checking other documents, collaborators and undo history."
-    },
     "ABl": {
       "caption": "is focused",
       "name": "isFocused"
@@ -698,41 +688,32 @@
       "caption": "Collaboration synced",
       "name": "collab_synced"
     },
-    "table_of_contents_updated": {
-      "caption": "Table of contents updated",
-      "name": "table_of_contents_updated"
+    "image_deleted": {
+      "caption": "Image deleted",
+      "doc": "Fires once per edit when one or more image URLs lose their last reference in this document. Read Removed image URLs in this event. Covers loaded and inserted images, keyboard and multi-image edits, undo insertion and redo deletion. Undo restoring an image does not fire. Undo/redo are evaluated as edits, even when history crosses a previous Set content or Clear contents action. Set content, Clear contents, initial content changes, record switches, resets and rebuilds do not fire. Yjs-origin changes (remote collaboration and collaborative undo/redo) do not fire. Notification only: no stored file is deleted. Do not delete shared files from this event without checking other documents, collaborators and undo history.",
+      "name": "image_deleted"
     },
     "math_clicked": {
       "caption": "Math clicked",
       "doc": "Fires when a user clicks a formula in an editable editor. The formula is then selected, and Selected math LaTeX and Selected math type are already set, so show your edit popup and run Update math or Delete math. Does not fire in read-only mode.",
       "name": "math_clicked"
     },
+    "mention_created": {
+      "caption": "Mention created",
+      "doc": "Fires once when a user picks someone from the mention list and the mention is added. Read Created mention ID, Created mention label and Created mention trigger character in this event. Does not fire for pasted or dropped mentions, undo/redo, initial content, Set content, autobinding loads, resets, or changes from other collaborators. Picking the same person again fires again.",
+      "name": "mention_created"
+    },
+    "table_of_contents_updated": {
+      "caption": "Table of contents updated",
+      "name": "table_of_contents_updated"
+    },
     "upload_started": {
       "caption": "Upload started",
-      "name": "upload_started",
-      "doc": "Fires when a drop or paste starts uploading one or more files. Read Files uploading for how many are in progress; File is uploaded and File upload error fire as they finish."
+      "doc": "Fires when a drop or paste starts uploading one or more files. Read Files uploading for how many are in progress; File is uploaded and File upload error fire as they finish.",
+      "name": "upload_started"
     }
   },
   "fields": {
-    "autobinding_save_delay": {
-      "caption": "Autobinding save delay",
-      "name": "autobinding_save_delay",
-      "editor": "DynamicValue",
-      "value": "number",
-      "optional": true,
-      "default_val": 2200,
-      "rank": 4.6,
-      "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding."
-    },
-    "autobinding_record_id": {
-      "caption": "Autobinding record ID",
-      "name": "autobinding_record_id",
-      "editor": "DynamicValue",
-      "value": "text",
-      "optional": true,
-      "rank": 4.5,
-      "doc": "For an autobound editor that switches records, bind this to the same parent Thing's unique ID. A change cancels the previous record's pending edit and loads the new record, even when their text is identical. To save the final pending edit, keep the old Thing bound until Content updated fires before switching. This event means the save was submitted, not that the database confirmed it. Leave blank for an editor permanently bound to one record."
-    },
     "AGH": {
       "caption": "Element types",
       "default_val": "heading, paragraph",
@@ -824,6 +805,15 @@
       "name": "link_rel",
       "optional": true,
       "rank": 113,
+      "value": "text"
+    },
+    "autobinding_record_id": {
+      "caption": "Autobinding record ID",
+      "doc": "For an autobound editor that switches records, bind this to the same parent Thing's unique ID. A change cancels the previous record's pending edit and loads the new record, even when their text is identical. To save the final pending edit, keep the old Thing bound until Content updated fires before switching. This event means the save was submitted, not that the database confirmed it. Leave blank for an editor permanently bound to one record.",
+      "editor": "DynamicValue",
+      "name": "autobinding_record_id",
+      "optional": true,
+      "rank": 4.5,
       "value": "text"
     },
     "ADy": {
@@ -1131,6 +1121,16 @@
       "rank": 109,
       "value": "boolean"
     },
+    "AEO": {
+      "caption": "Doc Server ID (dynamic)",
+      "default_val": "",
+      "doc": "Optional. Same Tiptap Cloud or custom app id as 'Doc Server ID', but this one accepts an expression, so one Bubble app can use a different app id per environment (for example a Test app id and a Live app id). Leave it empty to use the static 'Doc Server ID'. When it is not empty it wins. Changing it reconnects the editor to the new app id.",
+      "editor": "DynamicValue",
+      "name": "collab_app_id_dynamic",
+      "optional": true,
+      "rank": 211.5,
+      "value": "text"
+    },
     "ext_blockquote": {
       "caption": "Blockquote",
       "default_val": true,
@@ -1418,6 +1418,12 @@
       "rank": 88,
       "value": "text"
     },
+    "ext_math_label": {
+      "caption": "----- Mathematics (LaTeX) -----",
+      "editor": "Label",
+      "name": "ext_math_label",
+      "rank": 202
+    },
     "ACS": {
       "caption": "Floating menu",
       "doc": "ID of the group that holds the Floating Menu. This menu shows up on an empty line.",
@@ -1426,6 +1432,15 @@
       "optional": true,
       "rank": 143,
       "value": "text"
+    },
+    "ext_emoji": {
+      "caption": "Emoji",
+      "default_val": false,
+      "doc": "Turns :smile: and other known shortcodes into inline emoji nodes. Use Insert emoji in a workflow with a name like smile; no picker is included. Uses images from the emoji catalog when a device cannot display a character (requires an external image host). Off by default; the extension is still in the downloaded editor bundle. With collaboration, turn this on in every editor that opens the same document: an editor with Emoji off may remove emoji nodes from the shared document.",
+      "editor": "DynamicValue",
+      "name": "ext_emoji",
+      "rank": 203.2,
+      "value": "boolean"
     },
     "ADg": {
       "caption": "Link color",
@@ -1613,16 +1628,6 @@
       "name": "collab_app_id",
       "optional": true,
       "rank": 211
-    },
-    "AEO": {
-      "caption": "Doc Server ID (dynamic)",
-      "default_val": "",
-      "doc": "Optional. Same Tiptap Cloud or custom app id as 'Doc Server ID', but this one accepts an expression, so one Bubble app can use a different app id per environment (for example a Test app id and a Live app id). Leave it empty to use the static 'Doc Server ID'. When it is not empty it wins. Changing it reconnects the editor to the new app id.",
-      "editor": "DynamicValue",
-      "name": "collab_app_id_dynamic",
-      "optional": true,
-      "rank": 211.5,
-      "value": "text"
     },
     "ext_preserve_label": {
       "caption": "----- Preserve Attributes -----",
@@ -1822,6 +1827,16 @@
       "editor": "StaticText",
       "name": "collab_url",
       "rank": 210
+    },
+    "code_highlight_adv": {
+      "caption": "Code highlighting CSS override",
+      "doc": "CSS rules for highlighted code blocks, applied after the theme. Rules are relative to the code block: .hljs-keyword { color: #c00; } styles keywords, & { background: #fafafa; } styles the block itself. Token classes include hljs-keyword, hljs-string, hljs-comment, hljs-number, hljs-title, hljs-built_in. Some themes style tokens with more specific selectors (e.g. .hljs-meta .hljs-keyword); match those to override them. Rules with unbalanced braces are ignored. — Tip: use an 'arbitrary text' value for more room.",
+      "editor": "DynamicValue",
+      "long_text": false,
+      "name": "code_highlight_adv",
+      "optional": true,
+      "rank": 82.3,
+      "value": "text"
     },
     "h6_info": {
       "caption": "     ----- H6 styling -----",
@@ -2082,6 +2097,16 @@
       "name": "h5_size",
       "rank": 59
     },
+    "autobinding_save_delay": {
+      "caption": "Autobinding save delay",
+      "default_val": 2200,
+      "doc": "Milliseconds to wait after the last edit before saving an autobound document. Default: 2200. A longer delay combines typing into fewer writes; zero submits immediately. Blur flushes pending edits. Content updated fires when an edit is submitted; correcting an older save response does not fire it again. Editor states update immediately. This setting applies only to autobinding.",
+      "editor": "DynamicValue",
+      "name": "autobinding_save_delay",
+      "optional": true,
+      "rank": 4.6,
+      "value": "number"
+    },
     "AFQ": {
       "caption": "Focused link CSS override",
       "doc": "Inject custom CSS for focused links (a:focus). — Tip: use an 'arbitrary text' value for more room to write CSS.",
@@ -2100,6 +2125,12 @@
       "optional": true,
       "rank": 208,
       "value": "text"
+    },
+    "ext_emoji_label": {
+      "caption": "----- Emoji -----",
+      "editor": "Label",
+      "name": "ext_emoji_label",
+      "rank": 203.1
     },
     "ext_selection": {
       "caption": "Selection",
@@ -2273,6 +2304,15 @@
       "rank": 149,
       "value": "boolean"
     },
+    "ext_math": {
+      "caption": "Mathematics",
+      "default_val": false,
+      "doc": "Shows LaTeX formulas, inline (in a line of text) or as their own block. Type $$x^2$$ for an inline formula, or $$$x^2$$$ on an empty line for a block. Clicking a formula selects it and fires Math clicked, so you can edit it in your own popup with Update math. Formulas are saved in the HTML with their LaTeX. Off by default; when off, no math files are loaded. With collaboration, turn it on in every editor that opens the same document: an editor with Mathematics off removes the formulas from the shared document for everyone.",
+      "editor": "DynamicValue",
+      "name": "ext_math",
+      "rank": 203,
+      "value": "boolean"
+    },
     "ADW": {
       "caption": "paragraph",
       "editor": "Label",
@@ -2416,6 +2456,15 @@
       "optional": true,
       "rank": 201,
       "value": "text"
+    },
+    "code_highlight": {
+      "caption": "Syntax highlighting",
+      "default_val": false,
+      "doc": "Colours code in code blocks (38 languages: Elixir, JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change. Setting a language is faster than detection; blocks over 2,000 characters without a language, and blocks in an unknown language (e.g. mermaid), stay plain.",
+      "editor": "Checkbox",
+      "name": "code_highlight",
+      "rank": 82.1,
+      "value": "boolean"
     },
     "table_handleWidth": {
       "caption": "Resize handle width",
@@ -2626,45 +2675,14 @@
       "name": "stylesheet_info_h2",
       "rank": 40
     },
-    "AED": {
-      "caption": "user_name",
-      "default_val": "John Doe",
-      "doc": "Name displayed to other users",
-      "editor": "DynamicValue",
-      "name": "collab_user_name",
-      "optional": true,
-      "rank": 214,
-      "value": "text"
-    },
-    "ext_emoji_label": {
-      "caption": "----- Emoji -----",
-      "editor": "Label",
-      "name": "ext_emoji_label",
-      "rank": 203.1
-    },
-    "ext_emoji": {
-      "caption": "Emoji",
-      "default_val": false,
-      "doc": "Turns :smile: and other known shortcodes into inline emoji nodes. Use Insert emoji in a workflow with a name like smile; no picker is included. Uses images from the emoji catalog when a device cannot display a character (requires an external image host). Off by default; the extension is still in the downloaded editor bundle. With collaboration, turn this on in every editor that opens the same document: an editor with Emoji off may remove emoji nodes from the shared document.",
-      "editor": "DynamicValue",
-      "name": "ext_emoji",
-      "rank": 203.2,
-      "value": "boolean"
-    },
-    "ext_math_label": {
-      "caption": "----- Mathematics (LaTeX) -----",
-      "editor": "Label",
-      "name": "ext_math_label",
-      "rank": 202
-    },
-    "ext_math": {
-      "caption": "Mathematics",
-      "default_val": false,
-      "doc": "Shows LaTeX formulas, inline (in a line of text) or as their own block. Type $$x^2$$ for an inline formula, or $$$x^2$$$ on an empty line for a block. Clicking a formula selects it and fires Math clicked, so you can edit it in your own popup with Update math. Formulas are saved in the HTML with their LaTeX. Off by default; when off, no math files are loaded. With collaboration, turn it on in every editor that opens the same document: an editor with Mathematics off removes the formulas from the shared document for everyone.",
-      "editor": "DynamicValue",
-      "name": "ext_math",
-      "rank": 203,
-      "value": "boolean"
+    "code_highlight_theme": {
+      "caption": "Code highlighting theme",
+      "default_val": "GitHub",
+      "doc": "Colour scheme for highlighted code blocks, from highlight.js. None: no colours from the plugin; style the hljs-* classes yourself with Code highlighting CSS override.",
+      "editor": "Dropdown",
+      "name": "code_highlight_theme",
+      "options": "GitHub,GitHub Dark,Atom One Light,Atom One Dark,Monokai,Nord,Stack Overflow Light,Tokyo Night Dark,None",
+      "rank": 82.2
     },
     "insert_file_links": {
       "caption": "Insert links for uploaded files",
@@ -2675,32 +2693,14 @@
       "rank": 7.5,
       "value": "boolean"
     },
-    "code_highlight": {
-      "caption": "Syntax highlighting",
-      "default_val": false,
-      "doc": "Colours code in code blocks (38 languages: Elixir, JavaScript, TypeScript, Python, SQL, JSON, HTML, CSS, Bash, Go, Rust, Java, C/C++, C#, PHP, Ruby, YAML, Markdown and more). Pick the language by typing it after ```, e.g. ```python, or set Default language; blocks without one are detected. Colours are display only: the saved HTML does not change. Setting a language is faster than detection; blocks over 2,000 characters without a language, and blocks in an unknown language (e.g. mermaid), stay plain.",
-      "editor": "Checkbox",
-      "name": "code_highlight",
-      "rank": 82.1,
-      "value": "boolean"
-    },
-    "code_highlight_theme": {
-      "caption": "Code highlighting theme",
-      "default_val": "GitHub",
-      "doc": "Colour scheme for highlighted code blocks, from highlight.js. None: no colours from the plugin; style the hljs-* classes yourself with Code highlighting CSS override.",
-      "editor": "Dropdown",
-      "name": "code_highlight_theme",
-      "options": "GitHub,GitHub Dark,Atom One Light,Atom One Dark,Monokai,Nord,Stack Overflow Light,Tokyo Night Dark,None",
-      "rank": 82.2
-    },
-    "code_highlight_adv": {
-      "caption": "Code highlighting CSS override",
-      "doc": "CSS rules for highlighted code blocks, applied after the theme. Rules are relative to the code block: .hljs-keyword { color: #c00; } styles keywords, & { background: #fafafa; } styles the block itself. Token classes include hljs-keyword, hljs-string, hljs-comment, hljs-number, hljs-title, hljs-built_in. Some themes style tokens with more specific selectors (e.g. .hljs-meta .hljs-keyword); match those to override them. Rules with unbalanced braces are ignored. — Tip: use an 'arbitrary text' value for more room.",
+    "AED": {
+      "caption": "user_name",
+      "default_val": "John Doe",
+      "doc": "Name displayed to other users",
       "editor": "DynamicValue",
-      "long_text": false,
-      "name": "code_highlight_adv",
+      "name": "collab_user_name",
       "optional": true,
-      "rank": 82.3,
+      "rank": 214,
       "value": "text"
     }
   },
@@ -2716,46 +2716,6 @@
     "resizable": true
   },
   "states": {
-    "mentioned_id": {
-      "caption": "Created mention ID",
-      "doc": "The ID of the mention a user last picked from the mention list, as text. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "mentioned_id",
-      "value": "text"
-    },
-    "mentioned_label": {
-      "caption": "Created mention label",
-      "doc": "The label (display name) of the mention a user last picked from the mention list. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "mentioned_label",
-      "value": "text"
-    },
-    "mentioned_trigger_char": {
-      "caption": "Created mention trigger character",
-      "doc": "The trigger character (for example @ or #) of the mention a user last picked from the mention list. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "mentioned_trigger_char",
-      "value": "text"
-    },
-    "removed_image_urls": {
-      "caption": "Removed image URLs",
-      "doc": "Distinct image src values that lost their last reference in the latest document-changing edit. Published before Image deleted, so read this list inside that event. Repeated uses of a URL must all be removed before it is reported. Cleared by the next document-changing transaction, document replacement, reset or rebuild; selection-only changes leave it unchanged. URLs are compared exactly, without normalization. These are removal notifications, not proof that stored files are safe to delete.",
-      "initialization_code": {
-        "fn": "function(properties, context) {\n\n\n\n}"
-      },
-      "is_list": true,
-      "name": "removed_image_urls",
-      "value": "text"
-    },
     "AAr": {
       "caption": "paragraph is a h3",
       "initialization_code": {
@@ -2917,6 +2877,16 @@
       "name": "underline",
       "value": "boolean"
     },
+    "mentioned_id": {
+      "caption": "Created mention ID",
+      "doc": "The ID of the mention a user last picked from the mention list, as text. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "mentioned_id",
+      "value": "text"
+    },
     "ACM": {
       "caption": "Content (JSON)",
       "doc": "Content as a JSON",
@@ -2959,6 +2929,26 @@
       },
       "name": "fileUploadProgress",
       "value": "number"
+    },
+    "selected_math_latex": {
+      "caption": "Selected math LaTeX",
+      "doc": "The LaTeX of the formula selected in the editor (by a click or the keyboard), or empty when no formula is selected. Use it to pre-fill your edit popup when Math clicked fires.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "selected_math_latex",
+      "value": "text"
+    },
+    "selected_math_type": {
+      "caption": "Selected math type",
+      "doc": "inline or block for the formula selected in the editor, or empty when no formula is selected.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "selected_math_type",
+      "value": "text"
     },
     "ACC": {
       "caption": "Word count",
@@ -3011,6 +3001,16 @@
       "name": "blockquote",
       "value": "boolean"
     },
+    "mentioned_trigger_char": {
+      "caption": "Created mention trigger character",
+      "doc": "The trigger character (for example @ or #) of the mention a user last picked from the mention list. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "mentioned_trigger_char",
+      "value": "text"
+    },
     "ABF": {
       "caption": "list item can be indented",
       "doc": "Sink or it can be indentend.",
@@ -3020,6 +3020,16 @@
       "name": "sinkListItem",
       "value": "boolean"
     },
+    "mentioned_label": {
+      "caption": "Created mention label",
+      "doc": "The label (display name) of the mention a user last picked from the mention list. Set before Mention created fires. Empty until the first mention is created; keeps its value until the next one.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "mentioned_label",
+      "value": "text"
+    },
     "AAs": {
       "caption": "paragraph is a h4",
       "initialization_code": {
@@ -3027,6 +3037,16 @@
       },
       "name": "h4",
       "value": "boolean"
+    },
+    "setup_error": {
+      "caption": "Setup error",
+      "doc": "Why the editor could not be created with the current settings, or empty when setup succeeded. While set, Is ready stays no and nothing is left half-built. The same settings are not retried on every update: change a setting (for example fix the UniqueID types or the JSON initial content) or reset the element to try again.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "setup_error",
+      "value": "text"
     },
     "collab_synced": {
       "caption": "Collaboration synced?",
@@ -3149,6 +3169,16 @@
       "name": "bold",
       "value": "boolean"
     },
+    "removed_image_urls": {
+      "caption": "Removed image URLs",
+      "doc": "Distinct image src values that lost their last reference in the latest document-changing edit. Published before Image deleted, so read this list inside that event. Repeated uses of a URL must all be removed before it is reported. Cleared by the next document-changing transaction, document replacement, reset or rebuild; selection-only changes leave it unchanged. URLs are compared exactly, without normalization. These are removal notifications, not proof that stored files are safe to delete.",
+      "initialization_code": {
+        "fn": "function(properties, context) {\n\n\n\n}"
+      },
+      "is_list": true,
+      "name": "removed_image_urls",
+      "value": "text"
+    },
     "ACc": {
       "caption": "Selected text",
       "doc": "The current selected text",
@@ -3166,6 +3196,16 @@
       },
       "name": "line_height",
       "value": "text"
+    },
+    "files_uploading": {
+      "caption": "Files uploading",
+      "doc": "How many dropped or pasted files are uploading right now. 0 when none. While it is above 0, a placeholder shows each file where it will land, and the browser asks for confirmation before the page is closed.",
+      "initialization_code": {
+        "fn": "function(properties, context) {}"
+      },
+      "is_list": false,
+      "name": "files_uploading",
+      "value": "number"
     },
     "can_undo": {
       "caption": "Can undo?",
@@ -3286,46 +3326,6 @@
       },
       "name": "h1",
       "value": "boolean"
-    },
-    "setup_error": {
-      "caption": "Setup error",
-      "doc": "Why the editor could not be created with the current settings, or empty when setup succeeded. While set, Is ready stays no and nothing is left half-built. The same settings are not retried on every update: change a setting (for example fix the UniqueID types or the JSON initial content) or reset the element to try again.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "setup_error",
-      "value": "text"
-    },
-    "selected_math_latex": {
-      "caption": "Selected math LaTeX",
-      "doc": "The LaTeX of the formula selected in the editor (by a click or the keyboard), or empty when no formula is selected. Use it to pre-fill your edit popup when Math clicked fires.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "selected_math_latex",
-      "value": "text"
-    },
-    "selected_math_type": {
-      "caption": "Selected math type",
-      "doc": "inline or block for the formula selected in the editor, or empty when no formula is selected.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "selected_math_type",
-      "value": "text"
-    },
-    "files_uploading": {
-      "caption": "Files uploading",
-      "doc": "How many dropped or pasted files are uploading right now. 0 when none. While it is above 0, a placeholder shows each file where it will land, and the browser asks for confirmation before the page is closed.",
-      "initialization_code": {
-        "fn": "function(properties, context) {}"
-      },
-      "is_list": false,
-      "name": "files_uploading",
-      "value": "number"
     }
   },
   "support_autobinding": true
