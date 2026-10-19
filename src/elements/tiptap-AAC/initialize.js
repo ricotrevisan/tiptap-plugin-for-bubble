@@ -2191,8 +2191,10 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     // Submit on Enter, for chat composers: Enter fires Enter pressed instead of
     // starting a new paragraph. Enter keeps its meaning with a modifier, while
     // an IME is composing, while a mention list is open, and in code blocks and
-    // list items. The property is read per keypress, so a dynamic value applies
-    // without a rebuild; when it is off this plugin does nothing.
+    // list items. On phones and tablets (touch is the main input) Enter adds a
+    // new line and users tap the Send button. The property is read per keypress,
+    // so a dynamic value applies without a rebuild; when it is off this plugin
+    // does nothing.
     extensions.push(Extension.create({
         name: "submitOnEnter",
         priority: 1000,
@@ -2204,13 +2206,14 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
                 }
                 return false;
             };
+            const touchFirst = () => !!window.matchMedia?.("(hover: none) and (pointer: coarse)").matches;
             return [new Plugin({
                 key: new PluginKey("submitOnEnter"),
                 props: {
                     handleKeyDown(view, event) {
                         if (event.key !== "Enter" || !(instance.data._lastProperties ?? properties).submit_on_enter) return false;
                         if (event.isComposing || event.keyCode === 229 || event.ctrlKey || event.altKey || event.metaKey) return false;
-                        if (!view.editable || instance.data.suggestionOpen || enterHasMeaning(view.state.selection)) return false;
+                        if (!view.editable || instance.data.suggestionOpen || enterHasMeaning(view.state.selection) || touchFirst()) return false;
                         if (event.shiftKey) {
                             // Hard Break inserts a line break. Without it, Shift+Enter
                             // starts a new paragraph, as Enter did before.
