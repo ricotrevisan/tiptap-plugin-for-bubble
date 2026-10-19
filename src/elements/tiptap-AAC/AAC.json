@@ -711,6 +711,11 @@
       "caption": "Upload started",
       "name": "upload_started",
       "doc": "Fires when a drop or paste starts uploading one or more files. Read Files uploading for how many are in progress; File is uploaded and File upload error fire as they finish."
+    },
+    "enter_pressed": {
+      "caption": "Enter pressed",
+      "doc": "Fires when a user presses Enter while Submit on Enter is yes (see that property for when Enter keeps its usual meaning). No new line is added. Content (HTML), Content (Plain Text) and Content (JSON) already hold what was typed, and pending edits are submitted first, as on blur. Also fires on an empty editor; add the condition Only when this editor's Is empty? is no to skip it.",
+      "name": "enter_pressed"
     }
   },
   "fields": {
@@ -947,7 +952,7 @@
     "ext_hardbreak": {
       "caption": "Hard Break",
       "default_val": false,
-      "doc": "Enables Shift+Enter line breaks (hard breaks) within a paragraph. Off by default — when off, Shift+Enter does nothing.",
+      "doc": "Enables Shift+Enter line breaks (hard breaks) within a paragraph. Off by default — when off, Shift+Enter does nothing, unless Submit on Enter is yes: then it starts a new paragraph.",
       "editor": "DynamicValue",
       "name": "ext_hardbreak",
       "rank": 177,
@@ -2702,6 +2707,15 @@
       "optional": true,
       "rank": 82.3,
       "value": "text"
+    },
+    "submit_on_enter": {
+      "caption": "Submit on Enter",
+      "default_val": false,
+      "doc": "For chat composers. When yes, Enter fires the Enter pressed event and does not add a new line; run your send workflow from it, then Clear contents. Enter still works as usual in code blocks and lists, while a mention list is open, with Ctrl, Alt or Cmd held, and while typing with an input method (IME). Shift+Enter adds a line break when Hard Break is on, otherwise a new paragraph. Off by default.",
+      "editor": "DynamicValue",
+      "name": "submit_on_enter",
+      "rank": 3.5,
+      "value": "boolean"
     }
   },
   "has_reset_fn": false,
