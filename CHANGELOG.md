@@ -11,6 +11,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 - New **Submit on Enter** property (yes/no, off by default, accepts a dynamic value). When yes, Enter fires the new **Enter pressed** event and adds no new line, so a chat composer can send on Enter.
 - Enter keeps its usual meaning in code blocks and list items (bullet, numbered, task), while a mention list is open, with Ctrl, Alt or Cmd held, during IME composition, and in a read-only editor. To leave a list, press Enter on an empty item; the next Enter sends.
 - Shift+Enter adds a line break when **Hard Break** is on, otherwise a new paragraph.
+- New **Submit on Cmd+Enter** property (yes/no, off by default, accepts a dynamic value). When yes, Cmd+Enter (Ctrl+Enter on Windows and Linux) fires the same **Enter pressed** event, also inside code blocks and lists. For a Slack-style setting, turn it on and bind Submit on Enter to a user's yes/no field: Enter sends by default; users who switch it off get new lines on Enter and send with Cmd+Enter.
 - Pending edits are submitted before Enter pressed fires, as on blur. Content (HTML), Content (Plain Text) and Content (JSON) already hold what was typed. Enter pressed also fires on an empty editor; add an **Is empty?** condition to skip it.
 - Source-only change; the runtime bundle is unchanged.
 

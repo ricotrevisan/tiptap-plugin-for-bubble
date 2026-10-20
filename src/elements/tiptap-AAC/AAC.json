@@ -714,7 +714,7 @@
     },
     "enter_pressed": {
       "caption": "Enter pressed",
-      "doc": "Fires when a user presses Enter while Submit on Enter is yes (see that property for when Enter keeps its usual meaning). No new line is added. Content (HTML), Content (Plain Text) and Content (JSON) already hold what was typed, and pending edits are submitted first, as on blur. Also fires on an empty editor; add the condition Only when this editor's Is empty? is no to skip it.",
+      "doc": "Fires when a user presses Enter while Submit on Enter is yes, or Cmd+Enter (Ctrl+Enter) while Submit on Cmd+Enter is yes (see those properties for when Enter keeps its usual meaning). No new line is added. Content (HTML), Content (Plain Text) and Content (JSON) already hold what was typed, and pending edits are submitted first, as on blur. Also fires on an empty editor; add the condition Only when this editor's Is empty? is no to skip it.",
       "name": "enter_pressed"
     }
   },
@@ -2711,10 +2711,19 @@
     "submit_on_enter": {
       "caption": "Submit on Enter",
       "default_val": false,
-      "doc": "For chat composers. When yes, Enter fires the Enter pressed event and does not add a new line; run your send workflow from it, then Clear contents. Enter still works as usual in code blocks and lists, while a mention list is open, with Ctrl, Alt or Cmd held, and while typing with an input method (IME). Shift+Enter adds a line break when Hard Break is on, otherwise a new paragraph. Off by default.",
+      "doc": "For chat composers. When yes, Enter fires the Enter pressed event and does not add a new line; run your send workflow from it, then Clear contents. Enter still works as usual in code blocks and lists, while a mention list is open, with Ctrl, Alt or Cmd held, and while typing with an input method (IME). Shift+Enter adds a line break when Hard Break is on, otherwise a new paragraph. Works the same on every device; use a condition (for example on the page width) to change that. Off by default.",
       "editor": "DynamicValue",
       "name": "submit_on_enter",
       "rank": 3.5,
+      "value": "boolean"
+    },
+    "submit_on_mod_enter": {
+      "caption": "Submit on Cmd+Enter",
+      "default_val": false,
+      "doc": "For chat composers. When yes, Cmd+Enter (Ctrl+Enter on Windows and Linux) fires the Enter pressed event and adds no new line, also inside code blocks and lists. For a Slack-style setting, set this to yes and bind Submit on Enter to a user's yes/no field: Enter sends by default, and users who switch it off get new lines on Enter and send with Cmd+Enter. Does nothing while a mention list is open or an input method (IME) is composing. Off by default.",
+      "editor": "DynamicValue",
+      "name": "submit_on_mod_enter",
+      "rank": 3.7,
       "value": "boolean"
     }
   },

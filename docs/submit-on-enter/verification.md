@@ -13,6 +13,11 @@ With **Submit on Enter** = yes, a keydown is "submit" when all of these hold:
 - no mention list is open (this plugin's suggestion popup);
 - no ancestor of the cursor (selection start) is a code block, list item or task item.
 
+With **Submit on Cmd+Enter** = yes, Cmd+Enter or Ctrl+Enter (no Shift or Alt)
+also submits, including inside code blocks and list items, unless an IME is
+composing, a mention list is open or the editor is read-only. A Slack-style
+setting: Submit on Cmd+Enter = yes, Submit on Enter = a user's yes/no field.
+
 Then Enter pressed fires and no newline is added. Pending edits are flushed
 first, as on blur, so Content updated (if pending) fires before Enter pressed.
 Anything else gets Enter's usual behavior. With Submit on Enter = yes, Shift+Enter
@@ -31,8 +36,8 @@ value (for example "yes only on wide screens") applies without rebuilding the ed
   Ctrl/Alt/Cmd, IME, code block, bullet/numbered/task lists (including leaving a
   list), mention list, dynamic toggle without a rebuild, read-only.
   Mutation check: removing the mention, code/list or IME guard fails the test.
-- `lib/tests/browser/submit-on-enter.spec.mjs`: real keyboard, 8 scenarios.
-  Chromium 8/8; Firefox and WebKit 7/7, plus 1 IME case skipped because IME
+- `lib/tests/browser/submit-on-enter.spec.mjs`: real keyboard, 9 scenarios.
+  Chromium 9/9; Firefox and WebKit 8/8, plus 1 IME case skipped because IME
   input only runs through CDP. Full `npm run test:browser`: 335 passed, 22
   skipped, 0 failed.
 - `npm test`, `npm run validate:plugin` and `npm run test:validator` pass.
@@ -71,9 +76,25 @@ the composer grows to three lines with Shift+Enter. Enter sent
 `Three lines\non a narrow\nscreen` and cleared the editor. The first placeholder
 was too long for 390 px and was clipped, so the demo now uses `Write a message…`.
 
+Submit on Cmd+Enter: the demo composer has Submit on Cmd+Enter = yes, and a
+checkbox "Enter adds a new line" that sets Submit on Enter to no through a
+condition (the Slack-style setting). Tested in Chromium at 1280 px and 390 px
+with real keypresses (Ctrl+Enter on Linux), the same result at both widths:
+
+| Input | Result |
+| --- | --- |
+| Box unticked: `plain` Enter | Sent 1, editor cleared |
+| Box unticked: `mod` Ctrl+Enter | Sent 2, editor cleared |
+| Box ticked: `one` Enter `two` | `<p>one</p><p>two</p>`, nothing sent |
+| Box ticked: Ctrl+Enter | Sent 3, editor cleared |
+| Box ticked: ```` ``` ```` Space `x = 1` Ctrl+Enter | Sent 4 (`x = 1`), editor cleared |
+
+No horizontal overflow at 390 px.
+
 ![Desktop: Shift+Enter message sent](desktop-shift-enter-sent.png)
 ![390 px: three lines before Enter](390-multiline-before-enter.png)
 ![390 px: after Enter](390-after-enter.png)
+![390 px: Cmd+Enter setting ticked, code block sent](390-cmd-enter-setting.png)
 
 ## Notes
 
