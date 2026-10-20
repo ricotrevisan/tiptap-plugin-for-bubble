@@ -1504,6 +1504,8 @@ function configureSuggestion(instance, properties) {
 
             return {
                 onStart: (props) => {
+                    // Submit on Enter leaves Enter to the open list.
+                    instance.data.suggestionOpen = true;
                     props.randomId = instance.data.randomId;
                     props.triggerChar = char;
                     component = new instance.data.MentionList({
@@ -1547,6 +1549,7 @@ function configureSuggestion(instance, properties) {
                 },
 
                 onExit: () => {
+                    instance.data.suggestionOpen = false;
                     popup[0].destroy();
                     component.element.remove();
                 },
@@ -2185,6 +2188,55 @@ function buildEditor(properties, context, collaborationConfiguration, initialCon
     if (properties.ext_hardbreak) {
         extensions.push(HardBreak.configure({ keepMarks: properties.hardBreakKeepMarks }));
     }
+    // Submit on Enter, for chat composers: Enter fires Enter pressed instead of
+    // starting a new paragraph. Enter keeps its meaning with a modifier, while
+    // an IME is composing, while a mention list is open, and in code blocks and
+    // list items. Submit on Cmd+Enter fires it on Cmd/Ctrl+Enter, from anywhere.
+    // The properties are read per keypress, so dynamic values apply without a
+    // rebuild; when both are off this plugin does nothing.
+    extensions.push(Extension.create({
+        name: "submitOnEnter",
+        priority: 1000,
+        addProseMirrorPlugins() {
+            const editor = this.editor;
+            const enterHasMeaning = ({ $from }) => {
+                for (let depth = $from.depth; depth > 0; depth--) {
+                    if (["codeBlock", "listItem", "taskItem"].includes($from.node(depth).type.name)) return true;
+                }
+                return false;
+            };
+            return [new Plugin({
+                key: new PluginKey("submitOnEnter"),
+                props: {
+                    handleKeyDown(view, event) {
+                        const props = instance.data._lastProperties ?? properties;
+                        if (event.key !== "Enter" || !(props.submit_on_enter || props.submit_on_mod_enter)) return false;
+                        if (event.isComposing || event.keyCode === 229 || event.altKey) return false;
+                        if (!view.editable || instance.data.suggestionOpen) return false;
+                        if (event.ctrlKey || event.metaKey) {
+                            if (!props.submit_on_mod_enter || event.shiftKey) return false;
+                        } else {
+                            if (!props.submit_on_enter || enterHasMeaning(view.state.selection)) return false;
+                            if (event.shiftKey) {
+                                // Hard Break inserts a line break. Without it, Shift+Enter
+                                // starts a new paragraph, as Enter did before.
+                                if (view.state.schema.nodes.hardBreak) return false;
+                                return editor.commands.first(({ commands }) => [
+                                    () => commands.createParagraphNear(),
+                                    () => commands.liftEmptyBlock(),
+                                    () => commands.splitBlock(),
+                                ]);
+                            }
+                        }
+                        // As on blur: settle pending content before the workflow runs.
+                        if (!props.collab_active) instance.data.flushPendingContent();
+                        instance.triggerEvent("enter_pressed");
+                        return true;
+                    },
+                },
+            })];
+        },
+    }));
     if (properties.ext_history && !properties.collab_active) extensions.push(UndoRedo);
     if (properties.ext_bold) extensions.push(Bold);
     if (properties.ext_italic) extensions.push(Italic);
