@@ -2711,7 +2711,7 @@
     "submit_on_enter": {
       "caption": "Submit on Enter",
       "default_val": false,
-      "doc": "For chat composers. When yes, Enter fires the Enter pressed event and does not add a new line; run your send workflow from it, then Clear contents. Enter still works as usual in code blocks and lists, while a mention list is open, with Ctrl, Alt or Cmd held, while typing with an input method (IME), and on phones and tablets, where users tap your Send button instead. Shift+Enter adds a line break when Hard Break is on, otherwise a new paragraph. Off by default.",
+      "doc": "For chat composers. When yes, Enter fires the Enter pressed event and does not add a new line; run your send workflow from it, then Clear contents. Enter still works as usual in code blocks and lists, while a mention list is open, with Ctrl, Alt or Cmd held, and while typing with an input method (IME). Shift+Enter adds a line break when Hard Break is on, otherwise a new paragraph. Off by default.",
       "editor": "DynamicValue",
       "name": "submit_on_enter",
       "rank": 3.5,

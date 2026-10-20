@@ -12,8 +12,6 @@ With **Submit on Enter** = yes, a keydown is "submit" when all of these hold:
 - the editor is editable;
 - no mention list is open (this plugin's suggestion popup);
 - no ancestor of the cursor (selection start) is a code block, list item or task item.
-- the device is not touch-first: `(hover: none) and (pointer: coarse)` does not
-  match. On phones and tablets Enter adds a new line and users tap Send.
 
 Then Enter pressed fires and no newline is added. Pending edits are flushed
 first, as on blur, so Content updated (if pending) fires before Enter pressed.
@@ -73,22 +71,17 @@ the composer grows to three lines with Shift+Enter. Enter sent
 `Three lines\non a narrow\nscreen` and cleared the editor. The first placeholder
 was too long for 390 px and was clipped, so the demo now uses `Write a message…`.
 
-Phone (Playwright iPhone 13 emulation, touch, 390 px): `one` Enter `two` gave
-`<p>one</p><p>two</p>`, nothing sent. The same steps on desktop sent `one`.
-
 ![Desktop: Shift+Enter message sent](desktop-shift-enter-sent.png)
 ![390 px: three lines before Enter](390-multiline-before-enter.png)
 ![390 px: after Enter](390-after-enter.png)
-![Phone: Enter adds a new line](phone-enter-new-line.png)
 
 ## Notes
 
 - Content (Plain Text) separates block nodes (list items, paragraphs) with
   blank lines. That is existing Tiptap `getText` behavior. Chat apps should
   save Content (HTML).
-- Touch-first is a media query on the main input, not the page width: a
-  laptop with a touch screen still sends on Enter, and so does a narrow
-  desktop window.
+- Enter sends on phones and tablets too. Builders who want a new line there
+  can make Submit on Enter a condition, such as the page width.
 - Bubble actions read Content when they run, a moment after Enter pressed.
   Text typed in that gap is included in the sent message, then cleared. A test
   script typing within milliseconds of Enter hit this; with a 1.5 s pause it
