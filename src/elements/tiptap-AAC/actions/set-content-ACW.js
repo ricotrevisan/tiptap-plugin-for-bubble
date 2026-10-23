@@ -12,16 +12,20 @@ if (!instance.data.editor_is_ready)
           ? false
           : "full";
 
-    console.log(
-      "setContent preserveWhitespace",
-      typeof preserveWhitespace,
-      preserveWhitespace
-    );
+    const setContent = (preserve) =>
+      instance.data.editor.commands.setContent(content, {
+        emitUpdate: true,
+        parseOptions: { preserveWhitespace: preserve },
+      });
 
-    instance.data.editor.commands.setContent(content, {
-      emitUpdate: true,
-      parseOptions: { preserveWhitespace: preserveWhitespace },
-    });
+    try {
+      setContent(preserveWhitespace);
+    } catch (error) {
+      // "full" parses content as a slice, which rejects HTML the editor's
+      // schema can repair, such as an empty <li>. Parse it as a document.
+      if (preserveWhitespace !== "full") throw error;
+      setContent(true);
+    }
     instance.data.refreshTableOfContents();
   } catch (error) {
     console.error(error);
