@@ -21,9 +21,10 @@ if (!instance.data.editor_is_ready)
     try {
       setContent(preserveWhitespace);
     } catch (error) {
-      // "full" parses content as a slice, which rejects HTML the editor's
+      // "full" parses HTML as a slice, which rejects HTML the editor's
       // schema can repair, such as an empty <li>. Parse it as a document.
-      if (preserveWhitespace !== "full") throw error;
+      // JSON is not repaired by a document parse, so its errors stand.
+      if (preserveWhitespace !== "full" || properties.is_json) throw error;
       setContent(true);
     }
     instance.data.refreshTableOfContents();

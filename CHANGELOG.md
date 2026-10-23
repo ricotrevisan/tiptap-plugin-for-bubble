@@ -6,7 +6,7 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ## Unreleased
 
-- **Set content** no longer fails with "Invalid content for node listItem" when the HTML has an empty list item, such as `<ul><li></li></ul>`. With the default preserveWhitespace `'full'`, Tiptap rejects HTML it would otherwise repair; the action now loads it with preserveWhitespace `true` instead. Content that already loaded keeps its whitespace.
+- **Set content** no longer fails with "Invalid content for node listItem" when the HTML has an empty list item, such as `<ul><li></li></ul>`. With the default preserveWhitespace `'full'`, Tiptap rejects HTML it would otherwise repair; the action now loads that HTML with preserveWhitespace `true` instead, so line breaks inside its paragraphs become spaces. Content that loads with `'full'` is unchanged, and invalid JSON is still rejected.
 - Set content no longer logs its preserveWhitespace setting to the console.
 - Source-only change; the runtime bundle is unchanged.
 
