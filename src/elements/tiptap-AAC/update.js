@@ -25,6 +25,17 @@ if (previousCollaboration?.active && collaborationConfiguration.active && !sameS
     delete instance.data._pendingRebuildInitialContent;
     delete instance.data._pendingRebuildSave;
 }
+// A snapshot saved for a local -> shared rebuild that is still waiting for
+// credentials belongs to that destination and record only.
+const pendingTarget = instance.data._pendingRebuildTarget;
+if (pendingTarget && !instance.data.isEditorSetup &&
+    (pendingTarget.document !== (collaborationConfiguration.active ? collaborationConfiguration.document : null) ||
+     (!properties.bubble.auto_binding() && (properties.initialContent ?? "") !== pendingTarget.initialContent))) {
+    delete instance.data._pendingRebuildContent;
+    delete instance.data._pendingRebuildInitialContent;
+    delete instance.data._pendingRebuildSave;
+}
+if (instance.data.isEditorSetup || !instance.data._pendingRebuildContent) delete instance.data._pendingRebuildTarget;
 
 // Construction-time extensions require a full rebuild when their dynamic
 // Bubble toggle changes. Run this before collaboration prerequisite checks so
@@ -78,11 +89,13 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
     // this editor last left, means the element moved on and the snapshot
     // belongs to the previous record.
     const crossesCollaboration = !!previousCollaboration?.active !== !!collaborationConfiguration.active;
-    if (previousCollaboration?.active && !collaborationConfiguration.active) {
-        instance.data._lastSharedDocument = previousCollaboration.document;
-    }
     const initialContentChanged = !properties.bubble.auto_binding() &&
         (properties.initialContent ?? "") !== (instance.data.initialContent ?? "");
+    if (previousCollaboration?.active && !collaborationConfiguration.active) {
+        // Leaving a shared document for another record: the local editor starts
+        // fresh for that record, so it has no shared document to return to.
+        instance.data._lastSharedDocument = initialContentChanged ? null : previousCollaboration.document;
+    }
     const enteringOtherDocument = collaborationConfiguration.active && !!instance.data._lastSharedDocument &&
         instance.data._lastSharedDocument !== collaborationConfiguration.document;
     const recordChanged = crossesCollaboration && (initialContentChanged || enteringOtherDocument);
@@ -109,6 +122,10 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
             instance.data._pendingRebuildContent = instance.data.editor.getJSON();
         }
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
+        instance.data._pendingRebuildTarget = {
+            document: collaborationConfiguration.active ? collaborationConfiguration.document : null,
+            initialContent: properties.initialContent ?? "",
+        };
         if (!collaborationConfiguration.active) instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
     } else if (boundDocumentChanged || recordChanged || (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument)) {
         // A simultaneous extension toggle must not carry A's local document
@@ -165,6 +182,7 @@ if (
 
     if (!properties.collab_active) {
         instance.data.initialContent = properties.initialContent;
+        instance.data._lastSharedDocument = null;
         let content = properties.content_is_json ? JSON.parse(instance.data.initialContent) : instance.data.initialContent;
 
         // Clear any pending debounce timeout before programmatic update
