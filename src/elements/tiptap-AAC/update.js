@@ -73,7 +73,23 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
         (bindingChange === "record" || bindingChange === "external");
     // Local → shared: seed only an empty synced document. Shared → local:
     // retain the visible snapshot. Shared → another room: never carry content.
-    if ((!previousCollaboration?.active || !collaborationConfiguration.active) && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
+    // Crossing between local and shared carries the snapshot only for the same
+    // record: a changed initialContent, or a shared document other than the one
+    // this editor last left, means the element moved on and the snapshot
+    // belongs to the previous record.
+    const crossesCollaboration = !!previousCollaboration?.active !== !!collaborationConfiguration.active;
+    if (previousCollaboration?.active && !collaborationConfiguration.active) {
+        instance.data._lastSharedDocument = previousCollaboration.document;
+    }
+    const initialContentChanged = !properties.bubble.auto_binding() &&
+        (properties.initialContent ?? "") !== (instance.data.initialContent ?? "");
+    const enteringOtherDocument = collaborationConfiguration.active && !!instance.data._lastSharedDocument &&
+        instance.data._lastSharedDocument !== collaborationConfiguration.document;
+    const recordChanged = crossesCollaboration && (initialContentChanged || enteringOtherDocument);
+    if (recordChanged) {
+        instance.data.debug("collaboration changed together with the record — not carrying the previous content");
+    }
+    if ((!previousCollaboration?.active || !collaborationConfiguration.active) && !recordChanged && !boundDocumentChanged && instance.data.editor_is_ready && instance.data.editor) {
         // Turning a node extension off removes its schema: JSON with those
         // nodes cannot load. Convert to HTML, keeping readable text in place
         // of emoji nodes (their HTML may contain only a fallback <img>).
@@ -94,7 +110,7 @@ if ((instance.data.isEditorSetup || instance.data._collabRetryPending || instanc
         }
         instance.data._pendingRebuildInitialContent = instance.data.initialContent;
         if (!collaborationConfiguration.active) instance.data._pendingRebuildSave = instance.data._autobindingSave.checkpoint();
-    } else if (boundDocumentChanged || (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument)) {
+    } else if (boundDocumentChanged || recordChanged || (previousCollaboration?.active && collaborationConfiguration.active && !sameSharedDocument)) {
         // A simultaneous extension toggle must not carry A's local document
         // into the editor being rebuilt for B.
         delete instance.data._pendingRebuildContent;

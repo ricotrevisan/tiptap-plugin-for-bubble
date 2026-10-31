@@ -4,6 +4,11 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.20.2 (unreleased)
+
+- **Collaboration no longer copies one record's text into another record's document.** When an editor switched between local and collaborative mode at the same moment its record changed (for example, a drawer that briefly has no record while it loads the next one), the previous record's visible text seeded the next record's empty shared document. The editor now carries local content into a shared document only for the same record: same Initial content, and the same document it last left (or none). Otherwise a new empty document is seeded from the current Initial content. Unsaved local edits still seed the same record's empty document. (DEF-2252)
+- Source-only change; the runtime bundle is unchanged.
+
 ## v4.20.1 (2026-10-23)
 
 - **Set content** no longer fails with "Invalid content for node listItem" when the HTML has an empty list item, such as `<ul><li></li></ul>`. With the default preserveWhitespace `'full'`, Tiptap rejects HTML it would otherwise repair; the action now loads that HTML with preserveWhitespace `true` instead, so line breaks inside its paragraphs become spaces. Content that loads with `'full'` is unchanged, and invalid JSON is still rejected.
