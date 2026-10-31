@@ -4,6 +4,12 @@ All notable changes to the Rich Text Editor (Tiptap.dev) Bubble plugin will be d
 
 ---
 
+## v4.20.3 (unreleased)
+
+- **Collaboration: a rebuild waiting for credentials no longer seeds the wrong document.** If the editor switched from local to collaborative mode before its credentials loaded, and the document or Initial content changed while it waited, the earlier local text could still seed the new document. It is now dropped; the new document is seeded from the current Initial content. (DEF-2252)
+- Local edits typed while an editor waits to rejoin collaboration for a new record are kept when it connects, even if it showed another record's shared document before.
+- Source-only change; the runtime bundle is unchanged.
+
 ## v4.20.2 (unreleased)
 
 - **Collaboration no longer copies one record's text into another record's document.** When an editor switched between local and collaborative mode at the same moment its record changed (for example, a drawer that briefly has no record while it loads the next one), the previous record's visible text seeded the next record's empty shared document. The editor now carries local content into a shared document only for the same record: same Initial content, and the same document it last left (or none). Otherwise a new empty document is seeded from the current Initial content. Unsaved local edits still seed the same record's empty document. (DEF-2252)
