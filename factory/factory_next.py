@@ -169,7 +169,7 @@ def branch_name(issue):
 def linear(policy, query, variables=None):
     body = json.dumps({'query': query, 'variables': variables or {}})
     out = subprocess.run([str(Path.home() / '.local/bin/loggie-account'), policy['linear']['loggie_account'],
-                          'call', 'linear', 'POST', '/graphql', '-b', body],
+                          'call', 'linear', 'POST', '/', '-b', body],
                          capture_output=True, text=True, timeout=60)
     data = json.loads(out.stdout) if out.stdout.strip().startswith('{') else None
     if out.returncode or not data or data.get('errors') or 'data' not in data:
